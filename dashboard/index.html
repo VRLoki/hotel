@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel Intel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: { 50:'#f0f2f8', 100:'#dde1ef', 200:'#bbc3df', 300:'#8e9bcb', 400:'#6070b3', 500:'#3d4f99', 600:'#2d3a7a', 700:'#1e2a5e', 800:'#152045', 900:'#0d1530', 950:'#080c1c' },
+        gold: { 50:'#fdf8ef', 100:'#f9edcf', 200:'#f2d89e', 300:'#e9be67', 400:'#c9a96e', 500:'#b08a42', 600:'#8f6c2f', 700:'#6d5025', 800:'#4e3a1c', 900:'#312413' },
+        cream: { 50:'#fefcf9', 100:'#fdf9f2', 200:'#faf4e8', 300:'#f5ecda', 400:'#ede0c6' },
+      },
+      fontFamily: { display:['Playfair Display','serif'], sans:['Inter','system-ui','sans-serif'] },
+    }
+  }
+}
+</script>
+<style>
+  [x-cloak] { display: none !important; }
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: #c9a96e40; border-radius: 3px; }
+  .fade-in { animation: fadeIn 0.3s ease-in; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .markdown-summary strong { font-weight: 600; }
+  .markdown-summary p { margin-bottom: 0.5rem; }
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+</style>
+</head>
+<body class="bg-cream-100 font-sans text-navy-900 antialiased" x-data="dashboard()" x-init="init()">
+
+<!-- ═══════ LOGIN SCREEN ═══════ -->
+<div x-show="!authenticated" x-cloak class="min-h-screen flex items-center justify-center bg-navy-900 px-4">
+  <div class="w-full max-w-md fade-in">
+    <div class="text-center mb-8">
+      <h1 class="font-display text-3xl font-bold text-gold-400 tracking-wide">Hotel Intel</h1>
+      <p class="text-navy-300 text-sm mt-2">Intelligence Dashboard</p>
+    </div>
+    <div class="bg-navy-800 rounded-2xl border border-navy-700 p-8 shadow-2xl">
+      <h2 class="font-display text-xl font-semibold text-white mb-6">Sign In</h2>
+      <div x-show="loginError" class="mb-4 text-sm text-red-400 bg-red-900/30 border border-red-800 rounded-lg px-4 py-2" x-text="loginError"></div>
+      <form @submit.prevent="doLogin()">
+        <div class="mb-4">
+          <label class="block text-xs uppercase text-navy-300 mb-1.5 tracking-wider">Email</label>
+          <input x-model="loginEmail" type="email" required autocomplete="email"
+                 class="w-full bg-navy-900 border border-navy-600 rounded-lg px-4 py-3 text-white placeholder-navy-500 focus:ring-2 focus:ring-gold-400 focus:border-gold-400 outline-none transition"
+                 placeholder="admin@edenrock.com">
+        </div>
+        <div class="mb-6">
+          <label class="block text-xs uppercase text-navy-300 mb-1.5 tracking-wider">Password</label>
+          <input x-model="loginPassword" type="password" required autocomplete="current-password"
+                 class="w-full bg-navy-900 border border-navy-600 rounded-lg px-4 py-3 text-white placeholder-navy-500 focus:ring-2 focus:ring-gold-400 focus:border-gold-400 outline-none transition"
+                 placeholder="••••••••">
+        </div>
+        <button type="submit" :disabled="loginLoading"
+                class="w-full bg-gold-400 hover:bg-gold-500 text-white font-semibold py-3 rounded-lg transition shadow-lg disabled:opacity-50">
+          <span x-show="!loginLoading">Sign In</span>
+          <span x-show="loginLoading">Signing in...</span>
+        </button>
+      </form>
+
+      <!-- OAuth Providers -->
+      <div x-show="oauthProviders.length > 0" class="mt-6">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="flex-1 h-px bg-navy-600"></div>
+          <span class="text-xs text-navy-400 uppercase tracking-wider">or</span>
+          <div class="flex-1 h-px bg-navy-600"></div>
+        </div>
+        <div class="space-y-3">
+          <a x-show="oauthProviders.includes('google')" href="/api/auth/google"
+             class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 rounded-lg transition shadow-sm border border-gray-200">
+            <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Sign in with Google
+          </a>
+          <a x-show="oauthProviders.includes('microsoft')" href="/api/auth/microsoft"
+             class="w-full flex items-center justify-center gap-3 bg-[#2F2F2F] hover:bg-[#3b3b3b] text-white font-medium py-3 rounded-lg transition shadow-sm border border-[#444]">
+            <svg class="w-5 h-5" viewBox="0 0 21 21"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg>
+            Sign in with Microsoft
+          </a>
+        </div>
+      </div>
+    </div>
+    <p class="text-center text-navy-500 text-xs mt-6">Secured access · Hotel Intel v2.0</p>
+  </div>
+</div>
+
+<!-- ═══════ DASHBOARD (authenticated) ═══════ -->
+<div x-show="authenticated" x-cloak>
+
+<!-- Sidebar -->
+<aside class="fixed inset-y-0 left-0 z-50 w-64 bg-navy-900 text-white flex flex-col transition-transform duration-300"
+       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+  <div class="p-6 border-b border-navy-700">
+    <h1 @click="page='recap'" class="font-display text-xl font-bold text-gold-400 tracking-wide cursor-pointer hover:text-gold-300 transition">Hotel Intel</h1>
+    <!-- Property selector -->
+    <template x-if="userProperties.length > 1">
+      <select x-model="currentPropertyId" @change="switchProperty()"
+              class="mt-2 w-full text-xs bg-navy-800 border border-navy-600 rounded px-2 py-1.5 text-cream-200 focus:ring-1 focus:ring-gold-400 outline-none">
+        <template x-for="p in userProperties" :key="p.id">
+          <option :value="p.id" x-text="p.name"></option>
+        </template>
+      </select>
+    </template>
+    <template x-if="userProperties.length <= 1">
+      <p class="text-xs text-navy-300 mt-1" x-text="currentProperty?.name || ''"></p>
+    </template>
+  </div>
+  <nav class="flex-1 p-4 space-y-1">
+    <button @click="page='recap'; sidebarOpen=false"
+            :class="page==='recap' ? 'bg-navy-700 text-gold-400' : 'text-navy-200 hover:bg-navy-800 hover:text-white'"
+            class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/></svg>
+      Dashboard
+    </button>
+    <button @click="page='textrecap'; sidebarOpen=false"
+            :class="page==='textrecap' ? 'bg-navy-700 text-gold-400' : 'text-navy-200 hover:bg-navy-800 hover:text-white'"
+            class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      Daily Brief
+    </button>
+    <button @click="page='guests'; sidebarOpen=false"
+            :class="page==='guests' ? 'bg-navy-700 text-gold-400' : 'text-navy-200 hover:bg-navy-800 hover:text-white'"
+            class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Guest Intelligence
+    </button>
+    <button @click="page='settings'; sidebarOpen=false" x-show="user?.role !== 'staff'"
+            :class="page==='settings' ? 'bg-navy-700 text-gold-400' : 'text-navy-200 hover:bg-navy-800 hover:text-white'"
+            class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Settings
+    </button>
+    <button @click="page='docs'; loadDocs(); sidebarOpen=false"
+            :class="page==='docs' ? 'bg-navy-700 text-gold-400' : 'text-navy-200 hover:bg-navy-800 hover:text-white'"
+            class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      Documentation
+    </button>
+    <a href="/app/" target="_blank"
+            class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition text-navy-200 hover:bg-navy-800 hover:text-white">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>
+      Mobile App
+    </a>
+  </nav>
+  <!-- User info + logout -->
+  <div class="p-4 border-t border-navy-700">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2 min-w-0">
+        <div class="w-8 h-8 rounded-full bg-navy-700 flex items-center justify-center text-xs font-bold text-gold-400 flex-shrink-0"
+             x-text="user?.name?.split(' ').map(n=>n[0]).join('') || '?'"></div>
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-cream-200 truncate" x-text="user?.name"></p>
+          <p class="text-[10px] text-navy-400 uppercase tracking-wider" x-text="user?.role"></p>
+        </div>
+      </div>
+      <button @click="doLogout()" class="text-navy-400 hover:text-red-400 transition" title="Sign out">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      </button>
+    </div>
+    <div class="flex items-center gap-2 text-xs text-navy-400">
+      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+      All systems operational
+    </div>
+  </div>
+</aside>
+
+<!-- Mobile header -->
+<div class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-navy-900 px-4 py-3 flex items-center gap-3">
+  <button @click="sidebarOpen = !sidebarOpen" class="text-white">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <span @click="page='recap'; sidebarOpen=false" class="font-display text-gold-400 font-bold cursor-pointer">Hotel Intel</span>
+</div>
+
+<!-- Overlay -->
+<div x-show="sidebarOpen" @click="sidebarOpen=false" class="lg:hidden fixed inset-0 z-40 bg-black/50" x-cloak></div>
+
+<!-- Main -->
+<main class="lg:ml-64 min-h-screen pt-14 lg:pt-0">
+
+  <!-- ═══════ DAILY RECAP ═══════ -->
+  <div x-show="page==='recap'" x-cloak class="fade-in">
+    <header class="bg-white border-b border-cream-300 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h2 class="font-display text-2xl font-bold text-navy-900">Dashboard</h2>
+        <p class="text-sm text-navy-500" x-text="currentProperty?.name || ''"></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <select x-model="selectedDate" @change="loadRecap()" class="text-sm border border-cream-300 rounded-lg px-3 py-2 bg-white text-navy-800 focus:ring-2 focus:ring-gold-400 focus:border-gold-400">
+          <template x-for="d in dates" :key="d">
+            <option :value="d" x-text="d"></option>
+          </template>
+        </select>
+      </div>
+    </header>
+
+    <div class="p-6 space-y-6" x-show="recap">
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+        <template x-for="kpi in kpiCards" :key="kpi.label">
+          <div class="bg-white rounded-xl border border-cream-300 p-4 hover:shadow-md transition">
+            <p class="text-xs font-medium text-navy-400 uppercase tracking-wider" x-text="kpi.label"></p>
+            <div class="mt-2 flex items-end gap-2">
+              <span class="text-2xl font-bold text-navy-900" x-text="kpi.display"></span>
+              <span x-show="kpi.delta !== null && kpi.delta !== undefined"
+                    :class="kpi.delta > 0 ? 'text-emerald-600' : kpi.delta < 0 ? 'text-red-500' : 'text-navy-400'"
+                    class="text-xs font-semibold flex items-center gap-0.5 mb-1">
+                <svg x-show="kpi.delta > 0" class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"/></svg>
+                <svg x-show="kpi.delta < 0" class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"/></svg>
+                <span x-text="kpi.deltaText"></span>
+              </span>
+            </div>
+            <p class="text-xs text-navy-400 mt-1" x-text="kpi.sub || ''"></p>
+          </div>
+        </template>
+      </div>
+
+      <!-- Executive Summary -->
+      <div class="bg-white rounded-xl border border-cream-300 p-6">
+        <h3 class="font-display text-lg font-semibold text-navy-900 mb-3 flex items-center gap-2">
+          <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Executive Summary
+        </h3>
+        <div class="prose prose-sm max-w-none text-navy-700 leading-relaxed markdown-summary" x-html="formatMarkdown(recap?.executive_summary || '')"></div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-6">
+        <!-- Arrivals -->
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+            Arrivals
+            <span class="text-xs bg-gold-100 text-gold-700 px-2 py-0.5 rounded-full" x-text="recap?.arrivals?.length || 0"></span>
+          </h3>
+          <div class="space-y-3">
+            <template x-for="a in recap?.arrivals || []" :key="a.confirmationNo">
+              <div class="flex items-center justify-between py-2 border-b border-cream-200 last:border-0">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-medium text-sm" x-text="a.guestName"></span>
+                    <span x-show="a.vip" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gold-400 text-white" x-text="a.vip"></span>
+                    <span class="text-[10px] text-navy-400 border border-navy-200 rounded px-1" x-text="a.nationality"></span>
+                  </div>
+                  <p class="text-xs text-navy-400 mt-0.5">
+                    Room <span x-text="a.roomNo"></span> · <span x-text="a.roomType"></span> · <span x-text="a.nights"></span>n · €<span x-text="a.rate?.toLocaleString()"></span>/n
+                  </p>
+                  <p x-show="a.notes" class="text-xs text-navy-500 italic mt-0.5" x-text="a.notes"></p>
+                </div>
+              </div>
+            </template>
+            <p x-show="!recap?.arrivals?.length" class="text-sm text-navy-400 italic">No arrivals today</p>
+          </div>
+        </div>
+
+        <!-- Incidents -->
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+            Incidents
+            <span class="text-xs bg-gold-100 text-gold-700 px-2 py-0.5 rounded-full" x-text="recap?.incidents?.total || 0"></span>
+          </h3>
+          <div class="space-y-3">
+            <template x-for="inc in recap?.incidents?.items || []" :key="inc.id">
+              <div class="py-2 border-b border-cream-200 last:border-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="w-2 h-2 rounded-full"
+                        :class="inc.priority==='high'?'bg-red-500':inc.priority==='medium'?'bg-amber-400':'bg-blue-300'"></span>
+                  <span class="text-xs font-medium uppercase tracking-wider"
+                        :class="inc.priority==='high'?'text-red-600':inc.priority==='medium'?'text-amber-600':'text-blue-500'"
+                        x-text="inc.priority"></span>
+                  <span class="text-xs text-navy-400" x-text="inc.category?.replace('_',' ')"></span>
+                  <span class="ml-auto text-xs px-1.5 py-0.5 rounded"
+                        :class="inc.status==='resolved'?'bg-emerald-100 text-emerald-700':'bg-red-100 text-red-700'"
+                        x-text="inc.status"></span>
+                </div>
+                <p class="text-sm text-navy-700" x-text="inc.description"></p>
+                <p x-show="inc.resolution" class="text-xs text-navy-500 mt-1">↳ <span x-text="inc.resolution"></span></p>
+              </div>
+            </template>
+            <p x-show="!recap?.incidents?.items?.length" class="text-sm text-navy-400 italic">No incidents today</p>
+          </div>
+        </div>
+
+        <!-- F&B Performance -->
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
+            F&B Performance
+          </h3>
+          <div class="space-y-4">
+            <template x-for="outlet in recap?.fb?.outlets || []" :key="outlet.key">
+              <div class="border border-cream-200 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                  <h4 class="font-semibold text-sm text-navy-800" x-text="outlet.name"></h4>
+                  <span class="text-sm font-bold text-gold-600">€<span x-text="outlet.totalRevenue?.toLocaleString()"></span></span>
+                </div>
+                <div class="flex gap-4 text-xs text-navy-500">
+                  <span><span class="font-medium text-navy-700" x-text="outlet.totalCovers"></span> covers</span>
+                </div>
+                <div class="mt-2 grid grid-cols-3 gap-2">
+                  <template x-for="[period, data] of Object.entries(outlet.periods || {})" :key="period">
+                    <div class="text-center bg-cream-50 rounded p-2">
+                      <p class="text-[10px] uppercase text-navy-400" x-text="period"></p>
+                      <p class="text-sm font-semibold text-navy-800" x-text="data?.covers || 0"></p>
+                      <p class="text-[10px] text-navy-400">€<span x-text="data?.avgCheck || 0"></span> avg</p>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Spa -->
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            Spa
+          </h3>
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <div class="bg-cream-50 rounded-lg p-3 text-center">
+              <p class="text-2xl font-bold text-navy-900" x-text="recap?.spa?.total_bookings || 0"></p>
+              <p class="text-[10px] uppercase text-navy-400">Bookings</p>
+            </div>
+            <div class="bg-cream-50 rounded-lg p-3 text-center">
+              <p class="text-2xl font-bold text-emerald-600" x-text="recap?.spa?.completed || 0"></p>
+              <p class="text-[10px] uppercase text-navy-400">Completed</p>
+            </div>
+            <div class="bg-cream-50 rounded-lg p-3 text-center">
+              <p class="text-2xl font-bold" :class="(recap?.spa?.no_shows||0) > 0 ? 'text-red-500':'text-navy-900'" x-text="recap?.spa?.no_shows || 0"></p>
+              <p class="text-[10px] uppercase text-navy-400">No-shows</p>
+            </div>
+          </div>
+          <p class="text-sm text-navy-600 mb-3">Revenue: <span class="font-bold text-gold-600">€<span x-text="recap?.spa?.revenue?.toLocaleString() || '0'"></span></span></p>
+          <h4 class="text-xs font-semibold text-navy-500 uppercase mb-2">Therapist Utilization</h4>
+          <div class="space-y-2">
+            <template x-for="[name, pct] of Object.entries(recap?.spa?.utilization || {})" :key="name">
+              <div class="flex items-center gap-3">
+                <span class="text-xs text-navy-600 w-24 truncate" x-text="name"></span>
+                <div class="flex-1 bg-cream-200 rounded-full h-2">
+                  <div class="bg-gold-400 h-2 rounded-full transition-all" :style="'width:'+Math.round(pct*100)+'%'"></div>
+                </div>
+                <span class="text-xs font-medium text-navy-700 w-10 text-right" x-text="Math.round(pct*100)+'%'"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div x-show="loading" class="flex justify-center items-center h-64">
+      <div class="w-8 h-8 border-3 border-gold-400 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  </div>
+
+  <!-- ═══════ TEXT RECAP ═══════ -->
+  <div x-show="page==='textrecap'" x-cloak class="fade-in">
+    <header class="bg-white border-b border-cream-300 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h2 class="font-display text-2xl font-bold text-navy-900">Daily Brief</h2>
+        <p class="text-sm text-navy-500" x-text="currentProperty?.name || ''"></p>
+      </div>
+      <div class="flex items-center gap-3">
+        <select x-model="selectedDate" @change="loadRecap()" class="text-sm border border-cream-300 rounded-lg px-3 py-2 bg-white text-navy-800 focus:ring-2 focus:ring-gold-400 focus:border-gold-400">
+          <template x-for="d in dates" :key="d">
+            <option :value="d" x-text="d"></option>
+          </template>
+        </select>
+      </div>
+    </header>
+    <div class="p-6 max-w-3xl mx-auto" x-show="recap">
+      <!-- Briefing text -->
+      <div class="bg-white rounded-xl border border-cream-300 p-8 mb-6">
+        <div class="flex justify-end mb-4">
+          <button @click="toggleReadAloud()" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition"
+                  :class="isReading ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-gold-100 text-gold-700 hover:bg-gold-200'">
+            <svg x-show="!isReading" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707A1 1 0 0112 5.586v12.828a1 1 0 01-1.707.707L5.586 15z"/></svg>
+            <svg x-show="isReading" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10h6v4H9z"/></svg>
+            <span x-text="isReading ? 'Stop' : 'Listen'"></span>
+          </button>
+          <button @click="toggleOpenAIRead()" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition"
+                  :class="isOpenAIReading ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-navy-100 text-navy-700 hover:bg-navy-200'">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707A1 1 0 0112 5.586v12.828a1 1 0 01-1.707.707L5.586 15z"/></svg>
+            <span x-text="isOpenAIReading ? 'Stop' : 'Listen (OpenAI)'"></span>
+          </button>
+          <select x-model="ttsVoice" class="text-sm border border-cream-300 rounded-lg px-2 py-2 bg-white text-navy-700 focus:ring-1 focus:ring-gold-400">
+            <option value="ash">Ash</option>
+            <option value="ballad">Ballad</option>
+            <option value="coral">Coral</option>
+            <option value="sage">Sage</option>
+            <option value="shimmer">Shimmer</option>
+            <option value="verse">Verse</option>
+            <option value="alloy">Alloy</option>
+            <option value="echo">Echo</option>
+            <option value="fable">Fable</option>
+            <option value="nova">Nova</option>
+            <option value="onyx">Onyx</option>
+          </select>
+          <select x-model="ttsLang" class="text-sm border border-cream-300 rounded-lg px-2 py-2 bg-white text-navy-700 focus:ring-1 focus:ring-gold-400">
+            <option value="en">🇬🇧 English</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="pt">🇵🇹 Português</option>
+            <option value="zh">🇨🇳 中文</option>
+            <option value="ja">🇯🇵 日本語</option>
+            <option value="ar">🇸🇦 العربية</option>
+          </select>
+        </div>
+        <div class="prose prose-sm max-w-none text-navy-700 leading-relaxed" x-html="textRecapHtml"></div>
+      </div>
+
+      <!-- Voice Assistant -->
+      <div class="bg-white rounded-xl border border-cream-300 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-display text-lg font-semibold text-navy-900 flex items-center gap-2">
+            <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+            Ask about the briefing
+          </h3>
+          <div class="flex items-center gap-2">
+            <label class="text-xs text-navy-400">Voice engine:</label>
+            <select x-model="voiceEngine" class="text-xs border border-cream-300 rounded-lg px-2 py-1 bg-white text-navy-700 focus:ring-1 focus:ring-gold-400">
+              <option value="realtime">OpenAI Realtime</option>
+              <option value="studio">Studio (Whisper + TTS)</option>
+              <option value="local">Local (Ollama + Piper)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Connection status -->
+        <div class="mb-4 text-xs" :class="voiceConnected ? 'text-emerald-600' : 'text-navy-400'">
+          <span x-show="voiceConnecting" class="flex items-center gap-1">
+            <div class="w-3 h-3 border-2 border-gold-400 border-t-transparent rounded-full animate-spin"></div>
+            Connecting...
+          </span>
+          <span x-show="studioProcessing" class="flex items-center gap-1">
+            <div class="w-3 h-3 border-2 border-gold-400 border-t-transparent rounded-full animate-spin"></div>
+            Processing...
+          </span>
+          <span x-show="voiceConnected && !voiceConnecting && !studioProcessing" class="flex items-center gap-1">
+            <span class="w-2 h-2 bg-emerald-500 rounded-full inline-block"></span>
+            <span x-text="voiceEngine === 'studio' ? (voiceListening ? 'Recording — tap mic to send' : 'Ready') : 'Connected — speak or type your question'"></span>
+          </span>
+          <span x-show="!voiceConnected && !voiceConnecting && !studioProcessing">Press the microphone to start a voice conversation</span>
+        </div>
+
+        <!-- (Moshi removed) -->
+
+        <!-- Transcript -->
+        <div x-show="voiceTranscript.length > 0" class="mb-4 max-h-64 overflow-y-auto space-y-2 p-3 bg-cream-50 rounded-lg border border-cream-200">
+          <template x-for="(msg, i) in voiceTranscript" :key="i">
+            <div class="text-sm" :class="msg.role === 'user' ? 'text-navy-600' : 'text-navy-800'">
+              <span class="font-semibold text-xs uppercase tracking-wider" :class="msg.role === 'user' ? 'text-gold-600' : 'text-navy-500'" x-text="msg.role === 'user' ? 'You' : 'Assistant'"></span>
+              <span class="ml-2" x-text="msg.text"></span>
+            </div>
+          </template>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center gap-3">
+          <!-- Mic button -->
+          <button @click="toggleVoice()"
+                  class="w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg"
+                  :class="voiceConnected ? (voiceListening ? 'bg-red-500 hover:bg-red-600 scale-110 animate-pulse' : 'bg-emerald-500 hover:bg-emerald-600') : 'bg-gold-400 hover:bg-gold-500'"
+                  :title="voiceConnected ? (voiceListening ? 'Mute' : 'Unmute') : 'Start voice conversation'">
+            <svg x-show="!voiceConnected || !voiceListening" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+            <svg x-show="voiceConnected && voiceListening" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10h6v4H9z"/></svg>
+          </button>
+
+          <!-- Text input -->
+          <div class="flex-1 flex gap-2">
+            <input type="text" x-model="voiceTextInput" @keydown.enter="sendTextToVoice()"
+                   placeholder="Or type a question..."
+                   class="flex-1 border border-cream-300 rounded-lg px-4 py-3 text-sm text-navy-800 placeholder-navy-400 focus:ring-2 focus:ring-gold-400 focus:border-gold-400 outline-none">
+            <button @click="sendTextToVoice()" class="px-4 py-2 bg-navy-800 text-white rounded-lg text-sm font-medium hover:bg-navy-700 transition">
+              Send
+            </button>
+          </div>
+
+          <!-- Disconnect -->
+          <button x-show="voiceConnected" @click="disconnectVoice()" class="px-3 py-2 text-xs text-red-600 hover:bg-red-50 rounded-lg transition">
+            End
+          </button>
+        </div>
+      </div>
+    </div>
+    <div x-show="loading" class="flex justify-center items-center h-64">
+      <div class="w-8 h-8 border-3 border-gold-400 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  </div>
+
+  <!-- ═══════ GUEST INTELLIGENCE ═══════ -->
+  <div x-show="page==='guests'" x-cloak class="fade-in">
+    <header class="bg-white border-b border-cream-300 px-6 py-4">
+      <h2 class="font-display text-2xl font-bold text-navy-900">Guest Intelligence</h2>
+      <p class="text-sm text-navy-500">Cross-system guest profiles & arrival briefs</p>
+    </header>
+
+    <div class="p-6">
+      <div class="grid lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-1 space-y-3">
+          <template x-for="g in guests" :key="g.guest_id">
+            <button @click="selectedGuest = g"
+                    :class="selectedGuest?.guest_id === g.guest_id ? 'ring-2 ring-gold-400 bg-gold-50' : 'bg-white hover:bg-cream-50'"
+                    class="w-full text-left rounded-xl border border-cream-300 p-4 transition">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-navy-100 flex items-center justify-center text-sm font-bold text-navy-600"
+                     x-text="g.names?.[0]?.split(' ').map(n=>n[0]).join('') || '?'"></div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="font-medium text-sm truncate" x-text="g.names?.[0]"></span>
+                    <span x-show="g.vip_level" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gold-400 text-white" x-text="g.vip_level"></span>
+                  </div>
+                  <p class="text-xs text-navy-400" x-text="(g.nationality||'') + ' · ' + g.total_visits + ' visit(s) · €' + (g.spend_history?.total||0).toLocaleString()"></p>
+                </div>
+              </div>
+            </button>
+          </template>
+          <p x-show="!guests.length" class="text-sm text-navy-400 italic p-4">No guest profiles found</p>
+        </div>
+
+        <div class="lg:col-span-2" x-show="selectedGuest">
+          <div class="bg-white rounded-xl border border-cream-300 p-6 space-y-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="font-display text-xl font-bold text-navy-900" x-text="selectedGuest?.names?.[0]"></h3>
+                <p class="text-sm text-navy-500">
+                  <span x-text="selectedGuest?.guest_id"></span> ·
+                  <span x-text="selectedGuest?.nationality"></span> ·
+                  <span x-text="selectedGuest?.total_visits + ' visit(s)'"></span>
+                </p>
+              </div>
+              <span x-show="selectedGuest?.vip_level" class="text-sm font-bold px-3 py-1 rounded-lg bg-gold-400 text-white" x-text="selectedGuest?.vip_level"></span>
+            </div>
+
+            <div>
+              <h4 class="text-xs font-semibold uppercase text-navy-400 mb-2">Spend History</h4>
+              <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                <template x-for="[cat, val] of Object.entries(selectedGuest?.spend_history || {})" :key="cat">
+                  <div class="bg-cream-50 rounded-lg p-2 text-center">
+                    <p class="text-xs text-navy-400 capitalize" x-text="cat"></p>
+                    <p class="text-sm font-bold text-navy-800">€<span x-text="val?.toLocaleString()"></span></p>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <div>
+              <h4 class="text-xs font-semibold uppercase text-navy-400 mb-2">Preferences</h4>
+              <div class="flex flex-wrap gap-2">
+                <template x-for="d in selectedGuest?.preferences?.dietary || []" :key="d">
+                  <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full" x-text="'🥗 '+d"></span>
+                </template>
+                <template x-for="t in selectedGuest?.preferences?.spa_treatments || []" :key="t">
+                  <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full" x-text="'💆 '+t"></span>
+                </template>
+                <span x-show="selectedGuest?.preferences?.room_type" class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full" x-text="'🏨 '+selectedGuest?.preferences?.room_type"></span>
+                <span x-show="selectedGuest?.preferences?.pillow_type" class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full" x-text="'🛏️ '+selectedGuest?.preferences?.pillow_type"></span>
+                <template x-for="t in selectedGuest?.preferences?.preferred_therapists || []" :key="t">
+                  <span class="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full" x-text="'👤 Therapist: '+t"></span>
+                </template>
+              </div>
+              <p x-show="!(selectedGuest?.preferences?.dietary?.length || selectedGuest?.preferences?.spa_treatments?.length)" class="text-xs text-navy-400 italic">No preferences recorded</p>
+            </div>
+
+            <div x-show="selectedGuest?.visits?.length">
+              <h4 class="text-xs font-semibold uppercase text-navy-400 mb-2">Visit History</h4>
+              <div class="space-y-2">
+                <template x-for="v in selectedGuest?.visits || []" :key="v.confirmation">
+                  <div class="flex items-center gap-4 text-sm bg-cream-50 rounded-lg p-3">
+                    <span class="text-navy-600" x-text="v.checkin || 'Current'"></span>
+                    <span class="text-navy-400">Room <span x-text="v.room"></span></span>
+                    <span class="text-navy-400" x-text="v.room_type"></span>
+                    <span class="text-navy-400" x-text="v.nights+'n'"></span>
+                    <span class="ml-auto font-medium text-gold-600">€<span x-text="(v.rate * v.nights).toLocaleString()"></span></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <div x-show="selectedGuest?.incidents?.length">
+              <h4 class="text-xs font-semibold uppercase text-navy-400 mb-2">Incidents</h4>
+              <div class="space-y-2">
+                <template x-for="inc in selectedGuest?.incidents || []" :key="inc.id">
+                  <div class="flex items-start gap-2 text-sm bg-red-50 rounded-lg p-3">
+                    <span class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
+                          :class="inc.priority==='high'?'bg-red-500':inc.priority==='medium'?'bg-amber-400':'bg-blue-300'"></span>
+                    <div>
+                      <p class="text-navy-700" x-text="inc.description"></p>
+                      <p x-show="inc.resolution" class="text-xs text-navy-500 mt-1" x-text="'↳ '+inc.resolution"></p>
+                    </div>
+                    <span class="ml-auto text-xs px-1.5 py-0.5 rounded flex-shrink-0"
+                          :class="inc.resolved?'bg-emerald-100 text-emerald-700':'bg-red-100 text-red-700'"
+                          x-text="inc.resolved?'Resolved':'Open'"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <div x-show="selectedGuest?.concierge_history?.length">
+              <h4 class="text-xs font-semibold uppercase text-navy-400 mb-2">Concierge History</h4>
+              <div class="space-y-2">
+                <template x-for="c in selectedGuest?.concierge_history || []" :key="c.id">
+                  <div class="text-sm bg-cream-50 rounded-lg p-3">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-medium uppercase text-navy-500" x-text="c.type?.replace('_',' ')"></span>
+                      <span class="text-xs text-navy-400" x-text="c.date"></span>
+                      <span class="ml-auto text-xs px-1.5 py-0.5 rounded"
+                            :class="c.status==='completed'||c.status==='confirmed'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'"
+                            x-text="c.status"></span>
+                    </div>
+                    <p class="text-navy-700 mt-1" x-text="c.details"></p>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <div x-show="selectedGuest?.notes?.length">
+              <h4 class="text-xs font-semibold uppercase text-navy-400 mb-2">Notes</h4>
+              <ul class="space-y-1">
+                <template x-for="(n, i) in selectedGuest?.notes || []" :key="i">
+                  <li class="text-sm text-navy-600 pl-3 border-l-2 border-gold-300" x-text="n"></li>
+                </template>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 flex items-center justify-center h-48 text-navy-400 text-sm" x-show="!selectedGuest">
+          Select a guest to view their profile
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ SETTINGS ═══════ -->
+  <div x-show="page==='settings'" x-cloak class="fade-in">
+    <header class="bg-white border-b border-cream-300 px-6 py-4">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 class="font-display text-2xl font-bold text-navy-900">Settings</h2>
+          <p class="text-sm text-navy-500"><span x-text="currentProperty?.name"></span></p>
+        </div>
+        <!-- Settings sub-tabs -->
+        <div class="flex gap-1 bg-cream-200 rounded-lg p-1">
+          <button @click="settingsTab='apps'"
+                  :class="settingsTab==='apps' ? 'bg-white shadow-sm text-navy-900' : 'text-navy-500 hover:text-navy-700'"
+                  class="px-4 py-1.5 rounded-md text-sm font-medium transition">App Catalog</button>
+          <button @click="settingsTab='general'"
+                  :class="settingsTab==='general' ? 'bg-white shadow-sm text-navy-900' : 'text-navy-500 hover:text-navy-700'"
+                  class="px-4 py-1.5 rounded-md text-sm font-medium transition">General</button>
+          <button @click="settingsTab='oauth'"
+                  :class="settingsTab==='oauth' ? 'bg-white shadow-sm text-navy-900' : 'text-navy-500 hover:text-navy-700'"
+                  class="px-4 py-1.5 rounded-md text-sm font-medium transition">OAuth / SSO</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══ APP CATALOG TAB ═══ -->
+    <div x-show="settingsTab==='apps'" class="p-6 space-y-6">
+      <!-- Search & Filter -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="relative flex-1 min-w-[200px] max-w-md">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input x-model="appSearch" type="text" placeholder="Search apps..."
+                 class="w-full pl-10 pr-4 py-2.5 text-sm border border-cream-300 rounded-lg bg-white focus:ring-2 focus:ring-gold-400 focus:border-gold-400 outline-none">
+        </div>
+        <select x-model="appCategoryFilter" class="text-sm border border-cream-300 rounded-lg px-3 py-2.5 bg-white focus:ring-2 focus:ring-gold-400">
+          <option value="">All Categories</option>
+          <template x-for="[catId, cat] of Object.entries(appCatalog?.categories || {}).sort((a,b)=>a[1].order-b[1].order)" :key="catId">
+            <option :value="catId" x-text="cat.icon + ' ' + cat.name"></option>
+          </template>
+        </select>
+        <div class="flex gap-1 bg-cream-200 rounded-lg p-1">
+          <button @click="appViewFilter='all'"
+                  :class="appViewFilter==='all' ? 'bg-white shadow-sm text-navy-900' : 'text-navy-500'"
+                  class="px-3 py-1 rounded-md text-xs font-medium transition">All</button>
+          <button @click="appViewFilter='configured'"
+                  :class="appViewFilter==='configured' ? 'bg-white shadow-sm text-navy-900' : 'text-navy-500'"
+                  class="px-3 py-1 rounded-md text-xs font-medium transition">Configured</button>
+          <button @click="appViewFilter='available'"
+                  :class="appViewFilter==='available' ? 'bg-white shadow-sm text-navy-900' : 'text-navy-500'"
+                  class="px-3 py-1 rounded-md text-xs font-medium transition">Available</button>
+        </div>
+      </div>
+
+      <!-- Apps grouped by category -->
+      <template x-for="[catId, cat] of Object.entries(appCatalog?.categories || {}).sort((a,b)=>a[1].order-b[1].order)" :key="catId">
+        <div x-show="filteredAppsForCategory(catId).length > 0 && (!appCategoryFilter || appCategoryFilter===catId)">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-3 flex items-center gap-2">
+            <span x-text="cat.icon"></span>
+            <span x-text="cat.name"></span>
+            <span class="text-xs font-normal bg-cream-200 text-navy-500 px-2 py-0.5 rounded-full" x-text="filteredAppsForCategory(catId).length + ' apps'"></span>
+          </h3>
+          <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
+            <template x-for="app in filteredAppsForCategory(catId)" :key="app.id">
+              <div class="bg-white rounded-xl border transition-all cursor-pointer"
+                   :class="getAppConfig(app.id) ? 'border-gold-300 shadow-sm' : 'border-cream-200 hover:border-cream-400'"
+                   @click="openAppConfig(app)">
+                <div class="p-5">
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                      <span class="text-2xl" x-text="app.icon"></span>
+                      <div>
+                        <h4 class="font-semibold text-sm text-navy-900" x-text="app.name"></h4>
+                        <div class="flex items-center gap-2 mt-0.5">
+                          <template x-if="getAppConfig(app.id)?.status==='connected'">
+                            <span class="flex items-center gap-1 text-[10px] font-semibold text-emerald-600"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Connected</span>
+                          </template>
+                          <template x-if="getAppConfig(app.id)?.status==='error'">
+                            <span class="flex items-center gap-1 text-[10px] font-semibold text-red-500"><span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>Error</span>
+                          </template>
+                          <template x-if="getAppConfig(app.id) && getAppConfig(app.id)?.status==='disconnected'">
+                            <span class="flex items-center gap-1 text-[10px] font-semibold text-amber-500"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>Disconnected</span>
+                          </template>
+                          <template x-if="!getAppConfig(app.id)">
+                            <span class="text-[10px] font-medium text-navy-400">Not configured</span>
+                          </template>
+                        </div>
+                      </div>
+                    </div>
+                    <template x-if="getAppConfig(app.id)?.enabled">
+                      <span class="text-[10px] font-bold uppercase tracking-wider bg-gold-100 text-gold-700 px-2 py-0.5 rounded">Active</span>
+                    </template>
+                  </div>
+                  <p class="text-xs text-navy-500 leading-relaxed line-clamp-2" x-text="app.description"></p>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- ═══ APP CONFIG MODAL ═══ -->
+    <div x-show="appConfigModal" x-cloak class="fixed inset-0 z-[60] flex items-center justify-center p-4"
+         @keydown.escape.window="appConfigModal=false">
+      <div class="fixed inset-0 bg-black/50" @click="appConfigModal=false"></div>
+      <div class="relative bg-white rounded-2xl border border-cream-300 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-thin">
+        <div class="sticky top-0 bg-white border-b border-cream-200 px-6 py-4 rounded-t-2xl z-10">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl" x-text="editingApp?.icon"></span>
+              <div>
+                <h3 class="font-display text-lg font-bold text-navy-900" x-text="editingApp?.name"></h3>
+                <p class="text-xs text-navy-400" x-text="appCatalog?.categories?.[editingApp?.category]?.name"></p>
+              </div>
+            </div>
+            <button @click="appConfigModal=false" class="text-navy-400 hover:text-navy-700 transition">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-6 space-y-5">
+          <p class="text-sm text-navy-600" x-text="editingApp?.description"></p>
+          <a x-show="editingApp?.website" :href="editingApp?.website" target="_blank" class="inline-flex items-center gap-1 text-xs text-gold-500 hover:text-gold-600">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            Visit website
+          </a>
+
+          <!-- Enable toggle -->
+          <div class="flex items-center justify-between py-3 px-4 bg-cream-50 rounded-lg">
+            <div>
+              <p class="text-sm font-medium text-navy-800">Enable Integration</p>
+              <p class="text-xs text-navy-400">Activate data sync for this app</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" x-model="editingAppConfig.enabled" class="sr-only peer">
+              <div class="w-11 h-6 bg-navy-200 peer-checked:bg-gold-400 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+            </label>
+          </div>
+
+          <!-- Config fields from schema -->
+          <div class="space-y-4">
+            <h4 class="text-xs font-semibold uppercase text-navy-400 tracking-wider">Configuration</h4>
+            <template x-for="field in editingApp?.config_schema?.fields || []" :key="field.key">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <label class="text-xs font-medium text-navy-700" x-text="field.label"></label>
+                  <span x-show="field.required" class="text-[10px] text-red-400">Required</span>
+                </div>
+                <p x-show="field.description" class="text-[11px] text-navy-400 mb-1.5" x-text="field.description"></p>
+
+                <!-- text / url / password -->
+                <template x-if="field.type==='text' || field.type==='url'">
+                  <input :type="field.type==='url'?'url':'text'"
+                         :value="editingAppConfig.config[field.key] || ''"
+                         @input="editingAppConfig.config[field.key] = $event.target.value"
+                         :placeholder="field.placeholder || ''"
+                         class="w-full text-sm border border-cream-300 rounded-lg px-3 py-2 bg-cream-50 focus:ring-2 focus:ring-gold-400 focus:border-gold-400 outline-none">
+                </template>
+                <template x-if="field.type==='password'">
+                  <div class="relative">
+                    <input :type="showPasswords[field.key] ? 'text' : 'password'"
+                           :value="editingAppConfig.config[field.key] || ''"
+                           @input="editingAppConfig.config[field.key] = $event.target.value"
+                           :placeholder="field.placeholder || ''"
+                           class="w-full text-sm border border-cream-300 rounded-lg px-3 py-2 pr-10 bg-cream-50 focus:ring-2 focus:ring-gold-400 focus:border-gold-400 outline-none">
+                    <button type="button" @click="showPasswords[field.key] = !showPasswords[field.key]"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 text-navy-400 hover:text-navy-600">
+                      <svg x-show="!showPasswords[field.key]" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                      <svg x-show="showPasswords[field.key]" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+                    </button>
+                  </div>
+                </template>
+                <template x-if="field.type==='number'">
+                  <input type="number"
+                         :value="editingAppConfig.config[field.key] || ''"
+                         @input="editingAppConfig.config[field.key] = $event.target.value ? Number($event.target.value) : ''"
+                         :placeholder="field.placeholder || ''"
+                         class="w-full text-sm border border-cream-300 rounded-lg px-3 py-2 bg-cream-50 focus:ring-2 focus:ring-gold-400 focus:border-gold-400 outline-none">
+                </template>
+                <template x-if="field.type==='select'">
+                  <select :value="editingAppConfig.config[field.key] || ''"
+                          @change="editingAppConfig.config[field.key] = $event.target.value"
+                          class="w-full text-sm border border-cream-300 rounded-lg px-3 py-2 bg-cream-50 focus:ring-2 focus:ring-gold-400 focus:border-gold-400 outline-none">
+                    <option value="">Select...</option>
+                    <template x-for="opt in field.options || []" :key="opt.value">
+                      <option :value="opt.value" :selected="editingAppConfig.config[field.key]===opt.value" x-text="opt.label"></option>
+                    </template>
+                  </select>
+                </template>
+                <template x-if="field.type==='toggle'">
+                  <label class="relative inline-flex items-center cursor-pointer mt-1">
+                    <input type="checkbox" :checked="!!editingAppConfig.config[field.key]"
+                           @change="editingAppConfig.config[field.key] = $event.target.checked"
+                           class="sr-only peer">
+                    <div class="w-9 h-5 bg-navy-200 peer-checked:bg-gold-400 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div>
+                  </label>
+                </template>
+              </div>
+            </template>
+          </div>
+
+          <!-- Status message -->
+          <p x-show="appConfigMsg" class="text-sm font-medium px-3 py-2 rounded-lg"
+             :class="appConfigMsg?.startsWith('✓') ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'"
+             x-text="appConfigMsg"></p>
+
+          <!-- Action buttons -->
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            <button @click="saveAppConfig()" :disabled="appConfigSaving"
+                    class="bg-gold-400 hover:bg-gold-500 text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-sm disabled:opacity-50">
+              <span x-show="!appConfigSaving">Save Configuration</span>
+              <span x-show="appConfigSaving">Saving...</span>
+            </button>
+            <button @click="testAppConnection()" :disabled="appConfigTesting"
+                    class="bg-navy-800 hover:bg-navy-700 text-white font-medium px-5 py-2.5 rounded-lg transition disabled:opacity-50">
+              <span x-show="!appConfigTesting">Test Connection</span>
+              <span x-show="appConfigTesting" class="flex items-center gap-2">
+                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                Testing...
+              </span>
+            </button>
+            <button x-show="getAppConfig(editingApp?.id)" @click="removeAppConfig()"
+                    class="ml-auto text-red-500 hover:text-red-700 text-sm font-medium transition">
+              Remove Integration
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ GENERAL TAB ═══ -->
+    <div x-show="settingsTab==='general'" class="p-6 space-y-6">
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4">LLM Provider</h3>
+          <div class="space-y-3">
+            <div>
+              <label class="text-xs uppercase text-navy-400">Provider</label>
+              <select class="w-full text-sm border border-cream-300 rounded-lg px-3 py-2 bg-cream-50 focus:ring-1 focus:ring-gold-400">
+                <template x-for="p in settings?.llm?.providers || []" :key="p">
+                  <option :value="p" :selected="p===settings?.llm?.provider" x-text="p.charAt(0).toUpperCase()+p.slice(1)"></option>
+                </template>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs uppercase text-navy-400">Model</label>
+              <input type="text" :value="settings?.llm?.model" class="w-full text-sm border border-cream-300 rounded-lg px-3 py-2 bg-cream-50 focus:ring-1 focus:ring-gold-400">
+            </div>
+            <div>
+              <label class="text-xs uppercase text-navy-400">API Key</label>
+              <input type="password" value="••••••••••••" class="w-full text-sm border border-cream-300 rounded-lg px-3 py-2 bg-cream-50 focus:ring-1 focus:ring-gold-400">
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4">Delivery & Schedule</h3>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between py-2 border-b border-cream-200">
+              <div>
+                <p class="text-sm font-medium text-navy-800">Email Delivery</p>
+                <p class="text-xs text-navy-400">Send daily recap via email</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" :checked="settings?.delivery?.email?.enabled" class="sr-only peer">
+                <div class="w-9 h-5 bg-navy-200 peer-checked:bg-gold-400 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div>
+              </label>
+            </div>
+            <div class="flex items-center justify-between py-2 border-b border-cream-200">
+              <div>
+                <p class="text-sm font-medium text-navy-800">Telegram Delivery</p>
+                <p class="text-xs text-navy-400">Send daily recap via Telegram</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" :checked="settings?.delivery?.telegram?.enabled" class="sr-only peer">
+                <div class="w-9 h-5 bg-navy-200 peer-checked:bg-gold-400 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div>
+              </label>
+            </div>
+            <div>
+              <label class="text-xs uppercase text-navy-400">Daily Recap Time</label>
+              <input type="time" :value="settings?.schedule?.recap_time" class="w-full text-sm border border-cream-300 rounded-lg px-3 py-2 bg-cream-50 focus:ring-1 focus:ring-gold-400">
+            </div>
+            <div>
+              <label class="text-xs uppercase text-navy-400">Timezone</label>
+              <input type="text" :value="settings?.schedule?.timezone" class="w-full text-sm border border-cream-300 rounded-lg px-3 py-2 bg-cream-50 focus:ring-1 focus:ring-gold-400">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <button class="bg-gold-400 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-gold-500 transition shadow-sm">
+          Save Settings
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ OAUTH TAB ═══ -->
+    <div x-show="settingsTab==='oauth'" class="p-6 space-y-6">
+      <div class="bg-white rounded-xl border border-cream-300 p-6">
+        <h3 class="font-display text-lg font-semibold text-navy-900 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+          OAuth / SSO Configuration
+        </h3>
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Google OAuth -->
+          <div class="border border-cream-200 rounded-lg p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                <h4 class="font-semibold text-sm text-navy-800">Google OAuth</h4>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" x-model="oauthGoogle.enabled" class="sr-only peer">
+                <div class="w-9 h-5 bg-navy-200 peer-checked:bg-gold-400 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div>
+              </label>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <label class="text-[10px] uppercase text-navy-400">Client ID</label>
+                <input type="text" x-model="oauthGoogle.client_id" class="w-full text-xs border border-cream-300 rounded px-2 py-1.5 bg-cream-50 focus:ring-1 focus:ring-gold-400" placeholder="xxxx.apps.googleusercontent.com">
+              </div>
+              <div>
+                <label class="text-[10px] uppercase text-navy-400">Client Secret</label>
+                <input type="password" x-model="oauthGoogle.client_secret" class="w-full text-xs border border-cream-300 rounded px-2 py-1.5 bg-cream-50 focus:ring-1 focus:ring-gold-400" placeholder="GOCSPX-xxxx">
+              </div>
+              <div>
+                <label class="text-[10px] uppercase text-navy-400">Allowed Domain</label>
+                <input type="text" x-model="oauthGoogle.allowed_domain" class="w-full text-xs border border-cream-300 rounded px-2 py-1.5 bg-cream-50 focus:ring-1 focus:ring-gold-400" placeholder="edenrock.com">
+              </div>
+              <div class="flex gap-2">
+                <button @click="saveOAuthConfig('google')" class="flex-1 text-xs bg-navy-800 text-white rounded py-1.5 hover:bg-navy-700 transition">Save</button>
+                <button @click="testOAuthConfig('google')" class="flex-1 text-xs border border-navy-300 text-navy-700 rounded py-1.5 hover:bg-cream-50 transition">Test</button>
+              </div>
+              <p x-show="oauthGoogleMsg" class="text-xs" :class="oauthGoogleMsg.startsWith('✓') ? 'text-emerald-600' : 'text-red-500'" x-text="oauthGoogleMsg"></p>
+            </div>
+          </div>
+
+          <!-- Microsoft OAuth -->
+          <div class="border border-cream-200 rounded-lg p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <svg class="w-5 h-5" viewBox="0 0 21 21"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg>
+                <h4 class="font-semibold text-sm text-navy-800">Microsoft OAuth</h4>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" x-model="oauthMicrosoft.enabled" class="sr-only peer">
+                <div class="w-9 h-5 bg-navy-200 peer-checked:bg-gold-400 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div>
+              </label>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <label class="text-[10px] uppercase text-navy-400">Client ID</label>
+                <input type="text" x-model="oauthMicrosoft.client_id" class="w-full text-xs border border-cream-300 rounded px-2 py-1.5 bg-cream-50 focus:ring-1 focus:ring-gold-400" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+              </div>
+              <div>
+                <label class="text-[10px] uppercase text-navy-400">Client Secret</label>
+                <input type="password" x-model="oauthMicrosoft.client_secret" class="w-full text-xs border border-cream-300 rounded px-2 py-1.5 bg-cream-50 focus:ring-1 focus:ring-gold-400" placeholder="xxxx~xxxx">
+              </div>
+              <div>
+                <label class="text-[10px] uppercase text-navy-400">Tenant ID</label>
+                <input type="text" x-model="oauthMicrosoft.tenant_id" class="w-full text-xs border border-cream-300 rounded px-2 py-1.5 bg-cream-50 focus:ring-1 focus:ring-gold-400" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx or common">
+              </div>
+              <div>
+                <label class="text-[10px] uppercase text-navy-400">Allowed Domain</label>
+                <input type="text" x-model="oauthMicrosoft.allowed_domain" class="w-full text-xs border border-cream-300 rounded px-2 py-1.5 bg-cream-50 focus:ring-1 focus:ring-gold-400" placeholder="edenrock.com">
+              </div>
+              <div class="flex gap-2">
+                <button @click="saveOAuthConfig('microsoft')" class="flex-1 text-xs bg-navy-800 text-white rounded py-1.5 hover:bg-navy-700 transition">Save</button>
+                <button @click="testOAuthConfig('microsoft')" class="flex-1 text-xs border border-navy-300 text-navy-700 rounded py-1.5 hover:bg-cream-50 transition">Test</button>
+              </div>
+              <p x-show="oauthMicrosoftMsg" class="text-xs" :class="oauthMicrosoftMsg.startsWith('✓') ? 'text-emerald-600' : 'text-red-500'" x-text="oauthMicrosoftMsg"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Documentation ─── -->
+  <div x-show="page==='docs'" x-cloak class="fade-in">
+    <header class="bg-white border-b border-cream-300 px-6 py-4">
+      <h2 class="font-display text-2xl font-bold text-navy-900">Documentation</h2>
+    </header>
+
+    <div class="p-6 flex flex-col lg:flex-row gap-6">
+      <div class="lg:w-72 flex-shrink-0" :class="activeDoc ? 'hidden lg:block' : ''">
+        <div class="bg-white rounded-xl shadow-sm border border-cream-200 overflow-hidden">
+          <div class="p-4 border-b border-cream-200 bg-cream-50">
+            <h3 class="font-semibold text-sm text-navy-700">Documents</h3>
+          </div>
+          <div class="divide-y divide-cream-100">
+            <template x-for="doc in docsList" :key="doc.id">
+              <button @click="loadDoc(doc.id)"
+                      :class="activeDoc===doc.id ? 'bg-gold-50 border-l-4 border-gold-400 text-navy-900' : 'border-l-4 border-transparent text-navy-600 hover:bg-cream-50'"
+                      class="w-full text-left px-4 py-3 text-sm font-medium transition">
+                <span x-text="doc.title"></span>
+                <span class="block text-xs text-navy-400 mt-0.5" x-text="(doc.size/1024).toFixed(1)+'KB'"></span>
+              </button>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-1 min-w-0">
+        <div class="bg-white rounded-xl shadow-sm border border-cream-200 p-4 sm:p-8" x-show="docContent">
+          <button @click="activeDoc=null; docContent=''; docTitle=''" class="lg:hidden flex items-center gap-2 text-sm text-gold-500 font-medium mb-4">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Back to documents
+          </button>
+          <h2 class="text-xl font-display font-bold text-navy-900 mb-6 pb-4 border-b border-cream-200" x-text="docTitle"></h2>
+          <div class="prose prose-navy max-w-none overflow-x-auto" x-html="renderMarkdown(docContent)"></div>
+        </div>
+        <div x-show="!docContent" class="hidden lg:block bg-white rounded-xl shadow-sm border border-cream-200 p-12 text-center">
+          <svg class="w-16 h-16 mx-auto text-navy-200 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          <p class="text-navy-400 text-sm">Select a document to view</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</div><!-- end authenticated wrapper -->
+
+<script>
+function dashboard() {
+  return {
+    // Auth state
+    authenticated: false,
+    user: null,
+    loginEmail: '',
+    loginPassword: '',
+    loginError: '',
+    loginLoading: false,
+    oauthProviders: [],
+
+    // Property state
+    userProperties: [],
+    currentPropertyId: null,
+
+    // Dashboard state
+    page: 'recap',
+    sidebarOpen: false,
+    loading: false,
+    dates: [],
+    selectedDate: '',
+    recap: null,
+    guests: [],
+    selectedGuest: null,
+    settings: null,
+    docsList: [],
+    activeDoc: null,
+    docTitle: '',
+    docContent: '',
+
+    // Settings sub-tabs
+    settingsTab: 'apps',
+
+    // App Catalog state
+    appCatalog: null,
+    propertyApps: [],
+    appSearch: '',
+    appCategoryFilter: '',
+    appViewFilter: 'all',
+    appConfigModal: false,
+    editingApp: null,
+    editingAppConfig: { config: {}, enabled: false },
+    appConfigMsg: '',
+    appConfigSaving: false,
+    appConfigTesting: false,
+    showPasswords: {},
+
+    // OAuth settings state
+    oauthGoogle: { enabled: false, client_id: '', client_secret: '', allowed_domain: '' },
+    oauthMicrosoft: { enabled: false, client_id: '', client_secret: '', tenant_id: '', allowed_domain: '' },
+    oauthGoogleMsg: '',
+    oauthMicrosoftMsg: '',
+
+    get currentProperty() {
+      return this.userProperties.find(p => p.id == this.currentPropertyId) || null;
+    },
+
+    isReading: false,
+    _speechUtterance: null,
+    isOpenAIReading: false,
+    _openAIAudio: null,
+    ttsLang: 'en',
+    ttsVoice: 'ash',
+
+    // Voice assistant state
+    voiceEngine: 'realtime',
+    voiceConnected: false,
+    voiceConnecting: false,
+    voiceListening: false,
+    voiceTranscript: [],
+    voiceTextInput: '',
+    _rtcPeer: null,
+    _rtcDataChannel: null,
+    _audioEl: null,
+
+    // Studio mode state
+    _mediaRecorder: null,
+    _recordedChunks: [],
+    studioProcessing: false,
+
+    async toggleVoice() {
+      // Moshi removed
+      if (this.voiceEngine === 'studio' || this.voiceEngine === 'local') {
+        return this.toggleStudio();
+      }
+      if (this.voiceConnected) {
+        // Toggle mute/unmute
+        this.voiceListening = !this.voiceListening;
+        if (this._rtcPeer) {
+          const senders = this._rtcPeer.getSenders();
+          const audioSender = senders.find(s => s.track?.kind === 'audio');
+          if (audioSender?.track) audioSender.track.enabled = this.voiceListening;
+        }
+        return;
+      }
+      await this.connectVoice();
+    },
+
+    async toggleStudio() {
+      // If currently recording → stop and send
+      if (this.voiceListening && this._mediaRecorder) {
+        this._mediaRecorder.stop();
+        return;
+      }
+      // If processing, ignore
+      if (this.studioProcessing) return;
+
+      // Start recording
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        this._recordedChunks = [];
+        const mr = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+        this._mediaRecorder = mr;
+
+        mr.ondataavailable = (e) => { if (e.data.size > 0) this._recordedChunks.push(e.data); };
+        mr.onstop = async () => {
+          stream.getTracks().forEach(t => t.stop());
+          this.voiceListening = false;
+          this.studioProcessing = true;
+
+          const blob = new Blob(this._recordedChunks, { type: 'audio/webm' });
+          const formData = new FormData();
+          formData.append('audio', blob, 'audio.webm');
+          formData.append('context', this.textRecapPlain);
+          formData.append('history', JSON.stringify(this.voiceTranscript));
+          formData.append('lang', this.ttsLang);
+          formData.append('voice', this.ttsVoice);
+
+          try {
+            const endpoint = this.voiceEngine === 'local' ? '/api/voice/local' : '/api/voice/studio';
+            const res = await fetch(endpoint, { method: 'POST', body: formData });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              alert('Studio error: ' + (err.detail || 'Failed'));
+              this.studioProcessing = false;
+              return;
+            }
+            const data = await res.json();
+            if (data.user_text) this.voiceTranscript.push({ role: 'user', text: data.user_text });
+            if (data.assistant_text) this.voiceTranscript.push({ role: 'assistant', text: data.assistant_text });
+            if (data.audio) {
+              const audioBytes = Uint8Array.from(atob(data.audio), c => c.charCodeAt(0));
+              const mimeType = this.voiceEngine === 'local' ? 'audio/wav' : 'audio/mpeg';
+              const audioBlob = new Blob([audioBytes], { type: mimeType });
+              const url = URL.createObjectURL(audioBlob);
+              const audio = new Audio(url);
+              audio.onended = () => URL.revokeObjectURL(url);
+              audio.play();
+            }
+          } catch (e) {
+            alert('Studio error: ' + e.message);
+          }
+          this.studioProcessing = false;
+        };
+
+        mr.start();
+        this.voiceConnected = true;
+        this.voiceListening = true;
+      } catch (e) {
+        alert('Microphone error: ' + e.message);
+      }
+    },
+
+    async connectVoice() {
+      if (this.voiceConnecting) return;
+      this.voiceConnecting = true;
+      this.voiceTranscript = [];
+
+      try {
+        // Get ephemeral token from backend
+        const res = await fetch('/api/voice/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ context: this.textRecapPlain, lang: this.ttsLang, voice: this.ttsVoice }),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          alert('Voice error: ' + (err.detail || 'Failed to create session'));
+          this.voiceConnecting = false;
+          return;
+        }
+        const session = await res.json();
+        const ephemeralKey = session.client_secret?.value;
+        if (!ephemeralKey) {
+          alert('Voice error: No ephemeral key received');
+          this.voiceConnecting = false;
+          return;
+        }
+
+        // Create WebRTC peer connection
+        const pc = new RTCPeerConnection();
+        this._rtcPeer = pc;
+
+        // Set up audio output
+        const audioEl = document.createElement('audio');
+        audioEl.autoplay = true;
+        this._audioEl = audioEl;
+        pc.ontrack = (e) => { audioEl.srcObject = e.streams[0]; };
+
+        // Get mic and add track
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const audioTrack = stream.getTracks()[0];
+        pc.addTrack(audioTrack, stream);
+        this.voiceListening = true;
+
+        // Data channel for events
+        const dc = pc.createDataChannel('oai-events');
+        this._rtcDataChannel = dc;
+
+        dc.onopen = () => {
+          // Send response.create to have it greet / start listening
+        };
+
+        dc.onmessage = (e) => {
+          try {
+            const evt = JSON.parse(e.data);
+            this._handleRealtimeEvent(evt);
+          } catch(err) {}
+        };
+
+        // Create offer
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+
+        // Send to OpenAI Realtime
+        const sdpRes = await fetch('https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2025-06-03', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${ephemeralKey}`,
+            'Content-Type': 'application/sdp',
+          },
+          body: offer.sdp,
+        });
+
+        const answerSdp = await sdpRes.text();
+        await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp });
+
+        this.voiceConnected = true;
+        this.voiceConnecting = false;
+
+        pc.onconnectionstatechange = () => {
+          if (['disconnected', 'failed', 'closed'].includes(pc.connectionState)) {
+            this.disconnectVoice();
+          }
+        };
+
+      } catch (err) {
+        console.error('Voice connection error:', err);
+        alert('Could not connect: ' + err.message);
+        this.voiceConnecting = false;
+        this.disconnectVoice();
+      }
+    },
+
+    _currentAssistantText: '',
+    _currentUserText: '',
+
+    _handleRealtimeEvent(evt) {
+      const type = evt.type;
+
+      // User speech transcription
+      if (type === 'conversation.item.input_audio_transcription.completed') {
+        const text = evt.transcript?.trim();
+        if (text) this.voiceTranscript.push({ role: 'user', text });
+      }
+
+      // Assistant response text deltas
+      if (type === 'response.audio_transcript.delta') {
+        this._currentAssistantText += (evt.delta || '');
+      }
+      if (type === 'response.audio_transcript.done') {
+        const text = (evt.transcript || this._currentAssistantText).trim();
+        if (text) this.voiceTranscript.push({ role: 'assistant', text });
+        this._currentAssistantText = '';
+      }
+    },
+
+    sendTextToVoice() {
+      const text = this.voiceTextInput.trim();
+      if (!text) return;
+      this.voiceTextInput = '';
+
+      if (!this.voiceConnected || !this._rtcDataChannel) {
+        // Not connected — connect first, then send
+        this.connectVoice().then(() => {
+          setTimeout(() => this._sendTextEvent(text), 1000);
+        });
+        return;
+      }
+      this._sendTextEvent(text);
+    },
+
+    _sendTextEvent(text) {
+      if (!this._rtcDataChannel || this._rtcDataChannel.readyState !== 'open') return;
+      this.voiceTranscript.push({ role: 'user', text });
+
+      // Send conversation item
+      this._rtcDataChannel.send(JSON.stringify({
+        type: 'conversation.item.create',
+        item: {
+          type: 'message',
+          role: 'user',
+          content: [{ type: 'input_text', text }],
+        }
+      }));
+      // Trigger response
+      this._rtcDataChannel.send(JSON.stringify({ type: 'response.create' }));
+    },
+
+    disconnectVoice() {
+      if (this._rtcPeer) {
+        this._rtcPeer.getSenders().forEach(s => { if (s.track) s.track.stop(); });
+        this._rtcPeer.close();
+        this._rtcPeer = null;
+      }
+      if (this._rtcDataChannel) {
+        this._rtcDataChannel.close();
+        this._rtcDataChannel = null;
+      }
+      if (this._audioEl) {
+        this._audioEl.srcObject = null;
+        this._audioEl = null;
+      }
+      if (this._mediaRecorder && this._mediaRecorder.state !== 'inactive') {
+        this._mediaRecorder.stop();
+      }
+      this._mediaRecorder = null;
+      this.voiceConnected = false;
+      this.voiceConnecting = false;
+      this.voiceListening = false;
+      this.studioProcessing = false;
+    },
+
+    toggleReadAloud() {
+      if (this.isReading) {
+        window.speechSynthesis.cancel();
+        this.isReading = false;
+        return;
+      }
+      const text = this.textRecapPlain;
+      if (!text) return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = this.ttsLang === 'en' ? 'en-US' : this.ttsLang;
+      utter.rate = 0.95;
+      utter.onend = () => { this.isReading = false; };
+      utter.onerror = () => { this.isReading = false; };
+      this.isReading = true;
+      window.speechSynthesis.speak(utter);
+    },
+
+    _openAIQueue: [],
+    _openAIAbort: null,
+
+    async toggleOpenAIRead() {
+      if (this.isOpenAIReading) {
+        if (this._openAIAbort) this._openAIAbort.abort();
+        if (this._openAIAudio) { this._openAIAudio.pause(); this._openAIAudio = null; }
+        this._openAIQueue = [];
+        this.isOpenAIReading = false;
+        return;
+      }
+      const text = this.textRecapPlain;
+      if (!text) return;
+      this.isOpenAIReading = true;
+
+      // Split into sentences, group into chunks of ~300 chars for fast first response
+      const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+      const chunks = [];
+      let current = '';
+      for (const s of sentences) {
+        if (current.length + s.length > 300 && current) {
+          chunks.push(current.trim());
+          current = s;
+        } else {
+          current += s;
+        }
+      }
+      if (current.trim()) chunks.push(current.trim());
+
+      const abort = new AbortController();
+      this._openAIAbort = abort;
+
+      try {
+        // Pre-fetch first two chunks in parallel for speed
+        const fetches = chunks.map(chunk =>
+          fetch('/api/voice/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: chunk, lang: this.ttsLang, voice: this.ttsVoice }),
+            signal: abort.signal,
+          }).then(r => r.ok ? r.blob() : null)
+        );
+
+        // Play chunks sequentially as they arrive
+        for (let i = 0; i < fetches.length; i++) {
+          if (abort.signal.aborted) break;
+          const blob = await fetches[i];
+          if (!blob || abort.signal.aborted) break;
+          await new Promise((resolve, reject) => {
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            this._openAIAudio = audio;
+            audio.onended = () => { URL.revokeObjectURL(url); resolve(); };
+            audio.onerror = (e) => { URL.revokeObjectURL(url); reject(e); };
+            abort.signal.addEventListener('abort', () => { audio.pause(); resolve(); });
+            audio.play();
+          });
+        }
+      } catch (e) {
+        if (e.name !== 'AbortError') alert('TTS error: ' + e.message);
+      }
+      this.isOpenAIReading = false;
+      this._openAIAudio = null;
+    },
+
+    get textRecapPlain() {
+      if (!this.recap) return '';
+      const r = this.recap;
+      const k = r.kpis;
+      const hotel = r.hotel?.name || this.currentProperty?.name || 'the property';
+      let p = [];
+
+      p.push(`Good morning. Here is your daily briefing for ${hotel}, ${r.date}.`);
+
+      // Occupancy & revenue overview
+      const occDir = k.occupancy.delta > 0 ? 'up' : k.occupancy.delta < 0 ? 'down' : 'unchanged';
+      p.push(`Occupancy is at ${k.occupancy.value} percent with ${k.occupancy.rooms_sold} out of ${k.occupancy.total_rooms} rooms sold${k.occupancy.delta ? ', ' + occDir + ' ' + Math.abs(k.occupancy.delta) + ' points from yesterday' : ''}.`);
+
+      const revDir = k.total_revenue.delta_pct > 0 ? 'up' : k.total_revenue.delta_pct < 0 ? 'down' : 'flat';
+      p.push(`Total revenue across the property reached ${k.total_revenue.value.toLocaleString()} euros${k.total_revenue.delta_pct ? ', ' + revDir + ' ' + Math.abs(k.total_revenue.delta_pct) + ' percent' : ''}. The average daily rate stands at ${k.adr.value.toLocaleString()} euros, with RevPAR at ${k.revpar.value.toLocaleString()} euros.`);
+
+      // Arrivals
+      if (r.arrivals?.length) {
+        const vips = r.arrivals.filter(a => a.vip);
+        p.push(`There are ${r.arrivals.length} arrival${r.arrivals.length > 1 ? 's' : ''} today.`);
+        if (vips.length) {
+          const vipNames = vips.map(a => `${a.guestName}, ${a.vip}`).join('; ');
+          p.push(`VIP arrivals to note: ${vipNames}. Please ensure all welcome protocols are in place.`);
+        }
+        for (const a of r.arrivals) {
+          let line = `${a.guestName} is checking into Room ${a.roomNo}, a ${a.roomType}, for ${a.nights} night${a.nights > 1 ? 's' : ''} at ${a.rate?.toLocaleString()} euros per night.`;
+          if (a.notes) line += ` Note: ${a.notes}.`;
+          p.push(line);
+        }
+      }
+
+      // Departures
+      if (r.departures?.length) {
+        const depNames = r.departures.map(d => `${d.guestName} from Room ${d.roomNo}`).join(', ');
+        p.push(`${r.departures.length} departure${r.departures.length > 1 ? 's' : ''} today: ${depNames}.`);
+      }
+
+      // F&B
+      if (r.fb?.outlets?.length) {
+        p.push(`Moving to Food and Beverage. The restaurants served a total of ${r.fb.total_covers} covers for ${r.fb.total_revenue?.toLocaleString()} euros in revenue.`);
+        for (const o of r.fb.outlets) {
+          p.push(`${o.name} had ${o.totalCovers} covers and generated ${o.totalRevenue?.toLocaleString()} euros.`);
+        }
+      }
+
+      // Spa
+      if (r.spa?.total_bookings) {
+        p.push(`The spa had ${r.spa.total_bookings} bookings with ${r.spa.completed} completed and ${r.spa.no_shows} no-show${r.spa.no_shows !== 1 ? 's' : ''}. Spa revenue totaled ${r.spa.revenue?.toLocaleString()} euros.`);
+      }
+
+      // Incidents
+      if (r.incidents?.items?.length) {
+        const high = r.incidents.items.filter(i => i.priority === 'high');
+        p.push(`There were ${r.incidents.total} incident${r.incidents.total > 1 ? 's' : ''} reported.`);
+        if (high.length) {
+          p.push(`${high.length} high-priority incident${high.length > 1 ? 's' : ''} requiring attention:`);
+          for (const inc of high) {
+            const st = inc.status === 'resolved' ? 'This has been resolved' : 'This is still open';
+            p.push(`Room ${inc.room || 'unknown'}: ${inc.description}. ${st}.${inc.resolution ? ' Resolution: ' + inc.resolution + '.' : ''}`);
+          }
+        }
+        const medium = r.incidents.items.filter(i => i.priority === 'medium');
+        if (medium.length) {
+          for (const inc of medium) {
+            const st = inc.status === 'resolved' ? 'Resolved' : 'Open';
+            p.push(`${st}: ${inc.description}, Room ${inc.room || 'N/A'}.${inc.resolution ? ' ' + inc.resolution + '.' : ''}`);
+          }
+        }
+      }
+
+      // Concierge
+      if (r.concierge?.items?.length) {
+        const pending = r.concierge.items.filter(c => c.status === 'pending');
+        p.push(`The concierge handled ${r.concierge.total} request${r.concierge.total > 1 ? 's' : ''}.`);
+        if (pending.length) {
+          p.push(`${pending.length} request${pending.length > 1 ? 's are' : ' is'} still pending and need${pending.length === 1 ? 's' : ''} follow-up.`);
+        }
+      }
+
+      // Villas
+      if (r.villas?.occupied) {
+        p.push(`On the villa side, ${r.villas.occupied} out of ${r.villas.total} villas are occupied, generating ${r.villas.revenue?.toLocaleString()} euros.`);
+      }
+
+      p.push(`That concludes today's briefing. Have a great day.`);
+      return p.join(' ');
+    },
+
+    get textRecapHtml() {
+      if (!this.recap) return '';
+      const r = this.recap;
+      const k = r.kpis;
+      const hotel = r.hotel?.name || this.currentProperty?.name || 'the property';
+      let h = [];
+
+      h.push(`<h2 style="margin-top:0">Daily Briefing — ${r.date}</h2>`);
+      h.push(`<p style="font-size:1.05em;color:#3d4f99"><strong>${hotel}</strong></p>`);
+
+      // Overview paragraph
+      const occDir = k.occupancy.delta > 0 ? 'up' : k.occupancy.delta < 0 ? 'down' : 'unchanged';
+      const revDir = k.total_revenue.delta_pct > 0 ? 'up' : k.total_revenue.delta_pct < 0 ? 'down' : 'flat';
+      h.push(`<p>Occupancy is at <strong>${k.occupancy.value}%</strong> with ${k.occupancy.rooms_sold} out of ${k.occupancy.total_rooms} rooms sold${k.occupancy.delta ? ' (' + occDir + ' ' + Math.abs(k.occupancy.delta) + 'pp)' : ''}. Total revenue across the property reached <strong>€${k.total_revenue.value.toLocaleString()}</strong>${k.total_revenue.delta_pct ? ' (' + revDir + ' ' + Math.abs(k.total_revenue.delta_pct) + '%)' : ''}. The average daily rate stands at <strong>€${k.adr.value.toLocaleString()}</strong> with a RevPAR of <strong>€${k.revpar.value.toLocaleString()}</strong>.</p>`);
+
+      // Arrivals
+      if (r.arrivals?.length) {
+        const vips = r.arrivals.filter(a => a.vip);
+        h.push(`<h3>Arrivals — ${r.arrivals.length} guest${r.arrivals.length > 1 ? 's' : ''}</h3>`);
+        if (vips.length) {
+          const vipStr = vips.map(a => `<strong>${a.guestName}</strong> (${a.vip})`).join(', ');
+          h.push(`<p>🌟 VIP arrivals: ${vipStr}. Ensure welcome protocols are in place.</p>`);
+        }
+        for (const a of r.arrivals) {
+          let line = `<strong>${a.guestName}</strong> — Room ${a.roomNo} (${a.roomType}), ${a.nights} night${a.nights > 1 ? 's' : ''}, €${a.rate?.toLocaleString()}/night`;
+          if (a.nationality) line += ` · ${a.nationality}`;
+          if (a.notes) line += `<br><em style="color:#6070b3">${a.notes}</em>`;
+          h.push(`<p style="margin:0.4em 0;padding-left:1em;border-left:3px solid #d4a853">${line}</p>`);
+        }
+      }
+
+      // Departures
+      if (r.departures?.length) {
+        h.push(`<h3>Departures — ${r.departures.length}</h3>`);
+        const depStr = r.departures.map(d => `${d.guestName} (Room ${d.roomNo})`).join(', ');
+        h.push(`<p>${depStr}</p>`);
+      }
+
+      // F&B
+      if (r.fb?.outlets?.length) {
+        h.push(`<h3>Food & Beverage</h3>`);
+        h.push(`<p>The restaurants served <strong>${r.fb.total_covers} covers</strong> for a total of <strong>€${r.fb.total_revenue?.toLocaleString()}</strong> in revenue.</p>`);
+        for (const o of r.fb.outlets) {
+          h.push(`<p style="margin:0.3em 0;padding-left:1em;border-left:3px solid #d4a853"><strong>${o.name}</strong>: ${o.totalCovers} covers · €${o.totalRevenue?.toLocaleString()}</p>`);
+        }
+      }
+
+      // Spa
+      if (r.spa?.total_bookings) {
+        h.push(`<h3>Spa</h3>`);
+        h.push(`<p>The spa had <strong>${r.spa.total_bookings} bookings</strong> (${r.spa.completed} completed, ${r.spa.no_shows} no-show${r.spa.no_shows !== 1 ? 's' : ''}), generating <strong>€${r.spa.revenue?.toLocaleString()}</strong> in revenue.</p>`);
+      }
+
+      // Incidents
+      if (r.incidents?.items?.length) {
+        h.push(`<h3>Incidents</h3>`);
+        const high = r.incidents.items.filter(i => i.priority === 'high');
+        const others = r.incidents.items.filter(i => i.priority !== 'high');
+        if (high.length) {
+          h.push(`<p>⚠️ <strong>${high.length} high-priority</strong> incident${high.length > 1 ? 's' : ''}:</p>`);
+          for (const inc of high) {
+            const st = inc.status === 'resolved' ? '<span style="color:#059669">Resolved</span>' : '<span style="color:#dc2626">Open</span>';
+            h.push(`<p style="margin:0.3em 0;padding-left:1em;border-left:3px solid #dc2626"><strong>Room ${inc.room || 'N/A'}</strong>: ${inc.description} — ${st}${inc.resolution ? '<br><em>' + inc.resolution + '</em>' : ''}</p>`);
+          }
+        }
+        if (others.length) {
+          for (const inc of others) {
+            const st = inc.status === 'resolved' ? '<span style="color:#059669">Resolved</span>' : '<span style="color:#d97706">Open</span>';
+            h.push(`<p style="margin:0.3em 0;padding-left:1em;border-left:3px solid #d97706"><strong>Room ${inc.room || 'N/A'}</strong>: ${inc.description} — ${st}${inc.resolution ? '<br><em>' + inc.resolution + '</em>' : ''}</p>`);
+          }
+        }
+      }
+
+      // Concierge
+      if (r.concierge?.items?.length) {
+        const pending = r.concierge.items.filter(c => c.status === 'pending');
+        h.push(`<h3>Concierge</h3>`);
+        h.push(`<p>${r.concierge.total} request${r.concierge.total > 1 ? 's' : ''} handled${pending.length ? ', <strong>' + pending.length + ' still pending</strong>' : ''}.</p>`);
+        for (const c of r.concierge.items) {
+          const icon = c.status === 'completed' ? '✅' : c.status === 'pending' ? '⏳' : '🔄';
+          h.push(`<p style="margin:0.3em 0;padding-left:1em;border-left:3px solid #d4a853">${icon} <strong>${c.guestName || 'Guest'}</strong> — ${c.request || c.description || ''}</p>`);
+        }
+      }
+
+      // Villas
+      if (r.villas?.occupied) {
+        h.push(`<h3>Villas</h3>`);
+        h.push(`<p><strong>${r.villas.occupied}</strong> out of ${r.villas.total} villas occupied, generating <strong>€${r.villas.revenue?.toLocaleString()}</strong>.</p>`);
+      }
+
+      h.push(`<hr><p style="color:#8e9bcb;font-style:italic">End of briefing.</p>`);
+      return h.join('\n');
+    },
+
+    get kpiCards() {
+      if (!this.recap) return [];
+      const k = this.recap.kpis;
+      return [
+        { label: 'Occupancy', display: k.occupancy.value+'%', delta: k.occupancy.delta, deltaText: (k.occupancy.delta>0?'+':'')+k.occupancy.delta+'pp', sub: k.occupancy.rooms_sold+'/'+k.occupancy.total_rooms+' rooms' },
+        { label: 'ADR', display: '€'+k.adr.value.toLocaleString(), delta: k.adr.delta_pct, deltaText: (k.adr.delta_pct>0?'+':'')+k.adr.delta_pct+'%' },
+        { label: 'RevPAR', display: '€'+k.revpar.value.toLocaleString(), delta: k.revpar.delta_pct, deltaText: (k.revpar.delta_pct>0?'+':'')+k.revpar.delta_pct+'%' },
+        { label: 'Total Revenue', display: '€'+k.total_revenue.value.toLocaleString(), delta: k.total_revenue.delta_pct, deltaText: (k.total_revenue.delta_pct>0?'+':'')+k.total_revenue.delta_pct+'%' },
+        { label: 'F&B Covers', display: k.fb_covers.value.toString(), delta: k.fb_covers.delta, deltaText: (k.fb_covers.delta>0?'+':'')+k.fb_covers.delta },
+        { label: 'Spa Bookings', display: k.spa_bookings.value.toString(), delta: k.spa_bookings.delta, deltaText: (k.spa_bookings.delta>0?'+':'')+k.spa_bookings.delta },
+      ];
+    },
+
+    async init() {
+      // Load OAuth providers for login page
+      try {
+        const pRes = await fetch('/api/auth/providers');
+        if (pRes.ok) { this.oauthProviders = (await pRes.json()).providers || []; }
+      } catch(e) {}
+      // Check if already authenticated
+      try {
+        const res = await fetch('/api/me');
+        if (res.ok) {
+          const data = await res.json();
+          this.user = data;
+          this.userProperties = data.properties || [];
+          this.currentPropertyId = data.property_id || (this.userProperties[0]?.id);
+          this.authenticated = true;
+          await this.loadPropertyData();
+        }
+      } catch(e) {}
+    },
+
+    async doLogin() {
+      this.loginError = '';
+      this.loginLoading = true;
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({email: this.loginEmail, password: this.loginPassword})
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          this.loginError = err.detail || 'Login failed';
+          this.loginLoading = false;
+          return;
+        }
+        // Fetch full user info
+        const meRes = await fetch('/api/me');
+        const data = await meRes.json();
+        this.user = data;
+        this.userProperties = data.properties || [];
+        this.currentPropertyId = data.property_id || (this.userProperties[0]?.id);
+        this.authenticated = true;
+        this.loginPassword = '';
+        await this.loadPropertyData();
+      } catch(e) {
+        this.loginError = 'Connection error';
+      }
+      this.loginLoading = false;
+    },
+
+    async doLogout() {
+      await fetch('/api/logout', {method: 'POST'});
+      this.authenticated = false;
+      this.user = null;
+      this.userProperties = [];
+      this.recap = null;
+      this.guests = [];
+      this.settings = null;
+    },
+
+    async switchProperty() {
+      await this.loadPropertyData();
+    },
+
+    async loadPropertyData() {
+      if (!this.currentPropertyId) return;
+      const pid = this.currentPropertyId;
+      // Load dates
+      try {
+        const res = await fetch(`/api/properties/${pid}/dates`);
+        const data = await res.json();
+        this.dates = data.dates;
+        this.selectedDate = data.latest;
+      } catch(e) {}
+      await this.loadRecap();
+      await this.loadGuests();
+      await this.loadSettings();
+      await this.loadAppCatalog();
+      await this.loadPropertyApps();
+    },
+
+    async loadRecap() {
+      if (!this.currentPropertyId || !this.selectedDate) return;
+      this.loading = true;
+      try {
+        const res = await fetch(`/api/properties/${this.currentPropertyId}/recap/${this.selectedDate}`);
+        this.recap = await res.json();
+      } catch(e) { console.error(e); }
+      this.loading = false;
+    },
+
+    async loadGuests() {
+      if (!this.currentPropertyId) return;
+      try {
+        const res = await fetch(`/api/properties/${this.currentPropertyId}/guests`);
+        const data = await res.json();
+        this.guests = data.profiles;
+        if (this.guests.length) this.selectedGuest = this.guests[0];
+        else this.selectedGuest = null;
+      } catch(e) { console.error(e); }
+    },
+
+    async loadSettings() {
+      if (!this.currentPropertyId || this.user?.role === 'staff') return;
+      try {
+        const res = await fetch(`/api/properties/${this.currentPropertyId}/settings`);
+        this.settings = await res.json();
+      } catch(e) { console.error(e); }
+      await this.loadOAuthConfigs();
+    },
+
+    async loadOAuthConfigs() {
+      if (!this.currentPropertyId || this.user?.role === 'staff') return;
+      this.oauthGoogle = { enabled: false, client_id: '', client_secret: '', allowed_domain: '' };
+      this.oauthMicrosoft = { enabled: false, client_id: '', client_secret: '', tenant_id: '', allowed_domain: '' };
+      try {
+        const res = await fetch(`/api/properties/${this.currentPropertyId}/oauth-configs`);
+        const data = await res.json();
+        for (const c of data.configs || []) {
+          if (c.provider === 'google') {
+            this.oauthGoogle = { enabled: !!c.enabled, client_id: c.client_id, client_secret: c.client_secret, allowed_domain: c.allowed_domain || '' };
+          } else if (c.provider === 'microsoft') {
+            this.oauthMicrosoft = { enabled: !!c.enabled, client_id: c.client_id, client_secret: c.client_secret, tenant_id: c.tenant_id || '', allowed_domain: c.allowed_domain || '' };
+          }
+        }
+      } catch(e) { console.error(e); }
+    },
+
+    async saveOAuthConfig(provider) {
+      const data = provider === 'google' ? {...this.oauthGoogle, provider: 'google'} : {...this.oauthMicrosoft, provider: 'microsoft'};
+      try {
+        const res = await fetch(`/api/properties/${this.currentPropertyId}/oauth-configs`, {
+          method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)
+        });
+        if (res.ok) {
+          if (provider === 'google') this.oauthGoogleMsg = '✓ Saved successfully';
+          else this.oauthMicrosoftMsg = '✓ Saved successfully';
+        } else {
+          const err = await res.json();
+          if (provider === 'google') this.oauthGoogleMsg = '✗ ' + (err.detail || 'Save failed');
+          else this.oauthMicrosoftMsg = '✗ ' + (err.detail || 'Save failed');
+        }
+      } catch(e) {
+        if (provider === 'google') this.oauthGoogleMsg = '✗ Connection error';
+        else this.oauthMicrosoftMsg = '✗ Connection error';
+      }
+      setTimeout(() => { this.oauthGoogleMsg = ''; this.oauthMicrosoftMsg = ''; }, 4000);
+    },
+
+    testOAuthConfig(provider) {
+      const cfg = provider === 'google' ? this.oauthGoogle : this.oauthMicrosoft;
+      const msgKey = provider === 'google' ? 'oauthGoogleMsg' : 'oauthMicrosoftMsg';
+      if (!cfg.client_id) { this[msgKey] = '✗ Client ID is required'; setTimeout(() => this[msgKey] = '', 4000); return; }
+      // Basic format validation
+      if (provider === 'google' && !cfg.client_id.includes('.')) {
+        this[msgKey] = '✗ Invalid Google Client ID format (expected: xxx.apps.googleusercontent.com)';
+      } else if (provider === 'microsoft' && cfg.client_id.length < 10) {
+        this[msgKey] = '✗ Invalid Microsoft Client ID format (expected UUID)';
+      } else {
+        this[msgKey] = '✓ Client ID format looks valid';
+      }
+      setTimeout(() => this[msgKey] = '', 4000);
+    },
+
+    // ── App Catalog Methods ──────────────────
+
+    async loadAppCatalog() {
+      if (this.appCatalog) return;
+      try {
+        const res = await fetch('/api/app-catalog');
+        this.appCatalog = await res.json();
+      } catch(e) { console.error(e); }
+    },
+
+    async loadPropertyApps() {
+      if (!this.currentPropertyId) return;
+      try {
+        const res = await fetch(`/api/properties/${this.currentPropertyId}/apps`);
+        const data = await res.json();
+        this.propertyApps = data.apps || [];
+      } catch(e) { console.error(e); }
+    },
+
+    getAppConfig(appId) {
+      return this.propertyApps.find(a => a.app_id === appId) || null;
+    },
+
+    filteredAppsForCategory(catId) {
+      if (!this.appCatalog) return [];
+      let apps = this.appCatalog.apps.filter(a => a.category === catId);
+      if (this.appSearch) {
+        const q = this.appSearch.toLowerCase();
+        apps = apps.filter(a => a.name.toLowerCase().includes(q) || a.description.toLowerCase().includes(q));
+      }
+      if (this.appViewFilter === 'configured') {
+        apps = apps.filter(a => this.getAppConfig(a.id));
+      } else if (this.appViewFilter === 'available') {
+        apps = apps.filter(a => !this.getAppConfig(a.id));
+      }
+      return apps;
+    },
+
+    openAppConfig(app) {
+      this.editingApp = app;
+      this.showPasswords = {};
+      this.appConfigMsg = '';
+      const existing = this.getAppConfig(app.id);
+      if (existing) {
+        this.editingAppConfig = { config: {...existing.config}, enabled: existing.enabled };
+      } else {
+        // Pre-fill toggles with false, rest empty
+        const cfg = {};
+        for (const f of app.config_schema.fields) {
+          if (f.type === 'toggle') cfg[f.key] = false;
+        }
+        this.editingAppConfig = { config: cfg, enabled: false };
+      }
+      this.appConfigModal = true;
+    },
+
+    async saveAppConfig() {
+      if (!this.editingApp || !this.currentPropertyId) return;
+      this.appConfigSaving = true;
+      this.appConfigMsg = '';
+      try {
+        const res = await fetch(`/api/properties/${this.currentPropertyId}/apps/${this.editingApp.id}`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            config: this.editingAppConfig.config,
+            enabled: this.editingAppConfig.enabled,
+            status: this.getAppConfig(this.editingApp.id)?.status || 'disconnected',
+          })
+        });
+        if (res.ok) {
+          this.appConfigMsg = '✓ Configuration saved successfully';
+          await this.loadPropertyApps();
+        } else {
+          const err = await res.json();
+          this.appConfigMsg = '✗ ' + (err.detail || 'Save failed');
+        }
+      } catch(e) { this.appConfigMsg = '✗ Connection error'; }
+      this.appConfigSaving = false;
+      setTimeout(() => this.appConfigMsg = '', 5000);
+    },
+
+    async testAppConnection() {
+      if (!this.editingApp || !this.currentPropertyId) return;
+      this.appConfigTesting = true;
+      this.appConfigMsg = '';
+      try {
+        const res = await fetch(`/api/properties/${this.currentPropertyId}/apps/${this.editingApp.id}/test`, { method: 'POST' });
+        const data = await res.json();
+        if (res.ok) {
+          this.appConfigMsg = '✓ ' + (data.message || 'Connection successful');
+          await this.loadPropertyApps();
+        } else {
+          this.appConfigMsg = '✗ ' + (data.detail || 'Connection test failed');
+        }
+      } catch(e) { this.appConfigMsg = '✗ Connection error'; }
+      this.appConfigTesting = false;
+      setTimeout(() => this.appConfigMsg = '', 5000);
+    },
+
+    async removeAppConfig() {
+      if (!this.editingApp || !this.currentPropertyId) return;
+      if (!confirm(`Remove ${this.editingApp.name} integration? This will delete all configuration data.`)) return;
+      try {
+        const res = await fetch(`/api/properties/${this.currentPropertyId}/apps/${this.editingApp.id}`, { method: 'DELETE' });
+        if (res.ok) {
+          this.appConfigModal = false;
+          await this.loadPropertyApps();
+        }
+      } catch(e) { console.error(e); }
+    },
+
+    async loadDocs() {
+      if (this.docsList.length) return;
+      try {
+        const res = await fetch('/api/docs');
+        this.docsList = await res.json();
+      } catch(e) { console.error(e); }
+    },
+
+    async loadDoc(id) {
+      this.activeDoc = id;
+      try {
+        const res = await fetch('/api/docs/'+id);
+        const data = await res.json();
+        this.docTitle = data.title;
+        this.docContent = data.content;
+      } catch(e) { console.error(e); }
+    },
+
+    renderMarkdown(md) {
+      if (!md) return '';
+      const codeBlocks = [];
+      md = md.replace(/```(\w*)\n([\s\S]*?)```/gm, (_, lang, code) => {
+        const escaped = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        codeBlocks.push('<pre class="bg-navy-900 text-cream-100 rounded-lg p-4 my-4 overflow-x-auto text-sm font-mono whitespace-pre"><code>' + escaped + '</code></pre>');
+        return '%%CODEBLOCK_' + (codeBlocks.length - 1) + '%%';
+      });
+      const inlineCodes = [];
+      md = md.replace(/`([^`]+)`/g, (_, code) => {
+        inlineCodes.push('<code class="bg-cream-100 text-navy-700 px-1.5 py-0.5 rounded text-sm font-mono">' + code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</code>');
+        return '%%INLINE_' + (inlineCodes.length - 1) + '%%';
+      });
+      md = md.replace(/((?:^\|.+\|$\n?)+)/gm, (tableBlock) => {
+        const rows = tableBlock.trim().split('\n').filter(r => r.trim());
+        if (rows.length < 2) return tableBlock;
+        const parseRow = r => r.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+        const headers = parseRow(rows[0]);
+        const isSep = r => /^[\s|:-]+$/.test(r);
+        const startIdx = isSep(rows[1]) ? 2 : 1;
+        let html = '<div class="overflow-x-auto my-4"><table class="w-full text-sm border-collapse">';
+        if (startIdx === 2) {
+          html += '<thead><tr>';
+          headers.forEach(h => { html += '<th class="text-left py-2 px-3 border-b-2 border-navy-200 font-semibold text-navy-800 bg-cream-50">' + h + '</th>'; });
+          html += '</tr></thead>';
+        }
+        html += '<tbody>';
+        for (let i = startIdx; i < rows.length; i++) {
+          const cells = parseRow(rows[i]);
+          html += '<tr class="border-b border-cream-200 hover:bg-cream-50">';
+          cells.forEach(c => { html += '<td class="py-2 px-3 text-navy-600">' + c + '</td>'; });
+          html += '</tr>';
+        }
+        html += '</tbody></table></div>';
+        return html;
+      });
+      md = md
+        .replace(/^#### (.*$)/gm, '<h4 class="text-base font-semibold text-navy-700 mt-5 mb-2">$1</h4>')
+        .replace(/^### (.*$)/gm, '<h3 class="text-lg font-semibold text-navy-800 mt-6 mb-2">$1</h3>')
+        .replace(/^## (.*$)/gm, '<h2 class="text-xl font-display font-bold text-navy-900 mt-8 mb-3">$1</h2>')
+        .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-display font-bold text-navy-900 mt-8 mb-4">$1</h1>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
+        .replace(/(?<!\*)\*(?!\*)([^*]+)\*(?!\*)/g, '<em>$1</em>')
+        .replace(/^\d+\.\s+(.*$)/gm, '<li class="ml-4 text-navy-600 list-decimal">$1</li>')
+        .replace(/^[-*]\s+(.*$)/gm, '<li class="ml-4 text-navy-600">$1</li>')
+        .replace(/((?:<li[^>]*>.*<\/li>\s*)+)/g, '<ul class="list-disc space-y-1 my-3 pl-4">$1</ul>')
+        .replace(/^>\s*(.*$)/gm, '<blockquote class="border-l-4 border-gold-400 pl-4 italic text-navy-500 my-3">$1</blockquote>')
+        .replace(/^---$/gm, '<hr class="my-6 border-cream-200">')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-gold-500 hover:text-gold-600 underline" target="_blank">$1</a>')
+        .replace(/\n\n/g, '</p><p class="text-navy-600 leading-relaxed mb-3">')
+        .replace(/^(?!<[hluobdpta]|%%|$)(.+)$/gm, '<p class="text-navy-600 leading-relaxed mb-3">$1</p>');
+      inlineCodes.forEach((code, i) => { md = md.replace('%%INLINE_' + i + '%%', code); });
+      codeBlocks.forEach((block, i) => { md = md.replace('%%CODEBLOCK_' + i + '%%', block); });
+      return md;
+    },
+
+    formatMarkdown(text) {
+      if (!text) return '';
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>')
+        .replace(/⚠️/g, '⚠️');
+    },
+  }
+}
+</script>
+</body>
+</html>

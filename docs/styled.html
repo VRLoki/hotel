@@ -1,0 +1,1505 @@
+<html><head><meta charset="utf-8"><style>body{font-family:Helvetica,Arial,sans-serif;max-width:800px;margin:40px auto;padding:0 20px;line-height:1.6;color:#333}h1{color:#1a1a2e;border-bottom:2px solid #e0a800}h2{color:#2d2d44;border-bottom:1px solid #ddd;padding-bottom:5px}table{border-collapse:collapse;width:100%;margin:15px 0}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#f5f5f5}code{background:#f4f4f4;padding:2px 6px;border-radius:3px}hr{border:none;border-top:2px solid #e0a800;margin:40px 0}</style></head><body>
+<h1>Hotel Intel — Product Overview</h1>
+<h2>Vision</h2>
+<p>Hotel Intel transforms the morning briefing at luxury and palace hotels. Instead of managers manually pulling numbers from a dozen disconnected systems, an AI-powered pipeline collects operational data overnight and delivers a polished, actionable intelligence recap before the first coffee is poured.</p>
+<h2>The Problem</h2>
+<p>Luxury hotels run on 10–15+ software systems that don&#39;t talk to each other. Every morning, department heads spend 30–60 minutes hunting through Oracle OPERA, spa platforms, F&amp;B tools, incident logs, and finance systems to piece together yesterday&#39;s picture. The result is often incomplete, late, or both.</p>
+<p>General managers receive fragmented updates — if they receive them at all. Critical patterns (VIP arrivals coinciding with understaffing, revenue dips, recurring incidents) go unnoticed until it&#39;s too late.</p>
+<h2>The Solution</h2>
+<p>Hotel Intel is a SaaS product that:</p>
+<ol>
+<li><strong>Connects</strong> to the hotel&#39;s existing tech stack via APIs and secure integrations</li>
+<li><strong>Aggregates</strong> operational, financial, and guest data from all sources</li>
+<li><strong>Generates</strong> an AI-powered daily intelligence recap — clear, concise, prioritized</li>
+<li><strong>Delivers</strong> it via email, Telegram, and a web dashboard every morning</li>
+</ol>
+<p>No new software for staff to learn. No manual data entry. Just signal, not noise.</p>
+<h2>Value Proposition</h2>
+<table>
+<thead>
+<tr>
+<th>For</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>General Managers</strong></td>
+<td>Complete operational picture in 2 minutes instead of 30</td>
+</tr>
+<tr>
+<td><strong>Department Heads</strong></td>
+<td>Cross-departmental visibility without meetings</td>
+</tr>
+<tr>
+<td><strong>Ownership / Asset Managers</strong></td>
+<td>Daily financial pulse without bothering on-site teams</td>
+</tr>
+<tr>
+<td><strong>Operations Teams</strong></td>
+<td>Proactive issue detection — incidents, staffing gaps, revenue anomalies</td>
+</tr>
+</tbody></table>
+<h2>Target Audience</h2>
+<ul>
+<li><strong>Primary:</strong> Luxury hotels and palace hotels (5-star, palace-rated)</li>
+<li><strong>Sweet spot:</strong> Properties running Oracle OPERA as their PMS</li>
+<li><strong>Geography:</strong> International — starting with French luxury market</li>
+<li><strong>Size:</strong> 30–200 rooms with complex operations (multiple F&amp;B outlets, spa, villas, concierge)</li>
+</ul>
+<h2>First Pilot</h2>
+<p><strong>Eden Rock — St Barths</strong></p>
+<p>A iconic luxury property in St-Barthélemy with a complex tech stack including Oracle OPERA, TAC spa, 7rooms, Micros, Unifocus Knowcross, Concierge Organizer, villa rentals (ERVR), and the full Microsoft 365 suite. The perfect proving ground for Hotel Intel.</p>
+<h2>Business Model</h2>
+<p>SaaS subscription — per property, per month. Pricing scales with property size and number of integrations activated.</p>
+<h2>Current Status</h2>
+<p>🟡 <strong>Ideation phase</strong> — scoping PMS integrations, defining MVP recap content, researching Oracle OHIP API.</p>
+<hr>
+<h1>Hotel Intel — System Architecture</h1>
+<h2>Overview</h2>
+<p>Hotel Intel follows a four-stage pipeline: <strong>Collect → Process → Generate → Deliver</strong>. The system runs on local infrastructure at each property to meet security requirements for guest data handling.</p>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│                    HOTEL PROPERTY                        │
+│                                                         │
+│  ┌──────────┐   ┌──────────┐   ┌──────────┐            │
+│  │  OPERA   │   │   TAC    │   │  7rooms  │   ...       │
+│  └────┬─────┘   └────┬─────┘   └────┬─────┘            │
+│       │              │              │                    │
+│       ▼              ▼              ▼                    │
+│  ┌──────────────────────────────────────────┐           │
+│  │           1. COLLECT                      │           │
+│  │     API connectors / file watchers        │           │
+│  └─────────────────┬────────────────────────┘           │
+│                    │                                     │
+│                    ▼                                     │
+│  ┌──────────────────────────────────────────┐           │
+│  │           2. PROCESS                      │           │
+│  │   Normalize, validate, store, compute     │           │
+│  └─────────────────┬────────────────────────┘           │
+│                    │                                     │
+│                    ▼                                     │
+│  ┌──────────────────────────────────────────┐           │
+│  │           3. GENERATE                     │           │
+│  │      LLM-powered recap generation         │           │
+│  └─────────────────┬────────────────────────┘           │
+│                    │                                     │
+│                    ▼                                     │
+│  ┌──────────────────────────────────────────┐           │
+│  │           4. DELIVER                      │           │
+│  │    Email / Telegram / Dashboard / TTS     │           │
+│  └──────────────────────────────────────────┘           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+</code></pre>
+<h2>Stage 1: Collect</h2>
+<p>The collection layer connects to each hotel system and pulls relevant data on a scheduled basis (typically nightly or early morning).</p>
+<table>
+<thead>
+<tr>
+<th>Connector Type</th>
+<th>Systems</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>REST API</td>
+<td>Oracle OPERA (OHIP), 7rooms, Adyen</td>
+<td>Authenticated API calls</td>
+</tr>
+<tr>
+<td>Calendar API</td>
+<td>ERVR (Google Calendar)</td>
+<td>Google Calendar API</td>
+</tr>
+<tr>
+<td>Microsoft Graph</td>
+<td>OneDrive, Outlook, Teams, SharePoint</td>
+<td>Microsoft Graph API</td>
+</tr>
+<tr>
+<td>Database / Export</td>
+<td>TAC, Micros, Sage, Octane, Spendex</td>
+<td>DB read or file export</td>
+</tr>
+<tr>
+<td>Web / Proprietary</td>
+<td>Unifocus Knowcross, Concierge Organizer</td>
+<td>Platform-specific API or scraping</td>
+</tr>
+<tr>
+<td>File System</td>
+<td>Local files/folders</td>
+<td>File watcher / scheduled scan</td>
+</tr>
+</tbody></table>
+<p>Each connector is a modular component that:</p>
+<ul>
+<li>Authenticates with the source system</li>
+<li>Pulls data for the target date range (typically yesterday + today lookahead)</li>
+<li>Handles retries, rate limits, and error logging</li>
+<li>Outputs a normalized data payload</li>
+</ul>
+<h2>Stage 2: Process</h2>
+<p>Raw data from connectors is normalized into a unified data model:</p>
+<ul>
+<li><strong>Validation</strong> — Schema checks, data type enforcement, duplicate detection</li>
+<li><strong>Normalization</strong> — Consistent date formats, currency handling, guest name standardization</li>
+<li><strong>Computation</strong> — Derived KPIs: occupancy %, ADR, RevPAR, revenue totals, cover counts</li>
+<li><strong>Storage</strong> — Local database (PostgreSQL or SQLite) for historical comparison and trend detection</li>
+<li><strong>Enrichment</strong> — Cross-reference data (e.g., VIP arrivals matched with concierge requests, spa bookings)</li>
+</ul>
+<h2>Stage 3: Generate</h2>
+<p>The processed data is fed to an LLM to produce the daily recap:</p>
+<ul>
+<li><strong>Structured prompt</strong> — Template with sections, KPIs, and priorities</li>
+<li><strong>Context window</strong> — Yesterday&#39;s data + today&#39;s lookahead + relevant historical comparisons</li>
+<li><strong>Tone</strong> — Professional, concise, action-oriented — written for a GM reading on mobile</li>
+<li><strong>Anomaly highlighting</strong> — AI flags deviations from normal patterns (unusual occupancy, spike in incidents, revenue outliers)</li>
+<li><strong>Multi-format output</strong> — Plain text, HTML (for email), structured JSON (for dashboard)</li>
+</ul>
+<h3>LLM Considerations</h3>
+<ul>
+<li>Model runs via API call (OpenAI, Anthropic, or similar)</li>
+<li>Only aggregated/anonymized operational data leaves the local network for LLM processing</li>
+<li>Guest PII is stripped or pseudonymized before LLM input</li>
+<li>Future option: local LLM for full on-premise processing</li>
+</ul>
+<h2>Stage 4: Deliver</h2>
+<p>See <a href="./delivery.md">delivery.md</a> for full details on output channels.</p>
+<ul>
+<li><strong>Email</strong> — Formatted HTML recap to configured recipients</li>
+<li><strong>Telegram</strong> — Bot message to hotel management channel/group</li>
+<li><strong>Dashboard</strong> — Web interface for interactive exploration</li>
+<li><strong>TTS</strong> — Audio version of the recap (optional)</li>
+</ul>
+<h2>Local Hosting Model</h2>
+<p>Hotel Intel runs <strong>on-premise</strong> at each property:</p>
+<ul>
+<li><strong>Compute</strong> — Small server or VM at the hotel (or hotel group&#39;s data center)</li>
+<li><strong>Database</strong> — Local PostgreSQL/SQLite for all operational data</li>
+<li><strong>Network</strong> — Connectors access hotel systems on the local network where possible</li>
+<li><strong>Outbound only</strong> — External calls limited to: LLM API, email delivery (SMTP), Telegram API</li>
+<li><strong>No guest PII leaves the property</strong> — LLM receives only aggregated metrics and anonymized summaries</li>
+</ul>
+<h2>Technology Stack (Preliminary)</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Technology</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Runtime</td>
+<td>Python 3.11+ or Node.js</td>
+</tr>
+<tr>
+<td>Scheduler</td>
+<td>Cron / Celery / custom scheduler</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>PostgreSQL (primary) or SQLite (lightweight)</td>
+</tr>
+<tr>
+<td>API Framework</td>
+<td>FastAPI or Express</td>
+</tr>
+<tr>
+<td>LLM</td>
+<td>OpenAI GPT-4 / Anthropic Claude (via API)</td>
+</tr>
+<tr>
+<td>Dashboard</td>
+<td>Next.js or lightweight SPA</td>
+</tr>
+<tr>
+<td>Deployment</td>
+<td>Docker containers on local server</td>
+</tr>
+</tbody></table>
+<h2>Existing Solutions to Explore</h2>
+<p><strong>Mosaic Projects</strong> — An existing data aggregation tool that may overlap with Hotel Intel&#39;s collection/processing layers. Potential integration or leverage point to be evaluated during development.</p>
+<hr>
+<h1>Hotel Intel — Integrations</h1>
+<p>Each integration connects to a hotel system to pull operational data into the Hotel Intel pipeline. This document details every source system, what data we extract, and the known integration method.</p>
+<hr>
+<h2>Oracle OPERA (PMS)</h2>
+<p><strong>Category:</strong> Property Management System
+<strong>Priority:</strong> 🔴 Critical — primary data source</p>
+<h3>What It Does</h3>
+<p>Oracle OPERA is the industry-standard PMS for luxury and palace hotels. It manages reservations, guest profiles, room inventory, billing, and reporting.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li><strong>Occupancy</strong> — Rooms occupied, available, out of order</li>
+<li><strong>ADR</strong> (Average Daily Rate) — Revenue per occupied room</li>
+<li><strong>RevPAR</strong> (Revenue Per Available Room)</li>
+<li><strong>Arrivals</strong> — Today&#39;s check-ins with guest details, room assignments, special requests</li>
+<li><strong>Departures</strong> — Today&#39;s check-outs</li>
+<li><strong>In-house guests</strong> — Current guest count and profile data</li>
+<li><strong>VIP guests</strong> — VIP-flagged arrivals and in-house guests (VIP level, preferences, notes)</li>
+<li><strong>Revenue</strong> — Room revenue, ancillary revenue breakdowns</li>
+<li><strong>Rate codes &amp; segments</strong> — Booking source analysis</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>API:</strong> Oracle Hospitality Integration Platform (OHIP) — REST APIs</li>
+<li><strong>Authentication:</strong> OAuth 2.0 (client credentials flow)</li>
+<li><strong>Endpoints:</strong> OHIP provides dedicated endpoints for reservations, availability, guest profiles, rate plans, and financial postings</li>
+<li><strong>Environment:</strong> Oracle Cloud or on-premise OPERA — OHIP availability depends on OPERA version and Oracle licensing</li>
+<li><strong>Notes:</strong> OPERA Cloud has better API support than legacy OPERA 5 (on-prem). Eden Rock&#39;s deployment type needs confirmation. RNA (Report and Analytics) module may provide additional reporting endpoints.</li>
+</ul>
+<hr>
+<h2>TAC (Spa)</h2>
+<p><strong>Category:</strong> Spa Management</p>
+<h3>What It Does</h3>
+<p>TAC is a spa management platform handling bookings, treatments, therapist scheduling, and spa retail.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li><strong>Spa bookings</strong> — Today&#39;s appointments, therapist assignments</li>
+<li><strong>Spa revenue</strong> — Treatment revenue, retail sales</li>
+<li><strong>Utilization</strong> — Treatment room and therapist utilization rates</li>
+<li><strong>Lookahead</strong> — Upcoming bookings for capacity planning</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>API:</strong> To be determined — TAC may offer a REST API or require database-level access</li>
+<li><strong>Fallback:</strong> Scheduled data export (CSV/Excel) or direct database read</li>
+<li><strong>Notes:</strong> Integration method depends on TAC version and deployment. Needs vendor discussion.</li>
+</ul>
+<hr>
+<h2>7rooms (F&amp;B Reservations)</h2>
+<p><strong>Category:</strong> Food &amp; Beverage — Reservations</p>
+<h3>What It Does</h3>
+<p>7rooms (SevenRooms) is a restaurant reservation and guest management platform used by hotel F&amp;B outlets.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li><strong>Covers</strong> — Total covers per outlet, per service (breakfast, lunch, dinner)</li>
+<li><strong>Reservations</strong> — Booking count, walk-ins, no-shows, cancellations</li>
+<li><strong>VIP diners</strong> — Flagged guests, special occasions</li>
+<li><strong>Revenue per cover</strong> (if available)</li>
+<li><strong>Outlet performance</strong> — Comparison across multiple restaurants/bars</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>API:</strong> SevenRooms API (REST) — well-documented public API</li>
+<li><strong>Authentication:</strong> API key + secret</li>
+<li><strong>Endpoints:</strong> Reservations, venues, guests, availability</li>
+<li><strong>Documentation:</strong> <a href="https://api.sevenrooms.com">SevenRooms API Docs</a></li>
+<li><strong>Notes:</strong> Good API with webhooks support. Likely one of the easier integrations.</li>
+</ul>
+<hr>
+<h2>Micros (F&amp;B Payments)</h2>
+<p><strong>Category:</strong> Food &amp; Beverage — Point of Sale</p>
+<h3>What It Does</h3>
+<p>Oracle MICROS (Simphony) is the POS system for hotel restaurants, bars, and room service. Handles orders, payments, and F&amp;B operational data.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li><strong>F&amp;B revenue</strong> — Per outlet, per service period</li>
+<li><strong>Transaction data</strong> — Payment totals, average check size</li>
+<li><strong>Menu mix</strong> — Top-selling items (if relevant for recap)</li>
+<li><strong>Meal period performance</strong> — Breakfast vs lunch vs dinner revenue</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>API:</strong> Oracle MICROS Simphony Transaction Services API or Reporting API</li>
+<li><strong>Authentication:</strong> Oracle identity management (may be bundled with OHIP)</li>
+<li><strong>Fallback:</strong> Database export or MICROS reporting module</li>
+<li><strong>Notes:</strong> As an Oracle product, Micros may integrate more smoothly alongside OPERA via OHIP. Check if OHIP provides consolidated access.</li>
+</ul>
+<hr>
+<h2>Unifocus Knowcross (Incident Management)</h2>
+<p><strong>Category:</strong> Operations — Incident &amp; Task Management</p>
+<h3>What It Does</h3>
+<p>Unifocus Knowcross is a hotel operations platform for managing guest incidents, maintenance tasks, housekeeping, and service recovery.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li><strong>Open incidents</strong> — Unresolved guest complaints, maintenance issues</li>
+<li><strong>Closed incidents</strong> — Yesterday&#39;s resolved issues with resolution time</li>
+<li><strong>Task completion</strong> — Housekeeping, engineering, and operational task status</li>
+<li><strong>Service recovery</strong> — Compensation or follow-up actions taken</li>
+<li><strong>Trends</strong> — Recurring incident categories (noise complaints, AC issues, etc.)</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>API:</strong> Unifocus/Knowcross platform API (to be confirmed)</li>
+<li><strong>Fallback:</strong> Scheduled report export or email-based reporting</li>
+<li><strong>Notes:</strong> Integration method depends on Unifocus&#39;s current API offering. May require partnership discussion.</li>
+</ul>
+<hr>
+<h2>Concierge Organizer</h2>
+<p><strong>Category:</strong> Concierge Management</p>
+<h3>What It Does</h3>
+<p>Concierge Organizer manages guest requests, restaurant bookings, activity reservations, transportation, and other concierge services.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li><strong>Guest requests</strong> — Volume and type of concierge requests</li>
+<li><strong>Request categories</strong> — Restaurant bookings, transfers, tours, tickets, special arrangements</li>
+<li><strong>Fulfillment status</strong> — Open vs completed requests</li>
+<li><strong>VIP requests</strong> — Special arrangements for VIP guests</li>
+<li><strong>Popular services</strong> — Most requested activities/services</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>API:</strong> To be determined — likely proprietary API or database access</li>
+<li><strong>Fallback:</strong> Data export or direct database query</li>
+<li><strong>Notes:</strong> Concierge Organizer is a niche product — integration method needs vendor engagement.</li>
+</ul>
+<hr>
+<h2>ERVR — Eden Rock Villa Rental (Google Calendar)</h2>
+<p><strong>Category:</strong> Villa Rental Management</p>
+<h3>What It Does</h3>
+<p>ERVR manages villa rental bookings for Eden Rock&#39;s &quot;Petit Maison&quot; and other villa properties. Bookings are tracked via Google Calendar.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li><strong>Villa bookings</strong> — Current and upcoming villa occupancy</li>
+<li><strong>Check-ins / check-outs</strong> — Villa arrivals and departures</li>
+<li><strong>Occupancy rates</strong> — Villa utilization</li>
+<li><strong>Revenue</strong> (if stored in calendar events or linked system)</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>API:</strong> Google Calendar API (REST)</li>
+<li><strong>Authentication:</strong> OAuth 2.0 (Google service account or user consent)</li>
+<li><strong>Endpoints:</strong> Events list, calendar metadata</li>
+<li><strong>Notes:</strong> Calendar events need a consistent naming/tagging convention to reliably extract booking data. This is Eden Rock-specific — other properties may use different villa management tools.</li>
+</ul>
+<hr>
+<h2>Microsoft 365</h2>
+<p><strong>Category:</strong> Collaboration &amp; Productivity</p>
+<p>Covers four sub-integrations via the Microsoft Graph API:</p>
+<h3>OneDrive</h3>
+<ul>
+<li><strong>Data:</strong> Shared documents, reports, spreadsheets that contain operational data</li>
+<li><strong>Use case:</strong> Hotels often store daily reports, financial summaries, or operational checklists in shared OneDrive folders</li>
+<li><strong>Method:</strong> Microsoft Graph API — Files endpoints</li>
+</ul>
+<h3>Outlook</h3>
+<ul>
+<li><strong>Data:</strong> Key emails (supplier communications, guest pre-arrival requests, internal reports)</li>
+<li><strong>Use case:</strong> Monitor specific mailboxes or folders for operational intelligence</li>
+<li><strong>Method:</strong> Microsoft Graph API — Mail endpoints</li>
+</ul>
+<h3>Teams</h3>
+<ul>
+<li><strong>Data:</strong> Channel messages, important announcements, shift handover notes</li>
+<li><strong>Use case:</strong> Capture operational communications from Teams channels (e.g., #front-desk, #housekeeping)</li>
+<li><strong>Method:</strong> Microsoft Graph API — Teams/Channels endpoints</li>
+</ul>
+<h3>SharePoint</h3>
+<ul>
+<li><strong>Data:</strong> Shared documents, lists, operational databases stored in SharePoint</li>
+<li><strong>Use case:</strong> Hotels use SharePoint for SOPs, checklists, and shared operational data</li>
+<li><strong>Method:</strong> Microsoft Graph API — Sites/Lists endpoints</li>
+</ul>
+<h3>Integration Method (All M365)</h3>
+<ul>
+<li><strong>API:</strong> Microsoft Graph API (REST)</li>
+<li><strong>Authentication:</strong> OAuth 2.0 with Azure AD app registration</li>
+<li><strong>Permissions:</strong> Application permissions (daemon/background) or delegated with admin consent</li>
+<li><strong>Notes:</strong> Single Azure AD app registration covers all four services. Scope permissions carefully — principle of least privilege.</li>
+</ul>
+<hr>
+<h2>Sage (Finance)</h2>
+<p><strong>Category:</strong> Finance &amp; Accounting</p>
+<h3>What It Does</h3>
+<p>Sage handles financial accounting, general ledger, accounts payable/receivable, and financial reporting for the property.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li><strong>Daily revenue summary</strong> — Total revenue by department</li>
+<li><strong>Payroll data</strong> — Staff costs, overtime (via Sage HR/Payroll module)</li>
+<li><strong>P&amp;L indicators</strong> — Key financial metrics for the daily recap</li>
+<li><strong>Budget vs actual</strong> — Variance reporting</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>API:</strong> Sage API (REST) — depends on Sage product version (Sage 100, Sage X3, Sage Intacct)</li>
+<li><strong>Authentication:</strong> OAuth 2.0 or API key (version-dependent)</li>
+<li><strong>Notes:</strong> Sage has multiple product lines with different API capabilities. Need to confirm which Sage product Eden Rock uses.</li>
+</ul>
+<hr>
+<h2>Adyen (Payments)</h2>
+<p><strong>Category:</strong> Payment Processing</p>
+<h3>What It Does</h3>
+<p>Adyen is the credit card processing gateway handling guest payments across all hotel touchpoints.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li><strong>Transaction volume</strong> — Number and value of transactions</li>
+<li><strong>Payment methods</strong> — Card types, digital wallets</li>
+<li><strong>Settlement data</strong> — Daily settlement amounts</li>
+<li><strong>Chargebacks / disputes</strong> — Flagged transactions requiring attention</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>API:</strong> Adyen API (REST) — well-documented, enterprise-grade</li>
+<li><strong>Authentication:</strong> API key + HMAC signature</li>
+<li><strong>Endpoints:</strong> Payments, settlements, reports</li>
+<li><strong>Documentation:</strong> <a href="https://docs.adyen.com">Adyen API Docs</a></li>
+<li><strong>Notes:</strong> Adyen has excellent API documentation and sandbox environment. Relatively straightforward integration.</li>
+</ul>
+<hr>
+<h2>Octane (HR — Time Logging)</h2>
+<p><strong>Category:</strong> Human Resources</p>
+<h3>What It Does</h3>
+<p>Octane handles employee time tracking and attendance logging.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li><strong>Attendance</strong> — Staff present, absent, late</li>
+<li><strong>Hours worked</strong> — Department-level staffing hours</li>
+<li><strong>Overtime</strong> — Overtime hours flagged</li>
+<li><strong>Staffing levels</strong> — Actual vs scheduled staffing</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>API:</strong> To be determined — depends on Octane product/version</li>
+<li><strong>Fallback:</strong> Scheduled data export</li>
+<li><strong>Notes:</strong> HR data is sensitive — ensure only aggregated staffing metrics are included in recaps, not individual employee data.</li>
+</ul>
+<hr>
+<h2>Spendex (Expenses)</h2>
+<p><strong>Category:</strong> Expense Management</p>
+<h3>What It Does</h3>
+<p>Spendex manages employee expense submissions, approvals, and reimbursements.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li><strong>Expense volume</strong> — Total submitted expenses</li>
+<li><strong>Categories</strong> — Expense breakdown by type</li>
+<li><strong>Pending approvals</strong> — Outstanding expense approvals</li>
+<li><strong>Budget tracking</strong> — Department spend vs budget</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>API:</strong> To be determined</li>
+<li><strong>Fallback:</strong> Scheduled data export or email digest</li>
+<li><strong>Notes:</strong> Lower priority for daily recap — may be more relevant for weekly/monthly summaries.</li>
+</ul>
+<hr>
+<h2>File System (FS)</h2>
+<p><strong>Category:</strong> Local Files</p>
+<h3>What It Does</h3>
+<p>Direct access to specific files and folders on the hotel&#39;s local network or shared drives that contain operational data not available via other integrations.</p>
+<h3>Data We Pull</h3>
+<ul>
+<li>Custom reports exported by hotel staff</li>
+<li>Spreadsheets with manual data entry</li>
+<li>PDF reports from legacy systems</li>
+</ul>
+<h3>Integration Method</h3>
+<ul>
+<li><strong>Method:</strong> File system watcher / scheduled directory scan</li>
+<li><strong>Formats:</strong> CSV, Excel (.xlsx), PDF (with text extraction)</li>
+<li><strong>Notes:</strong> Catch-all for data that doesn&#39;t come through a proper API. Define specific watched paths per property.</li>
+</ul>
+<hr>
+<h2>Integration Priority (MVP)</h2>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>System</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🔴 P0</td>
+<td>Oracle OPERA (OHIP)</td>
+<td>Core PMS — occupancy, revenue, guests</td>
+</tr>
+<tr>
+<td>🟠 P1</td>
+<td>TAC, 7rooms, Unifocus Knowcross</td>
+<td>Key operational systems</td>
+</tr>
+<tr>
+<td>🟡 P2</td>
+<td>ERVR, Concierge Organizer, Microsoft 365</td>
+<td>Important but secondary</td>
+</tr>
+<tr>
+<td>🟢 P3</td>
+<td>Sage, Adyen, Micros, Octane, Spendex</td>
+<td>Financial/HR — phase 2</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>Hotel Intel — Daily Recap</h1>
+<h2>Overview</h2>
+<p>The daily recap is the core output of Hotel Intel. It&#39;s an AI-generated intelligence briefing delivered every morning, designed to give hotel leadership a complete operational picture in under 2 minutes.</p>
+<p><strong>Delivery time:</strong> 06:00–07:00 local time (configurable)
+<strong>Covers:</strong> Yesterday&#39;s actuals + today&#39;s lookahead
+<strong>Tone:</strong> Professional, concise, action-oriented. Written for a GM reading on mobile.</p>
+<hr>
+<h2>Recap Structure</h2>
+<h3>1. 🔑 Executive Summary</h3>
+<p>A 3–5 sentence AI-generated overview of the most important things to know today. Highlights anomalies, key arrivals, and anything requiring attention.</p>
+<blockquote>
+<p><em>Example: &quot;Occupancy hit 94% yesterday with ADR at €1,240 — both above monthly average. Three VIP arrivals today including [Guest Name], returning guest (4th stay). Two open incidents from last night require follow-up. Spa is fully booked through Saturday.&quot;</em></p>
+</blockquote>
+<hr>
+<h3>2. 📊 Key Performance Indicators</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Description</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Occupancy %</strong></td>
+<td>Rooms occupied / rooms available</td>
+<td>OPERA</td>
+</tr>
+<tr>
+<td><strong>ADR</strong></td>
+<td>Average Daily Rate — room revenue / rooms sold</td>
+<td>OPERA</td>
+</tr>
+<tr>
+<td><strong>RevPAR</strong></td>
+<td>Revenue Per Available Room — room revenue / total rooms</td>
+<td>OPERA</td>
+</tr>
+<tr>
+<td><strong>Total Revenue</strong></td>
+<td>All-department revenue (rooms + F&amp;B + spa + other)</td>
+<td>OPERA + Sage</td>
+</tr>
+<tr>
+<td><strong>Room Revenue</strong></td>
+<td>Rooms department only</td>
+<td>OPERA</td>
+</tr>
+</tbody></table>
+<p>Displayed with:</p>
+<ul>
+<li>Yesterday&#39;s actual</li>
+<li>Same day last week</li>
+<li>Same day last year (if available)</li>
+<li>Month-to-date cumulative</li>
+<li>Budget variance (if budget data available)</li>
+</ul>
+<hr>
+<h3>3. 🛎️ Arrivals &amp; Departures</h3>
+<p><strong>Today&#39;s Arrivals:</strong></p>
+<ul>
+<li>Total arriving guests / rooms</li>
+<li>VIP arrivals (flagged with VIP level, stay history, preferences)</li>
+<li>Special requests or notes</li>
+<li>Group arrivals (if any)</li>
+<li>Room assignments status</li>
+</ul>
+<p><strong>Today&#39;s Departures:</strong></p>
+<ul>
+<li>Total departing guests / rooms</li>
+<li>Late check-outs</li>
+<li>Notable departures</li>
+</ul>
+<p><strong>In-House:</strong></p>
+<ul>
+<li>Current house count</li>
+<li>Notable in-house guests</li>
+</ul>
+<p><em>Source: Oracle OPERA</em></p>
+<hr>
+<h3>4. ⭐ VIP Watch</h3>
+<p>Dedicated section for VIP guests — the detail luxury hotels care most about:</p>
+<ul>
+<li>VIP arrivals today with profile summary</li>
+<li>Return guest indicator (Nth stay)</li>
+<li>Known preferences and special arrangements</li>
+<li>Birthday/anniversary alerts</li>
+<li>Connected concierge requests</li>
+<li>VIP departures (for farewell arrangements)</li>
+</ul>
+<p><em>Source: OPERA + Concierge Organizer</em></p>
+<hr>
+<h3>5. 🍽️ Food &amp; Beverage</h3>
+<p>Per outlet (e.g., &quot;Sand Bar,&quot; &quot;Jean-Georges,&quot; &quot;Room Service&quot;):</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Covers</strong></td>
+<td>Total covers per service period (breakfast, lunch, dinner)</td>
+</tr>
+<tr>
+<td><strong>Reservations</strong></td>
+<td>Booked vs walk-in ratio</td>
+</tr>
+<tr>
+<td><strong>No-shows</strong></td>
+<td>Reservation no-show count</td>
+</tr>
+<tr>
+<td><strong>Revenue</strong></td>
+<td>F&amp;B revenue by outlet</td>
+</tr>
+<tr>
+<td><strong>Average check</strong></td>
+<td>Revenue per cover</td>
+</tr>
+</tbody></table>
+<p><strong>Today&#39;s lookahead:</strong></p>
+<ul>
+<li>Expected covers per outlet</li>
+<li>Notable reservations (VIPs, large parties, special events)</li>
+</ul>
+<p><em>Source: 7rooms + Micros</em></p>
+<hr>
+<h3>6. 💆 Spa &amp; Wellness</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Bookings</strong></td>
+<td>Total spa appointments yesterday</td>
+</tr>
+<tr>
+<td><strong>Revenue</strong></td>
+<td>Treatment revenue + retail</td>
+</tr>
+<tr>
+<td><strong>Utilization</strong></td>
+<td>Treatment room / therapist utilization %</td>
+</tr>
+<tr>
+<td><strong>Retail</strong></td>
+<td>Spa product sales</td>
+</tr>
+</tbody></table>
+<p><strong>Today&#39;s lookahead:</strong></p>
+<ul>
+<li>Today&#39;s booking count and capacity remaining</li>
+<li>Peak hours</li>
+</ul>
+<p><em>Source: TAC</em></p>
+<hr>
+<h3>7. 🏠 Villa Bookings (Eden Rock Specific)</h3>
+<ul>
+<li>Current villa occupancy</li>
+<li>Villa check-ins / check-outs today</li>
+<li>Upcoming villa bookings (next 7 days)</li>
+<li>Villa revenue (if available)</li>
+</ul>
+<p><em>Source: ERVR (Google Calendar)</em></p>
+<hr>
+<h3>8. 🚨 Incidents &amp; Issues</h3>
+<ul>
+<li><strong>Open incidents</strong> — Unresolved from yesterday or earlier</li>
+<li><strong>New incidents</strong> — Logged yesterday</li>
+<li><strong>Resolved</strong> — Closed yesterday with resolution time</li>
+<li><strong>Categories</strong> — Breakdown by type (maintenance, noise, service, etc.)</li>
+<li><strong>Recurring patterns</strong> — AI flags if the same issue type keeps appearing</li>
+</ul>
+<p><em>Source: Unifocus Knowcross</em></p>
+<hr>
+<h3>9. 🎩 Concierge Activity</h3>
+<ul>
+<li><strong>Request volume</strong> — Total requests yesterday</li>
+<li><strong>Top categories</strong> — Restaurant bookings, transfers, activities, etc.</li>
+<li><strong>Open requests</strong> — Pending fulfillment</li>
+<li><strong>Notable arrangements</strong> — Special or high-effort requests</li>
+</ul>
+<p><em>Source: Concierge Organizer</em></p>
+<hr>
+<h3>10. 👥 Staffing Overview (Phase 2)</h3>
+<ul>
+<li>Staff on duty today by department</li>
+<li>Actual vs scheduled</li>
+<li>Overtime alerts</li>
+<li>Key absences</li>
+</ul>
+<p><em>Source: Octane + Sage</em></p>
+<hr>
+<h3>11. 💰 Financial Snapshot (Phase 2)</h3>
+<ul>
+<li>Daily revenue summary by department</li>
+<li>Payment processing summary (Adyen)</li>
+<li>Budget vs actual variance</li>
+<li>Expense flags</li>
+</ul>
+<p><em>Source: Sage + Adyen + Spendex</em></p>
+<hr>
+<h2>AI-Powered Insights</h2>
+<p>Beyond presenting data, the AI layer adds:</p>
+<ul>
+<li><strong>Anomaly detection</strong> — &quot;Occupancy dropped 15% vs same day last year&quot;</li>
+<li><strong>Correlation alerts</strong> — &quot;High VIP count today + spa fully booked = potential availability issue&quot;</li>
+<li><strong>Trend summaries</strong> — &quot;Third consecutive day of declining F&amp;B covers at lunch&quot;</li>
+<li><strong>Action suggestions</strong> — &quot;Consider opening additional lunch seating given arrival count&quot;</li>
+<li><strong>Weather context</strong> — Local weather integrated for outdoor dining / activity planning</li>
+</ul>
+<hr>
+<h2>Recap Formats</h2>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Format</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Email</strong></td>
+<td>HTML</td>
+<td>Fully formatted with tables, color coding, sections</td>
+</tr>
+<tr>
+<td><strong>Telegram</strong></td>
+<td>Markdown</td>
+<td>Condensed version optimized for mobile reading</td>
+</tr>
+<tr>
+<td><strong>Dashboard</strong></td>
+<td>Interactive</td>
+<td>Clickable sections, drill-down, historical comparison</td>
+</tr>
+<tr>
+<td><strong>TTS</strong></td>
+<td>Audio</td>
+<td>Spoken summary — executive summary + KPIs + highlights</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Customization</h2>
+<p>Each property can configure:</p>
+<ul>
+<li>Which sections to include/exclude</li>
+<li>KPI thresholds for anomaly flagging</li>
+<li>VIP level threshold for the VIP Watch section</li>
+<li>Recipients per channel</li>
+<li>Delivery time</li>
+<li>Language (multi-language support planned)</li>
+</ul>
+<hr>
+<h1>Hotel Intel — Delivery Channels</h1>
+<h2>Overview</h2>
+<p>Hotel Intel delivers the daily recap through multiple channels simultaneously. Each channel is optimized for its context — detailed HTML for email, concise markdown for Telegram, interactive data for the dashboard, and a spoken summary for TTS.</p>
+<hr>
+<h2>📧 Email</h2>
+<p><strong>Primary channel for most users.</strong></p>
+<h3>Format</h3>
+<ul>
+<li><strong>HTML email</strong> with responsive design (mobile-first)</li>
+<li>Branded header with hotel logo and date</li>
+<li>Collapsible sections (where email clients support it)</li>
+<li>Color-coded KPIs: 🟢 above target, 🟡 on target, 🔴 below target</li>
+<li>Tables for numerical data, prose for AI insights</li>
+<li>Footer with link to dashboard for drill-down</li>
+</ul>
+<h3>Delivery</h3>
+<ul>
+<li><strong>Method:</strong> SMTP or transactional email service (SendGrid, Postmark, SES)</li>
+<li><strong>Schedule:</strong> Configurable — default 06:30 local time</li>
+<li><strong>Recipients:</strong> Configurable per property — GM, department heads, ownership</li>
+<li><strong>Reply handling:</strong> Future — reply to email to ask follow-up questions</li>
+</ul>
+<h3>Example Structure</h3>
+<pre><code>Subject: 🏨 Hotel Intel — Eden Rock — Feb 13, 2026
+
+[Executive Summary - 3-5 sentences]
+
+📊 KPIs
+┌──────────┬───────────┬──────────┬──────────┐
+│ Metric   │ Yesterday │ Last Wk  │ Budget   │
+├──────────┼───────────┼──────────┼──────────┤
+│ Occ %    │ 94%       │ 87%      │ 90%      │
+│ ADR      │ €1,240    │ €1,180   │ €1,200   │
+│ RevPAR   │ €1,166    │ €1,027   │ €1,080   │
+└──────────┴───────────┴──────────┴──────────┘
+
+[Arrivals &amp; VIPs]
+[F&amp;B Summary]
+[Spa Summary]
+[Incidents]
+...
+
+→ View full dashboard: https://intel.hotel/dashboard
+</code></pre>
+<hr>
+<h2>💬 Telegram Bot</h2>
+<p><strong>Fast, mobile-first delivery for on-the-go managers.</strong></p>
+<h3>Format</h3>
+<ul>
+<li><strong>Markdown messages</strong> optimized for Telegram&#39;s rendering</li>
+<li>Shorter than email — executive summary + KPIs + highlights only</li>
+<li>Emoji-driven section headers for scannability</li>
+<li>Inline keyboard buttons for &quot;Show more&quot; on each section</li>
+</ul>
+<h3>Bot Features</h3>
+<ul>
+<li><strong>Daily push</strong> — Automated morning recap to configured group or individual chats</li>
+<li><strong>On-demand queries</strong> — &quot;What&#39;s today&#39;s occupancy?&quot; / &quot;VIP arrivals?&quot; / &quot;Spa status?&quot;</li>
+<li><strong>Alerts</strong> — Push notifications for urgent items (critical incidents, VIP last-minute changes)</li>
+<li><strong>Follow-up</strong> — Ask questions about the recap and get AI-powered answers</li>
+</ul>
+<h3>Delivery</h3>
+<ul>
+<li><strong>Method:</strong> Telegram Bot API</li>
+<li><strong>Schedule:</strong> Same as email, or slight offset (e.g., 06:35)</li>
+<li><strong>Recipients:</strong> Telegram group (e.g., &quot;Eden Rock Management&quot;) and/or individual DMs</li>
+<li><strong>Interaction:</strong> Users can reply to the bot for clarifications</li>
+</ul>
+<h3>Bot Commands</h3>
+<pre><code>/recap       — Get today&#39;s full recap
+/kpi         — KPIs only
+/arrivals    — Today&#39;s arrivals &amp; VIPs
+/fnb         — F&amp;B summary
+/spa         — Spa status
+/incidents   — Open incidents
+/help        — Available commands
+</code></pre>
+<hr>
+<h2>📊 Dashboard</h2>
+<p><strong>Interactive web interface for deep dives.</strong></p>
+<h3>Features</h3>
+<ul>
+<li><strong>Today view</strong> — Current day&#39;s recap in interactive format</li>
+<li><strong>Historical</strong> — Browse past days, compare periods</li>
+<li><strong>Drill-down</strong> — Click any metric to see underlying data</li>
+<li><strong>Charts</strong> — Trend lines for KPIs over time (7d, 30d, 90d, YTD)</li>
+<li><strong>Filters</strong> — By department, date range, metric type</li>
+<li><strong>Export</strong> — Download data as CSV/Excel/PDF</li>
+</ul>
+<h3>Access</h3>
+<ul>
+<li><strong>URL:</strong> Property-specific (e.g., <code>https://intel.edenrock.local/dashboard</code>)</li>
+<li><strong>Auth:</strong> SSO via Microsoft 365 or username/password</li>
+<li><strong>Mobile responsive</strong> — Usable on tablets and phones</li>
+<li><strong>Hosted locally</strong> — Runs on the same on-premise server as the pipeline</li>
+</ul>
+<h3>Dashboard Sections</h3>
+<ol>
+<li>Executive summary card</li>
+<li>KPI scorecards with sparklines</li>
+<li>Arrivals/departures timeline</li>
+<li>F&amp;B covers by outlet (bar chart)</li>
+<li>Spa utilization gauge</li>
+<li>Incident status board</li>
+<li>Concierge request feed</li>
+<li>Villa occupancy calendar</li>
+</ol>
+<hr>
+<h2>🔊 TTS / Speech (Optional)</h2>
+<p><strong>Listen to the recap instead of reading it.</strong></p>
+<h3>Use Case</h3>
+<ul>
+<li>GM listens during morning commute or while walking the property</li>
+<li>Hands-free briefing during breakfast</li>
+<li>Accessibility option</li>
+</ul>
+<h3>Format</h3>
+<ul>
+<li>AI-generated audio from the executive summary + key highlights</li>
+<li>Duration target: 2–3 minutes</li>
+<li>Natural voice (not robotic) — ElevenLabs or similar TTS service</li>
+</ul>
+<h3>Delivery</h3>
+<ul>
+<li><strong>Telegram voice message</strong> — Attached to the daily bot message</li>
+<li><strong>Email attachment</strong> — MP3 or link to audio file</li>
+<li><strong>Dashboard</strong> — Play button on the recap page</li>
+</ul>
+<hr>
+<h2>🤖 AI Interaction (Future)</h2>
+<p>Beyond passive delivery, Hotel Intel will support interactive queries:</p>
+<ul>
+<li><strong>Audio input</strong> — Ask questions verbally, get spoken answers</li>
+<li><strong>Email replies</strong> — Reply to the recap email with a question</li>
+<li><strong>Telegram chat</strong> — Conversational follow-ups with the bot</li>
+<li><strong>Actions</strong> — &quot;Send a welcome email to VIP arriving today&quot; / &quot;Add a calendar event for the wine dinner&quot;</li>
+</ul>
+<h3>Planned Capabilities</h3>
+<ul>
+<li>Send emails on behalf of hotel staff</li>
+<li>Create calendar events</li>
+<li>Send SMS to guests (with approval workflow)</li>
+<li>Trigger tasks in operational systems</li>
+</ul>
+<hr>
+<h2>Channel Comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Email</th>
+<th>Telegram</th>
+<th>Dashboard</th>
+<th>TTS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Full recap</td>
+<td>✅</td>
+<td>Condensed</td>
+<td>✅ Interactive</td>
+<td>Summary only</td>
+</tr>
+<tr>
+<td>Mobile optimized</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Real-time alerts</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Interactive queries</td>
+<td>Future</td>
+<td>✅</td>
+<td>✅</td>
+<td>Future</td>
+</tr>
+<tr>
+<td>Historical data</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Offline access</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅ (downloaded)</td>
+</tr>
+<tr>
+<td>Setup complexity</td>
+<td>Low</td>
+<td>Low</td>
+<td>Medium</td>
+<td>Low</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Configuration</h2>
+<p>Per property, configure:</p>
+<pre><code class="language-yaml">delivery:
+  email:
+    enabled: true
+    time: &quot;06:30&quot;
+    recipients:
+      - gm@edenrock.com
+      - ops@edenrock.com
+    format: full  # full | summary
+  
+  telegram:
+    enabled: true
+    time: &quot;06:35&quot;
+    chat_id: &quot;-100123456789&quot;
+    format: summary
+    interactive: true
+  
+  dashboard:
+    enabled: true
+    url: &quot;https://intel.edenrock.local&quot;
+    auth: microsoft365
+  
+  tts:
+    enabled: false
+    voice: &quot;elevenlabs:rachel&quot;
+    duration_target: 180  # seconds
+</code></pre>
+<hr>
+<h1>Hotel Intel — MVP &amp; Roadmap</h1>
+<h2>MVP Philosophy</h2>
+<p>Ship the smallest version that delivers real value to Eden Rock&#39;s GM every morning. One integration, one output channel, one property. Then iterate.</p>
+<hr>
+<h2>Phase 1: MVP (v1.0)</h2>
+<p><strong>Goal:</strong> Daily AI recap with core hotel data, delivered via email and Telegram.</p>
+<h3>Integrations (MVP)</h3>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Data</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Oracle OPERA (OHIP)</td>
+<td>Occupancy, ADR, RevPAR, arrivals, departures, VIPs, revenue</td>
+<td>P0 — first</td>
+</tr>
+<tr>
+<td>TAC</td>
+<td>Spa bookings, revenue</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>7rooms</td>
+<td>F&amp;B covers, reservations</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>Unifocus Knowcross</td>
+<td>Incidents, tasks</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>ERVR (Google Calendar)</td>
+<td>Villa bookings</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>Concierge Organizer</td>
+<td>Guest requests</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>Microsoft 365</td>
+<td>OneDrive/Outlook — specific files/reports</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>File System</td>
+<td>Watched folders for manual reports</td>
+<td>P2</td>
+</tr>
+</tbody></table>
+<h3>Recap Sections (MVP)</h3>
+<ul>
+<li>✅ Executive summary (AI-generated)</li>
+<li>✅ KPIs: occupancy, ADR, RevPAR</li>
+<li>✅ Arrivals &amp; departures</li>
+<li>✅ VIP watch</li>
+<li>✅ F&amp;B covers per outlet</li>
+<li>✅ Spa bookings &amp; utilization</li>
+<li>✅ Villa bookings</li>
+<li>✅ Open incidents</li>
+<li>✅ Concierge activity summary</li>
+</ul>
+<h3>Delivery (MVP)</h3>
+<ul>
+<li>✅ Email (HTML formatted)</li>
+<li>✅ Telegram bot (condensed recap + basic commands)</li>
+<li>❌ Dashboard (Phase 2)</li>
+<li>❌ TTS (Phase 2)</li>
+</ul>
+<h3>Infrastructure (MVP)</h3>
+<ul>
+<li>Local server at Eden Rock (Docker-based)</li>
+<li>PostgreSQL database</li>
+<li>Scheduled pipeline (cron — runs at 05:00, delivers at 06:30)</li>
+<li>LLM via API (Claude or GPT-4)</li>
+</ul>
+<h3>MVP Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"> GM receives the recap every morning by 06:30</li>
+<li><input disabled="" type="checkbox"> Data is accurate and matches source systems</li>
+<li><input disabled="" type="checkbox"> Recap is read and found useful (qualitative feedback)</li>
+<li><input disabled="" type="checkbox"> System runs reliably for 30 consecutive days</li>
+<li><input disabled="" type="checkbox"> &lt;5 minutes of manual intervention per week</li>
+</ul>
+<hr>
+<h2>Phase 2: Enhanced (v1.5)</h2>
+<p><strong>Goal:</strong> Dashboard, more integrations, interactive queries.</p>
+<h3>New Features</h3>
+<ul>
+<li>📊 Web dashboard with historical data and charts</li>
+<li>🔊 TTS audio recap (Telegram voice message + email attachment)</li>
+<li>💬 Telegram bot interactive queries (&quot;What&#39;s today&#39;s occupancy?&quot;)</li>
+<li>📈 Trend analysis (7-day, 30-day comparisons)</li>
+<li>⚠️ Real-time alerts for critical incidents</li>
+</ul>
+<h3>New Integrations</h3>
+<ul>
+<li>Micros (F&amp;B payment data)</li>
+<li>Sage (financial summary)</li>
+<li>Adyen (payment processing data)</li>
+<li>Microsoft 365 Teams (operational channel monitoring)</li>
+<li>Microsoft 365 SharePoint (shared operational documents)</li>
+</ul>
+<h3>Recap Enhancements</h3>
+<ul>
+<li>Staffing overview (from Octane)</li>
+<li>Financial snapshot (from Sage + Adyen)</li>
+<li>Weather integration</li>
+<li>Budget vs actual comparison</li>
+</ul>
+<hr>
+<h2>Phase 3: Multi-Property (v2.0)</h2>
+<p><strong>Goal:</strong> Scale to additional properties. Multi-tenant architecture.</p>
+<h3>Features</h3>
+<ul>
+<li>Multi-property dashboard with portfolio view</li>
+<li>Property comparison metrics</li>
+<li>Centralized management console</li>
+<li>Self-service onboarding for new integrations</li>
+<li>White-label option</li>
+<li>Role-based access (GM vs department head vs owner)</li>
+</ul>
+<h3>AI Enhancements</h3>
+<ul>
+<li>Cross-property benchmarking</li>
+<li>Predictive analytics (occupancy forecasting, demand prediction)</li>
+<li>Automated action suggestions with approval workflow</li>
+<li>Email/SMS sending on behalf of staff</li>
+<li>Calendar event creation</li>
+</ul>
+<hr>
+<h2>Phase 4: Platform (v3.0)</h2>
+<p><strong>Goal:</strong> Full intelligence platform for luxury hospitality.</p>
+<h3>Features</h3>
+<ul>
+<li>Marketplace of integrations (plug-and-play connectors)</li>
+<li>Custom recap templates per role</li>
+<li>Guest journey tracking (cross-system guest timeline)</li>
+<li>Revenue management insights</li>
+<li>Competitive intelligence integration</li>
+<li>Mobile app (native)</li>
+<li>Local LLM option for fully on-premise AI processing</li>
+</ul>
+<hr>
+<h2>Development Timeline (Estimated)</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Scope</th>
+<th>Timeline</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Phase 1 (MVP)</strong></td>
+<td>OPERA integration + core recap + email/Telegram</td>
+<td>8–12 weeks</td>
+</tr>
+<tr>
+<td><strong>Phase 2</strong></td>
+<td>Dashboard + more integrations + interactive bot</td>
+<td>+8–12 weeks</td>
+</tr>
+<tr>
+<td><strong>Phase 3</strong></td>
+<td>Multi-property + portfolio view</td>
+<td>+12–16 weeks</td>
+</tr>
+<tr>
+<td><strong>Phase 4</strong></td>
+<td>Platform + marketplace</td>
+<td>+6 months</td>
+</tr>
+</tbody></table>
+<h3>MVP Sprint Breakdown</h3>
+<table>
+<thead>
+<tr>
+<th>Sprint</th>
+<th>Focus</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sprint 1 (2w)</td>
+<td>OPERA OHIP API research, auth setup, data mapping</td>
+</tr>
+<tr>
+<td>Sprint 2 (2w)</td>
+<td>OPERA connector — pull occupancy, arrivals, revenue</td>
+</tr>
+<tr>
+<td>Sprint 3 (2w)</td>
+<td>Data processing pipeline + LLM recap generation</td>
+</tr>
+<tr>
+<td>Sprint 4 (2w)</td>
+<td>Email + Telegram delivery</td>
+</tr>
+<tr>
+<td>Sprint 5 (2w)</td>
+<td>Additional connectors (TAC, 7rooms, Unifocus)</td>
+</tr>
+<tr>
+<td>Sprint 6 (2w)</td>
+<td>ERVR, Concierge Organizer, M365 connectors + polish</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Risks &amp; Mitigations</h2>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Impact</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OPERA OHIP API access delays</td>
+<td>Blocks MVP</td>
+<td>Start API application early; prepare mock data pipeline</td>
+</tr>
+<tr>
+<td>TAC/Knowcross lack APIs</td>
+<td>Missing data sources</td>
+<td>Fall back to file export or database access</td>
+</tr>
+<tr>
+<td>LLM hallucination in recap</td>
+<td>Incorrect data reported</td>
+<td>Structured prompts with data validation; human review period</td>
+</tr>
+<tr>
+<td>Local server reliability</td>
+<td>Missed recaps</td>
+<td>Monitoring + alerting; fallback to cloud delivery</td>
+</tr>
+<tr>
+<td>Data quality issues</td>
+<td>Inaccurate KPIs</td>
+<td>Validation layer with sanity checks and source comparison</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Open Questions</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Which Oracle OPERA version does Eden Rock run? (Cloud vs on-prem)</li>
+<li><input disabled="" type="checkbox"> OHIP API licensing — is it included or additional cost?</li>
+<li><input disabled="" type="checkbox"> TAC integration method — API available?</li>
+<li><input disabled="" type="checkbox"> Concierge Organizer integration method?</li>
+<li><input disabled="" type="checkbox"> Mosaic Projects — evaluate for potential leverage in data aggregation</li>
+<li><input disabled="" type="checkbox"> Server specifications for local hosting at Eden Rock</li>
+<li><input disabled="" type="checkbox"> Budget data availability for variance reporting</li>
+</ul>
+<hr>
+<h1>Hotel Intel — Security &amp; Privacy</h1>
+<h2>Overview</h2>
+<p>Hotel Intel handles sensitive guest data from luxury hotels — names, preferences, spending patterns, stay history. Security is not optional; it&#39;s a core product requirement. The architecture is designed around <strong>local hosting</strong> to keep guest PII within the property&#39;s control.</p>
+<hr>
+<h2>Local Hosting Model</h2>
+<h3>Principle</h3>
+<p>All guest data stays on-premise. The Hotel Intel pipeline runs on a server physically located at (or controlled by) the hotel property.</p>
+<h3>Architecture</h3>
+<pre><code>┌─────────────── Hotel Network ───────────────┐
+│                                              │
+│  Hotel Systems ←→ Hotel Intel Server         │
+│  (OPERA, TAC,      (pipeline, DB,            │
+│   7rooms, etc.)      dashboard)              │
+│                                              │
+│         │ Outbound only (encrypted)          │
+└─────────┼────────────────────────────────────┘
+          │
+          ▼
+   ┌──────────────┐
+   │ External APIs │
+   │ - LLM API    │
+   │ - SMTP       │
+   │ - Telegram   │
+   └──────────────┘
+</code></pre>
+<h3>What Stays Local</h3>
+<ul>
+<li>✅ Raw data from all hotel systems</li>
+<li>✅ Guest PII (names, profiles, preferences, stay history)</li>
+<li>✅ Financial data (revenue, transactions, payroll)</li>
+<li>✅ Incident details</li>
+<li>✅ Historical database</li>
+<li>✅ Dashboard and web interface</li>
+</ul>
+<h3>What Leaves the Network</h3>
+<ul>
+<li>⚠️ <strong>LLM API calls</strong> — Aggregated metrics and anonymized summaries only (no raw PII)</li>
+<li>⚠️ <strong>Email delivery</strong> — Recap content sent via SMTP (contains operational summaries, not raw guest data)</li>
+<li>⚠️ <strong>Telegram messages</strong> — Condensed recap (operational metrics, no guest PII in standard recap)</li>
+<li>⚠️ <strong>TTS API</strong> — Summary text only</li>
+</ul>
+<hr>
+<h2>Data Classification</h2>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Description</th>
+<th>Examples</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Restricted</strong></td>
+<td>Guest PII</td>
+<td>Names, contact info, payment details, preferences</td>
+<td>Local only. Never sent to LLM or external services.</td>
+</tr>
+<tr>
+<td><strong>Confidential</strong></td>
+<td>Operational data</td>
+<td>Revenue figures, occupancy rates, incident details</td>
+<td>Local storage. Aggregated/anonymized before external API calls.</td>
+</tr>
+<tr>
+<td><strong>Internal</strong></td>
+<td>Generated content</td>
+<td>AI recap text, KPI summaries</td>
+<td>Can be delivered via email/Telegram to authorized recipients.</td>
+</tr>
+<tr>
+<td><strong>Public</strong></td>
+<td>None</td>
+<td>—</td>
+<td>Hotel Intel handles no public data.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>PII Handling</h2>
+<h3>Before LLM Processing</h3>
+<p>Guest PII is stripped or pseudonymized before any data leaves the local network:</p>
+<pre><code>Raw (local only):
+  &quot;Mr. Jean-Pierre Dupont, VIP Level 5, Suite 401, returning guest (4th stay)&quot;
+
+Sent to LLM:
+  &quot;1 VIP-5 arrival, returning guest (4th stay), assigned to premium suite category&quot;
+</code></pre>
+<h3>PII in Recaps</h3>
+<p>The email/Telegram recap <strong>may</strong> include guest names for VIP sections (this is operationally necessary). However:</p>
+<ul>
+<li>Recipients are authorized hotel management only</li>
+<li>Distribution list is controlled and auditable</li>
+<li>Guest contact details (email, phone, payment) are <strong>never</strong> included in recaps</li>
+</ul>
+<hr>
+<h2>Access Control</h2>
+<h3>System Access</h3>
+<ul>
+<li>Hotel Intel server access restricted to authorized IT personnel</li>
+<li>SSH key-based authentication (no password login)</li>
+<li>All admin actions logged</li>
+</ul>
+<h3>Dashboard Access</h3>
+<ul>
+<li>Authentication via Microsoft 365 SSO (leveraging hotel&#39;s existing Azure AD)</li>
+<li>Role-based access:<ul>
+<li><strong>Admin</strong> — Full access, configuration, user management</li>
+<li><strong>Manager</strong> — Full recap view, historical data</li>
+<li><strong>Department Head</strong> — Department-specific view</li>
+</ul>
+</li>
+<li>Session timeout after inactivity</li>
+<li>All access logged with timestamp and IP</li>
+</ul>
+<h3>Telegram Bot</h3>
+<ul>
+<li>Bot restricted to authorized chat IDs</li>
+<li>No public-facing bot functionality</li>
+<li>Commands authenticated per user ID</li>
+</ul>
+<h3>API Credentials</h3>
+<ul>
+<li>All integration credentials (OPERA, 7rooms, M365, etc.) stored encrypted at rest</li>
+<li>Credentials never logged or included in error reports</li>
+<li>Rotation policy: quarterly minimum</li>
+</ul>
+<hr>
+<h2>Network Security</h2>
+<ul>
+<li><strong>Encryption in transit</strong> — All external API calls over TLS 1.2+</li>
+<li><strong>Encryption at rest</strong> — Database encryption (AES-256)</li>
+<li><strong>Firewall</strong> — Inbound connections blocked; outbound whitelist only:<ul>
+<li>LLM API endpoints</li>
+<li>SMTP relay</li>
+<li>Telegram API (api.telegram.org)</li>
+<li>Google Calendar API (for ERVR)</li>
+<li>Microsoft Graph API</li>
+<li>Integration-specific API endpoints</li>
+</ul>
+</li>
+<li><strong>VPN</strong> — Optional VPN tunnel for remote management</li>
+<li><strong>No public IP</strong> — Dashboard accessible only on hotel network (or via VPN)</li>
+</ul>
+<hr>
+<h2>Compliance Considerations</h2>
+<h3>GDPR (EU General Data Protection Regulation)</h3>
+<ul>
+<li><strong>Applies:</strong> Yes — Eden Rock processes EU guest data</li>
+<li><strong>Legal basis:</strong> Legitimate interest (operational management of guest services)</li>
+<li><strong>Data minimization:</strong> Only collect data necessary for the daily recap</li>
+<li><strong>Right to erasure:</strong> Ability to purge specific guest data on request</li>
+<li><strong>Data processing agreement:</strong> Required between Hotel Intel (as processor) and the hotel (as controller)</li>
+<li><strong>Records of processing:</strong> Maintain documentation of all data processing activities</li>
+</ul>
+<h3>CNIL (French Data Protection Authority)</h3>
+<ul>
+<li><strong>Applies:</strong> Yes — Eden Rock is a French property (St-Barthélemy is a French collectivity)</li>
+<li><strong>Registration:</strong> May require CNIL notification depending on data scope</li>
+<li><strong>Employee data:</strong> HR/staffing data has additional CNIL requirements</li>
+</ul>
+<h3>PCI DSS (Payment Card Industry)</h3>
+<ul>
+<li><strong>Applies:</strong> Indirectly — Hotel Intel does <strong>not</strong> store or process raw card numbers</li>
+<li><strong>Adyen integration:</strong> Only transaction summaries and settlement data (no PANs)</li>
+<li><strong>Mitigation:</strong> Never store, process, or transmit cardholder data</li>
+</ul>
+<h3>Hotel Industry Standards</h3>
+<ul>
+<li>Guest data handling aligned with luxury hotel confidentiality expectations</li>
+<li>Celebrity/high-profile guest data requires heightened discretion</li>
+<li>VIP guest information restricted to need-to-know recipients</li>
+</ul>
+<hr>
+<h2>Incident Response</h2>
+<h3>If a Security Incident Occurs</h3>
+<ol>
+<li><strong>Detect</strong> — Monitoring alerts on unusual access patterns, failed auth attempts, data anomalies</li>
+<li><strong>Contain</strong> — Isolate affected system, revoke compromised credentials</li>
+<li><strong>Notify</strong> — Alert hotel IT and management within 1 hour</li>
+<li><strong>Investigate</strong> — Determine scope, affected data, root cause</li>
+<li><strong>Remediate</strong> — Fix vulnerability, rotate credentials, restore from backup</li>
+<li><strong>Report</strong> — GDPR requires notification to authorities within 72 hours if personal data is breached</li>
+</ol>
+<h3>Monitoring</h3>
+<ul>
+<li>Failed authentication attempts</li>
+<li>Unusual data access patterns</li>
+<li>Pipeline failures (may indicate system compromise)</li>
+<li>Outbound traffic anomalies</li>
+</ul>
+<hr>
+<h2>Backup &amp; Recovery</h2>
+<ul>
+<li><strong>Database backup:</strong> Daily automated backup, encrypted, stored locally</li>
+<li><strong>Configuration backup:</strong> Version-controlled (Git)</li>
+<li><strong>Recovery time objective (RTO):</strong> &lt; 4 hours</li>
+<li><strong>Recovery point objective (RPO):</strong> &lt; 24 hours (last daily backup)</li>
+<li><strong>Backup retention:</strong> 90 days</li>
+</ul>
+<hr>
+<h2>Future: Fully On-Premise AI</h2>
+<p>To eliminate the need for external LLM API calls entirely:</p>
+<ul>
+<li>Deploy a local LLM (e.g., Llama, Mistral) on the hotel server</li>
+<li>All processing — including AI generation — stays within the hotel network</li>
+<li>Trade-off: requires more powerful local hardware (GPU)</li>
+<li>Planned evaluation in Phase 3+</li>
+</ul>
+<hr>
+<h2>Security Checklist (Pre-Deployment)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Local server hardened (OS patching, unnecessary services disabled)</li>
+<li><input disabled="" type="checkbox"> Firewall configured with outbound whitelist</li>
+<li><input disabled="" type="checkbox"> All API credentials encrypted at rest</li>
+<li><input disabled="" type="checkbox"> Database encryption enabled</li>
+<li><input disabled="" type="checkbox"> SSH key-only access configured</li>
+<li><input disabled="" type="checkbox"> Dashboard SSO configured with hotel&#39;s Azure AD</li>
+<li><input disabled="" type="checkbox"> Telegram bot restricted to authorized chat IDs</li>
+<li><input disabled="" type="checkbox"> PII stripping verified before LLM API calls</li>
+<li><input disabled="" type="checkbox"> GDPR Data Processing Agreement signed with hotel</li>
+<li><input disabled="" type="checkbox"> Backup schedule configured and tested</li>
+<li><input disabled="" type="checkbox"> Monitoring and alerting operational</li>
+<li><input disabled="" type="checkbox"> Access logging enabled and verified</li>
+</ul>
+
+</body></html>

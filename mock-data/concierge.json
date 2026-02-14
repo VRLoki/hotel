@@ -1,0 +1,41 @@
+{
+  "conciergeRequests": [
+    { "id": "CON-0207-01", "date": "2026-02-07", "time": "09:00", "guest": "Laurent de Montblanc", "room": 201, "type": "restaurant_booking", "details": "Bonito, 8pm, 2 pax, waterfront table", "status": "confirmed" },
+    { "id": "CON-0207-02", "date": "2026-02-07", "time": "09:30", "guest": "Alexandra Whitfield", "room": 108, "type": "excursion", "details": "Private catamaran sunset cruise for 2, Feb 9", "status": "confirmed", "vendor": "Jicky Marine", "cost": 1200.00 },
+    { "id": "CON-0207-03", "date": "2026-02-07", "time": "10:00", "guest": "Hans-Peter Müller", "room": 305, "type": "transfer", "details": "Airport transfer Feb 11, 14:00 departure", "status": "confirmed", "vendor": "St Barth Commuter" },
+    { "id": "CON-0207-04", "date": "2026-02-07", "time": "14:00", "guest": "Alexandra Whitfield", "room": 108, "type": "special_request", "details": "Honeymoon setup: rose petals, champagne, chocolates in room on return from dinner", "status": "completed" },
+    { "id": "CON-0207-05", "date": "2026-02-07", "time": "16:00", "guest": "In-house guest", "room": 304, "type": "restaurant_booking", "details": "L'Isola, 7:30pm, 4 pax", "status": "confirmed" },
+
+    { "id": "CON-0208-01", "date": "2026-02-08", "time": "08:30", "guest": "Sofia Marchetti", "room": 301, "type": "special_request", "details": "Birthday Feb 10 - arrange cake, flowers (white peonies), and card signed by staff", "status": "confirmed", "notes": "Coordinating with pastry chef" },
+    { "id": "CON-0208-02", "date": "2026-02-08", "time": "10:00", "guest": "Richard Haines", "room": 110, "type": "excursion", "details": "Half-day deep sea fishing, Feb 9", "status": "confirmed", "vendor": "Océan Must", "cost": 850.00 },
+    { "id": "CON-0208-03", "date": "2026-02-08", "time": "11:00", "guest": "Laurent de Montblanc", "room": 201, "type": "restaurant_booking", "details": "Maya's, 8:30pm, 2 pax, Feb 9", "status": "confirmed" },
+    { "id": "CON-0208-04", "date": "2026-02-08", "time": "14:00", "guest": "In-house guest", "room": 109, "type": "transfer", "details": "Car rental - Mini Moke, Feb 9-11", "status": "confirmed", "vendor": "Barthéloc", "cost": 180.00 },
+
+    { "id": "CON-0209-01", "date": "2026-02-09", "time": "08:00", "guest": "Philippe Dassault", "room": 202, "type": "special_request", "details": "Private chef dinner on terrace Feb 11, 4 pax, no shellfish", "status": "confirmed", "vendor": "Chef Nicolas", "cost": 3500.00 },
+    { "id": "CON-0209-02", "date": "2026-02-09", "time": "09:30", "guest": "In-house guest", "room": 306, "type": "excursion", "details": "Snorkeling trip to Colombier beach, morning", "status": "completed", "vendor": "Splash", "cost": 320.00 },
+    { "id": "CON-0209-03", "date": "2026-02-09", "time": "10:00", "guest": "In-house guest", "room": 113, "type": "restaurant_booking", "details": "Le Tamarin, 12:30pm, 2 pax, garden table", "status": "confirmed" },
+    { "id": "CON-0209-04", "date": "2026-02-09", "time": "15:00", "guest": "Alexandra Whitfield", "room": 108, "type": "special_request", "details": "Anniversary photo shoot on beach, sunrise Feb 11", "status": "confirmed", "vendor": "Guillaume Photo SBH", "cost": 600.00 },
+
+    { "id": "CON-0210-01", "date": "2026-02-10", "time": "08:00", "guest": "Sofia Marchetti", "room": 301, "type": "special_request", "details": "Birthday delivery: cake at 11am, flowers already in room, dinner reservation at On The Rocks with birthday setup", "status": "completed", "notes": "All executed perfectly, guest delighted" },
+    { "id": "CON-0210-02", "date": "2026-02-10", "time": "09:00", "guest": "Caroline Ashford-Webb", "room": 107, "type": "excursion", "details": "Private yoga session on beach, 7am Feb 11", "status": "confirmed", "vendor": "Yoga SBH", "cost": 250.00 },
+    { "id": "CON-0210-03", "date": "2026-02-10", "time": "11:00", "guest": "In-house guest", "room": 304, "type": "restaurant_booking", "details": "Shellona, 1pm, 6 pax", "status": "confirmed" },
+    { "id": "CON-0210-04", "date": "2026-02-10", "time": "14:00", "guest": "Philippe Dassault", "room": 202, "type": "transfer", "details": "Helicopter to SXM airport, Feb 13, 11:00", "status": "confirmed", "vendor": "St Barth Executive", "cost": 2200.00 },
+
+    { "id": "CON-0211-01", "date": "2026-02-11", "time": "08:00", "guest": "Isabelle Fontaine", "room": 117, "type": "restaurant_booking", "details": "La Case de l'Isle (St Barth Isle de France), 8pm, 2 pax", "status": "confirmed" },
+    { "id": "CON-0211-02", "date": "2026-02-11", "time": "09:30", "guest": "Dmitri Volkov", "room": 303, "type": "excursion", "details": "Jet ski rental, 2 hours, afternoon", "status": "confirmed", "vendor": "Carib Waterplay", "cost": 450.00 },
+    { "id": "CON-0211-03", "date": "2026-02-11", "time": "10:00", "guest": "Michael Chen", "room": 111, "type": "special_request", "details": "Flowers (tropical arrangement) delivered to room for partner arrival", "status": "completed", "vendor": "Fleurs des Iles", "cost": 180.00 },
+    { "id": "CON-0211-04", "date": "2026-02-11", "time": "15:00", "guest": "In-house guest", "room": 105, "type": "transfer", "details": "Boat transfer to Anse de Grande Saline, pickup 17:00", "status": "completed" },
+
+    { "id": "CON-0212-01", "date": "2026-02-12", "time": "08:00", "guest": "Jonathan Goldstein", "room": 113, "type": "special_request", "details": "2x bottles Krug Grande Cuvée in room on arrival (chilled), fresh fruit platter", "status": "completed", "notes": "First bottle was not chilled - see incident report" },
+    { "id": "CON-0212-02", "date": "2026-02-12", "time": "09:00", "guest": "Amélie Beaumont", "room": 203, "type": "restaurant_booking", "details": "On The Rocks, 8pm, 1 pax, window table - reviewing for article", "status": "confirmed", "notes": "Inform kitchen - press" },
+    { "id": "CON-0212-03", "date": "2026-02-12", "time": "10:00", "guest": "Sofia Marchetti", "room": 301, "type": "excursion", "details": "Full day sailing trip around island, Feb 13", "status": "confirmed", "vendor": "Jicky Marine", "cost": 1800.00 },
+    { "id": "CON-0212-04", "date": "2026-02-12", "time": "14:00", "guest": "Dmitri Volkov", "room": 303, "type": "restaurant_booking", "details": "Bagatelle, 9pm, 4 pax, VIP table", "status": "confirmed" },
+    { "id": "CON-0212-05", "date": "2026-02-12", "time": "16:00", "guest": "In-house guest", "room": 109, "type": "special_request", "details": "Valentine's Day setup Feb 14: champagne, roses, chocolate-covered strawberries", "status": "confirmed" },
+
+    { "id": "CON-0213-01", "date": "2026-02-13", "time": "08:00", "guest": "Priya Kapoor", "room": 106, "type": "restaurant_booking", "details": "On The Rocks, 8pm, 2 pax, Valentine's Eve dinner, vegetarian tasting menu", "status": "confirmed" },
+    { "id": "CON-0213-02", "date": "2026-02-13", "time": "09:00", "guest": "Thomas Eriksson", "room": 114, "type": "excursion", "details": "Guided hike to Colombier, morning Feb 14", "status": "confirmed", "vendor": "St Barth Rando", "cost": 150.00 },
+    { "id": "CON-0213-03", "date": "2026-02-13", "time": "10:00", "guest": "Jonathan Goldstein", "room": 113, "type": "special_request", "details": "Valentine's Day: private beach dinner setup, string quartet, fireworks (checking permit)", "status": "pending", "notes": "Fireworks permit unlikely - proposing lantern alternative" },
+    { "id": "CON-0213-04", "date": "2026-02-13", "time": "11:00", "guest": "Isabelle Fontaine", "room": 117, "type": "transfer", "details": "Airport pickup for friend arriving Feb 14, 15:00 on Tradewind flight", "status": "confirmed" },
+    { "id": "CON-0213-05", "date": "2026-02-13", "time": "14:00", "guest": "Caroline Ashford-Webb", "room": 107, "type": "special_request", "details": "Arrange personal shopper for Gustavia boutiques, afternoon Feb 14", "status": "confirmed", "vendor": "SBH Luxury Concierge", "cost": 500.00 }
+  ]
+}

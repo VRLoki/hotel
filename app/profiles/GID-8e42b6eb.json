@@ -1,0 +1,70 @@
+{
+  "guest_id": "GID-8e42b6eb",
+  "names": [
+    "Priya Kapoor"
+  ],
+  "emails": [],
+  "phones": [],
+  "nationality": "IN",
+  "vip_level": null,
+  "visits": [
+    {
+      "checkin": "",
+      "room": 106,
+      "room_type": "OSV",
+      "rate": 2800.0,
+      "nights": 6,
+      "confirmation": "ER260213-001"
+    }
+  ],
+  "preferences": {
+    "dietary": [
+      "vegetarian"
+    ],
+    "wines": [],
+    "room_type": "OSV",
+    "pillow_type": null,
+    "spa_treatments": [
+      "FACPREM"
+    ],
+    "preferred_therapists": [
+      "Anaïs"
+    ],
+    "special_requests": []
+  },
+  "spend_history": {
+    "total": 17120.0,
+    "rooms": 16800.0,
+    "fb": 0,
+    "spa": 320.0,
+    "concierge": 0,
+    "other": 0
+  },
+  "incidents": [
+    {
+      "id": "INC-20260213-003",
+      "date": "2026-02-13",
+      "category": "guest_complaint",
+      "description": "Kapoor requests vegetarian options not clearly marked on room service menu",
+      "resolution": "Printed custom vegetarian menu card for guest, flagged for next menu reprint",
+      "resolved": true,
+      "priority": "medium"
+    }
+  ],
+  "concierge_history": [
+    {
+      "id": "CON-0213-01",
+      "date": "2026-02-13",
+      "type": "restaurant_booking",
+      "details": "On The Rocks, 8pm, 2 pax, Valentine's Eve dinner, vegetarian tasting menu",
+      "status": "confirmed"
+    }
+  ],
+  "special_occasions": [],
+  "notes": [
+    "Vegetarian - inform F&B"
+  ],
+  "first_visit": "",
+  "total_visits": 1,
+  "last_updated": "2026-02-13"
+}

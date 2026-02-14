@@ -1,0 +1,10 @@
+.venv/
+moshi-env/
+__pycache__/
+*.pyc
+.env
+*.db
+models/
+node_modules/
+.DS_Store
+dashboard/app-web/

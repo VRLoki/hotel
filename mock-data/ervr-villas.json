@@ -1,0 +1,120 @@
+{
+  "villas": {
+    "VR01": { "name": "Villa Rockstar", "bedrooms": 4, "rackRate": 15000, "pool": true, "location": "Hillside" },
+    "VR02": { "name": "Villa Nina", "bedrooms": 3, "rackRate": 8500, "pool": true, "location": "Beachfront" },
+    "VR03": { "name": "Villa Marie", "bedrooms": 2, "rackRate": 5500, "pool": true, "location": "Garden" },
+    "VR04": { "name": "Villa Diamond", "bedrooms": 5, "rackRate": 12000, "pool": true, "location": "Hilltop panoramic" },
+    "VR05": { "name": "Villa Lune de Miel", "bedrooms": 1, "rackRate": 2800, "pool": false, "location": "Garden" },
+    "VR06": { "name": "Villa Azur", "bedrooms": 3, "rackRate": 7200, "pool": true, "location": "Ocean view" }
+  },
+  "dailyData": [
+    {
+      "date": "2026-02-07",
+      "occupiedVillas": 5,
+      "totalRevenue": 41200.00,
+      "bookings": [
+        { "villa": "VR01", "guest": "The Hartington Family", "checkIn": "2026-02-05", "checkOut": "2026-02-14", "nightlyRate": 15000.00, "status": "in-house", "pax": 8, "notes": "Full staff requested (chef, butler, housekeeper)" },
+        { "villa": "VR02", "guest": "Jean-Louis & Céline Duval", "checkIn": "2026-02-06", "checkOut": "2026-02-12", "nightlyRate": 8500.00, "status": "in-house", "pax": 4 },
+        { "villa": "VR03", "guest": "Roberto & Ana Ferreira", "checkIn": "2026-02-04", "checkOut": "2026-02-09", "nightlyRate": 5200.00, "status": "in-house", "pax": 2 },
+        { "villa": "VR04", "guest": "The Al-Rashid Group", "checkIn": "2026-02-07", "checkOut": "2026-02-17", "nightlyRate": 12000.00, "status": "arrived", "pax": 10, "notes": "VIP - privacy essential, no photos" },
+        { "villa": "VR06", "guest": "Patrick & Sarah O'Brien", "checkIn": "2026-02-03", "checkOut": "2026-02-08", "nightlyRate": 6800.00, "status": "in-house", "pax": 5 }
+      ],
+      "cleaning": [
+        { "villa": "VR05", "type": "deep_clean", "scheduledTime": "09:00", "completedTime": "12:30", "status": "completed", "notes": "Preparing for Feb 8 arrival" }
+      ]
+    },
+    {
+      "date": "2026-02-08",
+      "occupiedVillas": 5,
+      "totalRevenue": 43800.00,
+      "bookings": [
+        { "villa": "VR01", "status": "in-house", "nightlyRate": 15000.00 },
+        { "villa": "VR02", "status": "in-house", "nightlyRate": 8500.00 },
+        { "villa": "VR03", "status": "in-house", "nightlyRate": 5200.00 },
+        { "villa": "VR04", "status": "in-house", "nightlyRate": 12000.00 },
+        { "villa": "VR05", "guest": "Marc & Julie Lemaire", "checkIn": "2026-02-08", "checkOut": "2026-02-15", "nightlyRate": 2800.00, "status": "arrived", "pax": 2, "notes": "Honeymoon couple" }
+      ],
+      "cleaning": [
+        { "villa": "VR06", "type": "deep_clean", "scheduledTime": "10:00", "completedTime": "13:00", "status": "completed", "notes": "Post-checkout O'Brien, preparing for Feb 10 arrival" }
+      ]
+    },
+    {
+      "date": "2026-02-09",
+      "occupiedVillas": 4,
+      "totalRevenue": 34800.00,
+      "bookings": [
+        { "villa": "VR01", "status": "in-house", "nightlyRate": 15000.00 },
+        { "villa": "VR02", "status": "in-house", "nightlyRate": 8500.00 },
+        { "villa": "VR04", "status": "in-house", "nightlyRate": 12000.00 },
+        { "villa": "VR05", "status": "in-house", "nightlyRate": 2800.00 }
+      ],
+      "cleaning": [
+        { "villa": "VR03", "type": "deep_clean", "scheduledTime": "11:00", "completedTime": "14:00", "status": "completed", "notes": "Post-checkout Ferreira" }
+      ]
+    },
+    {
+      "date": "2026-02-10",
+      "occupiedVillas": 5,
+      "totalRevenue": 43300.00,
+      "bookings": [
+        { "villa": "VR01", "status": "in-house", "nightlyRate": 15000.00 },
+        { "villa": "VR02", "status": "in-house", "nightlyRate": 8500.00 },
+        { "villa": "VR03", "guest": "Sven & Astrid Johansson", "checkIn": "2026-02-10", "checkOut": "2026-02-16", "nightlyRate": 5500.00, "status": "arrived", "pax": 3 },
+        { "villa": "VR04", "status": "in-house", "nightlyRate": 12000.00 },
+        { "villa": "VR05", "status": "in-house", "nightlyRate": 2800.00 },
+        { "villa": "VR06", "guest": "William & Emma Crawford", "checkIn": "2026-02-10", "checkOut": "2026-02-17", "nightlyRate": 7200.00, "status": "arrived", "pax": 6 }
+      ],
+      "cleaning": [
+        { "villa": "VR03", "type": "pre_arrival", "scheduledTime": "08:00", "completedTime": "09:30", "status": "completed" },
+        { "villa": "VR06", "type": "pre_arrival", "scheduledTime": "08:00", "completedTime": "09:45", "status": "completed" }
+      ]
+    },
+    {
+      "date": "2026-02-11",
+      "occupiedVillas": 6,
+      "totalRevenue": 51000.00,
+      "bookings": [
+        { "villa": "VR01", "status": "in-house", "nightlyRate": 15000.00 },
+        { "villa": "VR02", "status": "in-house", "nightlyRate": 8500.00 },
+        { "villa": "VR03", "status": "in-house", "nightlyRate": 5500.00 },
+        { "villa": "VR04", "status": "in-house", "nightlyRate": 12000.00 },
+        { "villa": "VR05", "status": "in-house", "nightlyRate": 2800.00 },
+        { "villa": "VR06", "status": "in-house", "nightlyRate": 7200.00 }
+      ],
+      "cleaning": []
+    },
+    {
+      "date": "2026-02-12",
+      "occupiedVillas": 5,
+      "totalRevenue": 42500.00,
+      "bookings": [
+        { "villa": "VR01", "status": "in-house", "nightlyRate": 15000.00 },
+        { "villa": "VR03", "status": "in-house", "nightlyRate": 5500.00 },
+        { "villa": "VR04", "status": "in-house", "nightlyRate": 12000.00 },
+        { "villa": "VR05", "status": "in-house", "nightlyRate": 2800.00 },
+        { "villa": "VR06", "status": "in-house", "nightlyRate": 7200.00 }
+      ],
+      "cleaning": [
+        { "villa": "VR02", "type": "deep_clean", "scheduledTime": "11:00", "completedTime": "14:30", "status": "completed", "notes": "Post-checkout Duval, preparing for Feb 14 arrival (Valentine's booking)" }
+      ]
+    },
+    {
+      "date": "2026-02-13",
+      "occupiedVillas": 5,
+      "totalRevenue": 42500.00,
+      "bookings": [
+        { "villa": "VR01", "status": "in-house", "nightlyRate": 15000.00 },
+        { "villa": "VR03", "status": "in-house", "nightlyRate": 5500.00 },
+        { "villa": "VR04", "status": "in-house", "nightlyRate": 12000.00 },
+        { "villa": "VR05", "status": "in-house", "nightlyRate": 2800.00 },
+        { "villa": "VR06", "status": "in-house", "nightlyRate": 7200.00 }
+      ],
+      "cleaning": [
+        { "villa": "VR02", "type": "pre_arrival_prep", "scheduledTime": "09:00", "completedTime": null, "status": "scheduled", "notes": "Valentine's romantic setup: rose petals, champagne, candles" }
+      ],
+      "upcomingArrivals": [
+        { "villa": "VR02", "guest": "Alexandre & Margaux Petit", "checkIn": "2026-02-14", "checkOut": "2026-02-18", "nightlyRate": 9500.00, "pax": 2, "notes": "Valentine's package - premium rate" }
+      ]
+    }
+  ]
+}

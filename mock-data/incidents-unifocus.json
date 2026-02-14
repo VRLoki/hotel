@@ -1,0 +1,138 @@
+{
+  "incidents": [
+    {
+      "id": "INC-20260207-001", "date": "2026-02-07", "time": "08:15", "category": "maintenance",
+      "room": 305, "description": "AC unit making rattling noise", "priority": "medium",
+      "reportedBy": "Guest (Müller)", "assignedTo": "Jean-Marc (Engineering)",
+      "status": "resolved", "resolvedAt": "2026-02-07T10:30:00", "resolutionMinutes": 135,
+      "resolution": "Replaced fan belt on AC unit"
+    },
+    {
+      "id": "INC-20260207-002", "date": "2026-02-07", "time": "11:00", "category": "housekeeping",
+      "room": 112, "description": "Extra towels and bathrobes requested for departure day",
+      "priority": "low", "reportedBy": "Concierge", "assignedTo": "Housekeeping team",
+      "status": "resolved", "resolvedAt": "2026-02-07T11:25:00", "resolutionMinutes": 25,
+      "resolution": "Delivered within 25 min"
+    },
+    {
+      "id": "INC-20260207-003", "date": "2026-02-07", "time": "14:30", "category": "guest_complaint",
+      "room": 108, "description": "Guest reports wifi intermittent in room, cannot join video call",
+      "priority": "high", "reportedBy": "Guest (Whitfield)", "assignedTo": "IT - Patrick",
+      "status": "resolved", "resolvedAt": "2026-02-07T15:10:00", "resolutionMinutes": 40,
+      "resolution": "Reset AP in corridor, installed wifi extender in suite"
+    },
+    {
+      "id": "INC-20260208-001", "date": "2026-02-08", "time": "07:45", "category": "maintenance",
+      "room": 116, "description": "Shower drain slow/clogged", "priority": "medium",
+      "reportedBy": "Housekeeping (morning check)", "assignedTo": "Jean-Marc (Engineering)",
+      "status": "resolved", "resolvedAt": "2026-02-08T09:00:00", "resolutionMinutes": 75,
+      "resolution": "Cleared drain blockage"
+    },
+    {
+      "id": "INC-20260208-002", "date": "2026-02-08", "time": "19:00", "category": "guest_complaint",
+      "room": 301, "description": "Noise from adjacent room during evening, guest unable to rest",
+      "priority": "high", "reportedBy": "Guest (Marchetti)", "assignedTo": "Duty Manager - François",
+      "status": "resolved", "resolvedAt": "2026-02-08T19:30:00", "resolutionMinutes": 30,
+      "resolution": "Spoke with guests in 302, offered Marchetti comp dessert at dinner"
+    },
+    {
+      "id": "INC-20260209-001", "date": "2026-02-09", "time": "10:00", "category": "maintenance",
+      "room": null, "description": "Pool area - one sun lounger broken leg", "priority": "low",
+      "reportedBy": "Pool attendant", "assignedTo": "Maintenance team",
+      "status": "resolved", "resolvedAt": "2026-02-09T14:00:00", "resolutionMinutes": 240,
+      "resolution": "Replaced lounger from storage"
+    },
+    {
+      "id": "INC-20260209-002", "date": "2026-02-09", "time": "16:45", "category": "guest_complaint",
+      "room": 202, "description": "Guest reports room service took 55 min (standard is 30)",
+      "priority": "high", "reportedBy": "Guest (Dassault - VIP1)", "assignedTo": "F&B Manager - Claire",
+      "status": "resolved", "resolvedAt": "2026-02-09T17:00:00", "resolutionMinutes": 15,
+      "resolution": "Personal apology from F&B manager, comp bottle of champagne sent to room"
+    },
+    {
+      "id": "INC-20260209-003", "date": "2026-02-09", "time": "22:00", "category": "housekeeping",
+      "room": 107, "description": "Turndown service missed", "priority": "medium",
+      "reportedBy": "Guest (via phone)", "assignedTo": "Night housekeeping",
+      "status": "resolved", "resolvedAt": "2026-02-09T22:20:00", "resolutionMinutes": 20,
+      "resolution": "Immediate turndown completed with extra amenities as apology"
+    },
+    {
+      "id": "INC-20260210-001", "date": "2026-02-10", "time": "06:30", "category": "maintenance",
+      "room": 204, "description": "Minibar fridge not cooling properly", "priority": "medium",
+      "reportedBy": "Housekeeping (morning check)", "assignedTo": "Jean-Marc (Engineering)",
+      "status": "resolved", "resolvedAt": "2026-02-10T11:00:00", "resolutionMinutes": 270,
+      "resolution": "Replaced thermostat, unit now functioning"
+    },
+    {
+      "id": "INC-20260210-002", "date": "2026-02-10", "time": "13:00", "category": "guest_complaint",
+      "room": 109, "description": "Beach towels not replenished at pool by 11am",
+      "priority": "low", "reportedBy": "In-house guest", "assignedTo": "Pool supervisor",
+      "status": "resolved", "resolvedAt": "2026-02-10T13:15:00", "resolutionMinutes": 15,
+      "resolution": "Immediate replenishment, added extra check at 10:30"
+    },
+    {
+      "id": "INC-20260211-001", "date": "2026-02-11", "time": "09:00", "category": "maintenance",
+      "room": 117, "description": "Balcony door difficult to slide open", "priority": "low",
+      "reportedBy": "Guest (Fontaine)", "assignedTo": "Maintenance team",
+      "status": "resolved", "resolvedAt": "2026-02-11T11:30:00", "resolutionMinutes": 150,
+      "resolution": "Cleaned and lubricated track, adjusted rollers"
+    },
+    {
+      "id": "INC-20260211-002", "date": "2026-02-11", "time": "15:30", "category": "housekeeping",
+      "room": 303, "description": "Guest requests hypoallergenic bedding change", "priority": "medium",
+      "reportedBy": "Guest (Volkov)", "assignedTo": "Housekeeping supervisor",
+      "status": "resolved", "resolvedAt": "2026-02-11T16:15:00", "resolutionMinutes": 45,
+      "resolution": "Full bedding change with hypoallergenic set"
+    },
+    {
+      "id": "INC-20260212-001", "date": "2026-02-12", "time": "08:00", "category": "maintenance",
+      "room": null, "description": "Outdoor shower by pool - low water pressure", "priority": "medium",
+      "reportedBy": "Pool attendant", "assignedTo": "Jean-Marc (Engineering)",
+      "status": "pending", "resolvedAt": null, "resolutionMinutes": null,
+      "resolution": null, "notes": "Waiting for replacement valve, ETA Feb 14"
+    },
+    {
+      "id": "INC-20260212-002", "date": "2026-02-12", "time": "12:30", "category": "guest_complaint",
+      "room": 113, "description": "Goldstein (VIP1) - Krug not chilled on arrival as requested",
+      "priority": "critical", "reportedBy": "Guest (Goldstein)", "assignedTo": "GM - Sylvie",
+      "status": "resolved", "resolvedAt": "2026-02-12T12:45:00", "resolutionMinutes": 15,
+      "resolution": "GM personal apology, replaced with perfectly chilled Krug + comp canapés"
+    },
+    {
+      "id": "INC-20260212-003", "date": "2026-02-12", "time": "20:00", "category": "housekeeping",
+      "room": 203, "description": "Beaumont (journalist) reports stain on bathroom floor tile",
+      "priority": "high", "reportedBy": "Guest (Beaumont)", "assignedTo": "Night housekeeping",
+      "status": "resolved", "resolvedAt": "2026-02-12T20:30:00", "resolutionMinutes": 30,
+      "resolution": "Deep cleaned, was a mineral deposit - not a stain"
+    },
+    {
+      "id": "INC-20260213-001", "date": "2026-02-13", "time": "07:00", "category": "maintenance",
+      "room": 111, "description": "Safe not accepting new code", "priority": "high",
+      "reportedBy": "Guest (Chen)", "assignedTo": "Jean-Marc (Engineering)",
+      "status": "resolved", "resolvedAt": "2026-02-13T07:45:00", "resolutionMinutes": 45,
+      "resolution": "Reset safe with master code, reprogrammed"
+    },
+    {
+      "id": "INC-20260213-002", "date": "2026-02-13", "time": "11:00", "category": "maintenance",
+      "room": null, "description": "Restaurant terrace - 2 overhead fan units need servicing",
+      "priority": "medium", "reportedBy": "F&B Manager", "assignedTo": "External contractor",
+      "status": "pending", "resolvedAt": null, "resolutionMinutes": null,
+      "resolution": null, "notes": "Contractor scheduled for Feb 15"
+    },
+    {
+      "id": "INC-20260213-003", "date": "2026-02-13", "time": "14:00", "category": "guest_complaint",
+      "room": 106, "description": "Kapoor requests vegetarian options not clearly marked on room service menu",
+      "priority": "medium", "reportedBy": "Guest (Kapoor)", "assignedTo": "F&B Manager - Claire",
+      "status": "resolved", "resolvedAt": "2026-02-13T15:00:00", "resolutionMinutes": 60,
+      "resolution": "Printed custom vegetarian menu card for guest, flagged for next menu reprint"
+    }
+  ],
+  "summary": {
+    "totalIncidents": 18,
+    "resolved": 16,
+    "pending": 2,
+    "avgResolutionMinutes": 74,
+    "byCategory": { "maintenance": 7, "guest_complaint": 6, "housekeeping": 5 },
+    "byPriority": { "critical": 1, "high": 5, "medium": 8, "low": 4 }
+  }
+}

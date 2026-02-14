@@ -1,0 +1,56 @@
+{
+  "guest_id": "GID-39f4fe26",
+  "names": [
+    "Thomas Eriksson"
+  ],
+  "emails": [],
+  "phones": [],
+  "nationality": "SE",
+  "vip_level": null,
+  "visits": [
+    {
+      "checkin": "",
+      "room": 114,
+      "room_type": "DLX",
+      "rate": 1450.0,
+      "nights": 4,
+      "confirmation": "ER260213-002"
+    }
+  ],
+  "preferences": {
+    "dietary": [],
+    "wines": [],
+    "room_type": "DLX",
+    "pillow_type": null,
+    "spa_treatments": [
+      "MASS90"
+    ],
+    "preferred_therapists": [
+      "Joël"
+    ],
+    "special_requests": []
+  },
+  "spend_history": {
+    "total": 6230.0,
+    "rooms": 5800.0,
+    "fb": 0,
+    "spa": 280.0,
+    "concierge": 150.0,
+    "other": 0
+  },
+  "incidents": [],
+  "concierge_history": [
+    {
+      "id": "CON-0213-02",
+      "date": "2026-02-13",
+      "type": "excursion",
+      "details": "Guided hike to Colombier, morning Feb 14",
+      "status": "confirmed"
+    }
+  ],
+  "special_occasions": [],
+  "notes": [],
+  "first_visit": "",
+  "total_visits": 1,
+  "last_updated": "2026-02-13"
+}

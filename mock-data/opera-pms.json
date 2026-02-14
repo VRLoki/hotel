@@ -1,0 +1,208 @@
+{
+  "hotel": {
+    "name": "Eden Rock - St Barths",
+    "code": "EROCK",
+    "totalRooms": 34,
+    "roomTypes": {
+      "OSV": { "name": "Ocean Suite View", "count": 6, "rackRate": 2800 },
+      "BFS": { "name": "Beachfront Suite", "count": 4, "rackRate": 3500 },
+      "PST": { "name": "Premium Suite", "count": 8, "rackRate": 2200 },
+      "DLX": { "name": "Deluxe Room", "count": 10, "rackRate": 1500 },
+      "SGR": { "name": "Superior Garden Room", "count": 6, "rackRate": 1100 }
+    }
+  },
+  "dailyStats": [
+    {
+      "date": "2026-02-07",
+      "occupancy": 0.912,
+      "roomsSold": 31,
+      "roomsAvailable": 34,
+      "adr": 2145.00,
+      "revpar": 1956.24,
+      "totalRoomRevenue": 66495.00,
+      "totalFBRevenue": 18320.00,
+      "totalSpaRevenue": 4850.00,
+      "totalOtherRevenue": 2100.00,
+      "revenueBreakdown": {
+        "rooms": 66495.00,
+        "foodBeverage": 18320.00,
+        "spa": 4850.00,
+        "minibar": 1240.00,
+        "laundry": 860.00
+      },
+      "arrivals": [
+        { "confirmationNo": "ER260207-001", "guestName": "Laurent de Montblanc", "roomNo": 201, "roomType": "BFS", "rateCode": "BAR", "rate": 3500.00, "nights": 5, "vip": "VIP1", "nationality": "FR", "notes": "Return guest - 4th stay" },
+        { "confirmationNo": "ER260207-002", "guestName": "Alexandra Whitfield", "roomNo": 108, "roomType": "OSV", "rateCode": "BAR", "rate": 2800.00, "nights": 7, "vip": null, "nationality": "US", "notes": "Honeymoon" },
+        { "confirmationNo": "ER260207-003", "guestName": "Hans-Peter Müller", "roomNo": 305, "roomType": "PST", "rateCode": "COR", "rate": 2000.00, "nights": 4, "vip": null, "nationality": "DE", "notes": "" }
+      ],
+      "departures": [
+        { "confirmationNo": "ER260201-004", "guestName": "Maria Costello", "roomNo": 112, "roomType": "DLX", "totalSpend": 12840.00 },
+        { "confirmationNo": "ER260203-002", "guestName": "James Thornton", "roomNo": 204, "roomType": "BFS", "totalSpend": 19250.00 }
+      ],
+      "inHouseByType": { "OSV": 6, "BFS": 4, "PST": 7, "DLX": 9, "SGR": 5 }
+    },
+    {
+      "date": "2026-02-08",
+      "occupancy": 0.941,
+      "roomsSold": 32,
+      "roomsAvailable": 34,
+      "adr": 2210.00,
+      "revpar": 2079.61,
+      "totalRoomRevenue": 70720.00,
+      "totalFBRevenue": 22150.00,
+      "totalSpaRevenue": 5400.00,
+      "totalOtherRevenue": 2450.00,
+      "revenueBreakdown": {
+        "rooms": 70720.00,
+        "foodBeverage": 22150.00,
+        "spa": 5400.00,
+        "minibar": 1380.00,
+        "laundry": 1070.00
+      },
+      "arrivals": [
+        { "confirmationNo": "ER260208-001", "guestName": "Sofia Marchetti", "roomNo": 301, "roomType": "PST", "rateCode": "BAR", "rate": 2200.00, "nights": 6, "vip": "VIP2", "nationality": "IT", "notes": "Birthday Feb 10 - arrange surprise" },
+        { "confirmationNo": "ER260208-002", "guestName": "Richard Haines", "roomNo": 110, "roomType": "DLX", "rateCode": "OTA", "rate": 1400.00, "nights": 3, "vip": null, "nationality": "GB", "notes": "" }
+      ],
+      "departures": [
+        { "confirmationNo": "ER260204-001", "guestName": "Yuki Tanaka", "roomNo": 306, "roomType": "PST", "totalSpend": 11200.00 }
+      ],
+      "inHouseByType": { "OSV": 6, "BFS": 4, "PST": 7, "DLX": 10, "SGR": 5 }
+    },
+    {
+      "date": "2026-02-09",
+      "occupancy": 0.941,
+      "roomsSold": 32,
+      "roomsAvailable": 34,
+      "adr": 2185.00,
+      "revpar": 2056.09,
+      "totalRoomRevenue": 69920.00,
+      "totalFBRevenue": 24800.00,
+      "totalSpaRevenue": 6200.00,
+      "totalOtherRevenue": 2780.00,
+      "revenueBreakdown": {
+        "rooms": 69920.00,
+        "foodBeverage": 24800.00,
+        "spa": 6200.00,
+        "minibar": 1560.00,
+        "laundry": 1220.00
+      },
+      "arrivals": [
+        { "confirmationNo": "ER260209-001", "guestName": "Philippe Dassault", "roomNo": 202, "roomType": "BFS", "rateCode": "BAR", "rate": 3500.00, "nights": 5, "vip": "VIP1", "nationality": "FR", "notes": "CEO - privacy paramount" }
+      ],
+      "departures": [
+        { "confirmationNo": "ER260205-003", "guestName": "Elena Voronova", "roomNo": 115, "roomType": "SGR", "totalSpend": 6450.00 }
+      ],
+      "inHouseByType": { "OSV": 6, "BFS": 4, "PST": 7, "DLX": 10, "SGR": 5 }
+    },
+    {
+      "date": "2026-02-10",
+      "occupancy": 0.882,
+      "roomsSold": 30,
+      "roomsAvailable": 34,
+      "adr": 2090.00,
+      "revpar": 1843.38,
+      "totalRoomRevenue": 62700.00,
+      "totalFBRevenue": 19600.00,
+      "totalSpaRevenue": 5100.00,
+      "totalOtherRevenue": 1950.00,
+      "revenueBreakdown": {
+        "rooms": 62700.00,
+        "foodBeverage": 19600.00,
+        "spa": 5100.00,
+        "minibar": 1150.00,
+        "laundry": 800.00
+      },
+      "arrivals": [
+        { "confirmationNo": "ER260210-001", "guestName": "Caroline Ashford-Webb", "roomNo": 107, "roomType": "OSV", "rateCode": "BAR", "rate": 2800.00, "nights": 4, "vip": null, "nationality": "GB", "notes": "Allergic to feathers - hypoallergenic pillows" }
+      ],
+      "departures": [
+        { "confirmationNo": "ER260206-001", "guestName": "Marco Bianchi", "roomNo": 302, "roomType": "PST", "totalSpend": 10800.00 },
+        { "confirmationNo": "ER260206-005", "guestName": "Nathalie Girard", "roomNo": 116, "roomType": "SGR", "totalSpend": 5900.00 },
+        { "confirmationNo": "ER260208-002", "guestName": "Richard Haines", "roomNo": 110, "roomType": "DLX", "totalSpend": 5420.00 }
+      ],
+      "inHouseByType": { "OSV": 6, "BFS": 4, "PST": 6, "DLX": 9, "SGR": 5 }
+    },
+    {
+      "date": "2026-02-11",
+      "occupancy": 0.912,
+      "roomsSold": 31,
+      "roomsAvailable": 34,
+      "adr": 2175.00,
+      "revpar": 1983.53,
+      "totalRoomRevenue": 67425.00,
+      "totalFBRevenue": 20450.00,
+      "totalSpaRevenue": 5750.00,
+      "totalOtherRevenue": 2200.00,
+      "revenueBreakdown": {
+        "rooms": 67425.00,
+        "foodBeverage": 20450.00,
+        "spa": 5750.00,
+        "minibar": 1300.00,
+        "laundry": 900.00
+      },
+      "arrivals": [
+        { "confirmationNo": "ER260211-001", "guestName": "Dmitri Volkov", "roomNo": 303, "roomType": "PST", "rateCode": "BAR", "rate": 2200.00, "nights": 5, "vip": null, "nationality": "RU", "notes": "" },
+        { "confirmationNo": "ER260211-002", "guestName": "Isabelle Fontaine", "roomNo": 117, "roomType": "SGR", "rateCode": "RPT", "rate": 950.00, "nights": 7, "vip": "VIP2", "nationality": "FR", "notes": "Return guest - 7th stay, prefers room 117" },
+        { "confirmationNo": "ER260211-003", "guestName": "Michael Chen", "roomNo": 111, "roomType": "DLX", "rateCode": "BAR", "rate": 1500.00, "nights": 4, "vip": null, "nationality": "US", "notes": "Late check-in ~22h" }
+      ],
+      "departures": [
+        { "confirmationNo": "ER260207-003", "guestName": "Hans-Peter Müller", "roomNo": 305, "roomType": "PST", "totalSpend": 9800.00 }
+      ],
+      "inHouseByType": { "OSV": 6, "BFS": 4, "PST": 7, "DLX": 9, "SGR": 5 }
+    },
+    {
+      "date": "2026-02-12",
+      "occupancy": 0.941,
+      "roomsSold": 32,
+      "roomsAvailable": 34,
+      "adr": 2250.00,
+      "revpar": 2117.65,
+      "totalRoomRevenue": 72000.00,
+      "totalFBRevenue": 23400.00,
+      "totalSpaRevenue": 6800.00,
+      "totalOtherRevenue": 2650.00,
+      "revenueBreakdown": {
+        "rooms": 72000.00,
+        "foodBeverage": 23400.00,
+        "spa": 6800.00,
+        "minibar": 1500.00,
+        "laundry": 1150.00
+      },
+      "arrivals": [
+        { "confirmationNo": "ER260212-001", "guestName": "Amélie Beaumont", "roomNo": 203, "roomType": "BFS", "rateCode": "BAR", "rate": 3500.00, "nights": 3, "vip": null, "nationality": "FR", "notes": "Travel journalist - comp upgrade if possible" },
+        { "confirmationNo": "ER260212-002", "guestName": "Jonathan Goldstein", "roomNo": 113, "roomType": "DLX", "rateCode": "BAR", "rate": 1500.00, "nights": 5, "vip": "VIP1", "nationality": "US", "notes": "Returning VIP - major spender, Krug on arrival" }
+      ],
+      "departures": [
+        { "confirmationNo": "ER260207-001", "guestName": "Laurent de Montblanc", "roomNo": 201, "roomType": "BFS", "totalSpend": 24500.00 }
+      ],
+      "inHouseByType": { "OSV": 6, "BFS": 4, "PST": 8, "DLX": 9, "SGR": 5 }
+    },
+    {
+      "date": "2026-02-13",
+      "occupancy": 0.971,
+      "roomsSold": 33,
+      "roomsAvailable": 34,
+      "adr": 2320.00,
+      "revpar": 2252.71,
+      "totalRoomRevenue": 76560.00,
+      "totalFBRevenue": 26100.00,
+      "totalSpaRevenue": 7200.00,
+      "totalOtherRevenue": 3100.00,
+      "revenueBreakdown": {
+        "rooms": 76560.00,
+        "foodBeverage": 26100.00,
+        "spa": 7200.00,
+        "minibar": 1780.00,
+        "laundry": 1320.00
+      },
+      "arrivals": [
+        { "confirmationNo": "ER260213-001", "guestName": "Priya Kapoor", "roomNo": 106, "roomType": "OSV", "rateCode": "BAR", "rate": 2800.00, "nights": 6, "vip": null, "nationality": "IN", "notes": "Vegetarian - inform F&B" },
+        { "confirmationNo": "ER260213-002", "guestName": "Thomas Eriksson", "roomNo": 114, "roomType": "DLX", "rateCode": "OTA", "rate": 1450.00, "nights": 4, "vip": null, "nationality": "SE", "notes": "" }
+      ],
+      "departures": [
+        { "confirmationNo": "ER260209-001", "guestName": "Philippe Dassault", "roomNo": 202, "roomType": "BFS", "totalSpend": 28750.00 }
+      ],
+      "inHouseByType": { "OSV": 6, "BFS": 3, "PST": 8, "DLX": 10, "SGR": 6 }
+    }
+  ]
+}
