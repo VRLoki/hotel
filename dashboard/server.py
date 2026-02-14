@@ -656,6 +656,94 @@ async def legacy_settings(request: Request):
     return settings
 
 
+# ── User Management (admin only) ──────────────
+
+def require_admin(user):
+    if user.get("role") != "admin":
+        raise HTTPException(403, "Admin access required")
+
+@app.get("/api/users")
+async def list_users(request: Request):
+    user = get_current_user(request)
+    require_admin(user)
+    conn = get_db()
+    rows = conn.execute("SELECT id, email, name, role, property_id, oauth_provider, created_at FROM users ORDER BY id").fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+@app.post("/api/users")
+async def create_user(request: Request):
+    user = get_current_user(request)
+    require_admin(user)
+    body = await request.json()
+    email = body.get("email", "").strip().lower()
+    name = body.get("name", "").strip()
+    role = body.get("role", "staff")
+    property_id = body.get("property_id")
+    password = body.get("password", "")
+    oauth_only = body.get("oauth_only", False)
+    if not email or not name:
+        raise HTTPException(400, "Email and name required")
+    if role not in ("admin", "manager", "staff"):
+        raise HTTPException(400, "Invalid role")
+    if not oauth_only and not password:
+        raise HTTPException(400, "Password required for non-OAuth users")
+    pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode() if password else ""
+    conn = get_db()
+    try:
+        conn.execute(
+            "INSERT INTO users (email, name, password_hash, role, property_id, oauth_provider) VALUES (?,?,?,?,?,?)",
+            (email, name, pw_hash, role, property_id, "oauth" if oauth_only else None)
+        )
+        conn.commit()
+    except Exception:
+        conn.close()
+        raise HTTPException(409, "User with this email already exists")
+    new_user = dict(conn.execute("SELECT id, email, name, role, property_id, oauth_provider, created_at FROM users WHERE email=?", (email,)).fetchone())
+    conn.close()
+    return new_user
+
+@app.put("/api/users/{user_id}")
+async def update_user(user_id: int, request: Request):
+    user = get_current_user(request)
+    require_admin(user)
+    body = await request.json()
+    conn = get_db()
+    target = conn.execute("SELECT * FROM users WHERE id=?", (user_id,)).fetchone()
+    if not target:
+        conn.close()
+        raise HTTPException(404, "User not found")
+    updates = []
+    params = []
+    if "name" in body:
+        updates.append("name=?"); params.append(body["name"].strip())
+    if "role" in body and body["role"] in ("admin", "manager", "staff"):
+        updates.append("role=?"); params.append(body["role"])
+    if "property_id" in body:
+        updates.append("property_id=?"); params.append(body["property_id"])
+    if "password" in body and body["password"]:
+        updates.append("password_hash=?"); params.append(bcrypt.hashpw(body["password"].encode(), bcrypt.gensalt()).decode())
+    if updates:
+        params.append(user_id)
+        conn.execute(f"UPDATE users SET {','.join(updates)} WHERE id=?", params)
+        conn.commit()
+    updated = dict(conn.execute("SELECT id, email, name, role, property_id, oauth_provider, created_at FROM users WHERE id=?", (user_id,)).fetchone())
+    conn.close()
+    return updated
+
+@app.delete("/api/users/{user_id}")
+async def delete_user(user_id: int, request: Request):
+    user = get_current_user(request)
+    require_admin(user)
+    if user["id"] == user_id:
+        raise HTTPException(400, "Cannot delete yourself")
+    conn = get_db()
+    conn.execute("DELETE FROM users WHERE id=?", (user_id,))
+    conn.commit()
+    conn.close()
+    return {"ok": True}
+
+
 # ── Voice Assistant ───────────────────────────
 
 @app.post("/api/voice/session")

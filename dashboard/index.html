@@ -700,6 +700,9 @@ tailwind.config = {
           <button @click="settingsTab='general'"
                   :class="settingsTab==='general' ? 'bg-white shadow-sm text-navy-900' : 'text-navy-500 hover:text-navy-700'"
                   class="px-4 py-1.5 rounded-md text-sm font-medium transition">General</button>
+          <button @click="settingsTab='users'; loadUsers()"
+                  :class="settingsTab==='users' ? 'bg-white shadow-sm text-navy-900' : 'text-navy-500 hover:text-navy-700'"
+                  class="px-4 py-1.5 rounded-md text-sm font-medium transition">Users</button>
           <button @click="settingsTab='oauth'"
                   :class="settingsTab==='oauth' ? 'bg-white shadow-sm text-navy-900' : 'text-navy-500 hover:text-navy-700'"
                   class="px-4 py-1.5 rounded-md text-sm font-medium transition">OAuth / SSO</button>
@@ -980,6 +983,104 @@ tailwind.config = {
       </div>
     </div>
 
+    <!-- ═══ USERS TAB ═══ -->
+    <div x-show="settingsTab==='users'" class="p-6 space-y-6">
+      <div class="bg-white rounded-xl border border-cream-300 p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900">User Management</h3>
+          <button @click="editingUser = {id:null, email:'', name:'', role:'staff', property_id:currentPropertyId, password:'', oauth_only:false}; showUserModal=true"
+                  class="bg-gold-400 hover:bg-gold-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
+            + Add User
+          </button>
+        </div>
+
+        <div x-show="usersLoading" class="text-center py-8 text-navy-400">Loading users...</div>
+
+        <table x-show="!usersLoading && usersList.length > 0" class="w-full text-sm">
+          <thead>
+            <tr class="border-b-2 border-cream-200">
+              <th class="text-left py-2 px-3 font-semibold text-navy-700">Name</th>
+              <th class="text-left py-2 px-3 font-semibold text-navy-700">Email</th>
+              <th class="text-left py-2 px-3 font-semibold text-navy-700">Role</th>
+              <th class="text-left py-2 px-3 font-semibold text-navy-700">Auth</th>
+              <th class="text-left py-2 px-3 font-semibold text-navy-700">Created</th>
+              <th class="text-right py-2 px-3 font-semibold text-navy-700">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-cream-200">
+            <template x-for="u in usersList" :key="u.id">
+              <tr class="hover:bg-cream-50 transition">
+                <td class="py-3 px-3 font-medium" x-text="u.name"></td>
+                <td class="py-3 px-3 text-navy-500" x-text="u.email"></td>
+                <td class="py-3 px-3">
+                  <span class="px-2 py-0.5 rounded-full text-xs font-medium"
+                        :class="u.role==='admin' ? 'bg-red-100 text-red-700' : u.role==='manager' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'"
+                        x-text="u.role"></span>
+                </td>
+                <td class="py-3 px-3 text-navy-400 text-xs" x-text="u.oauth_provider ? 'OAuth' : 'Password'"></td>
+                <td class="py-3 px-3 text-navy-400 text-xs" x-text="u.created_at ? u.created_at.split('T')[0] : ''"></td>
+                <td class="py-3 px-3 text-right">
+                  <button @click="editingUser = {...u, password:'', oauth_only:!!u.oauth_provider}; showUserModal=true"
+                          class="text-navy-400 hover:text-gold-500 transition mr-2" title="Edit">
+                    <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                  </button>
+                  <button @click="if(confirm('Delete '+u.name+'?')) deleteUser(u.id)"
+                          x-show="u.id !== user?.id"
+                          class="text-navy-400 hover:text-red-500 transition" title="Delete">
+                    <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  </button>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+
+        <p x-show="!usersLoading && usersList.length === 0" class="text-center py-8 text-navy-400">No users found.</p>
+      </div>
+    </div>
+
+    <!-- User Add/Edit Modal -->
+    <div x-show="showUserModal" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50" @click.self="showUserModal=false">
+      <div class="bg-white rounded-2xl border border-cream-300 shadow-2xl w-full max-w-md p-6" @click.stop>
+        <h3 class="font-display text-lg font-semibold text-navy-900 mb-4" x-text="editingUser?.id ? 'Edit User' : 'Add User'"></h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs uppercase text-navy-500 mb-1">Name</label>
+            <input x-model="editingUser.name" type="text" class="w-full border border-cream-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gold-400 outline-none" placeholder="John Doe">
+          </div>
+          <div>
+            <label class="block text-xs uppercase text-navy-500 mb-1">Email</label>
+            <input x-model="editingUser.email" type="email" :disabled="editingUser.id" class="w-full border border-cream-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gold-400 outline-none disabled:opacity-50" placeholder="john@hotel.com">
+          </div>
+          <div>
+            <label class="block text-xs uppercase text-navy-500 mb-1">Role</label>
+            <select x-model="editingUser.role" class="w-full border border-cream-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gold-400 outline-none">
+              <option value="admin">Admin (full access + settings)</option>
+              <option value="manager">Manager (view + manage)</option>
+              <option value="staff">Staff (view only)</option>
+            </select>
+          </div>
+          <div x-show="!editingUser.id">
+            <label class="flex items-center gap-2 text-sm text-navy-600 cursor-pointer">
+              <input x-model="editingUser.oauth_only" type="checkbox" class="rounded border-cream-300 text-gold-400 focus:ring-gold-400">
+              OAuth only (no password — user signs in via Google/Microsoft)
+            </label>
+          </div>
+          <div x-show="!editingUser.oauth_only">
+            <label class="block text-xs uppercase text-navy-500 mb-1" x-text="editingUser.id ? 'New Password (leave blank to keep)' : 'Password'"></label>
+            <input x-model="editingUser.password" type="password" class="w-full border border-cream-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gold-400 outline-none" placeholder="••••••••">
+          </div>
+        </div>
+        <div x-show="userSaveError" class="mt-3 text-sm text-red-500" x-text="userSaveError"></div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button @click="showUserModal=false" class="px-4 py-2 text-sm text-navy-500 hover:text-navy-700 transition">Cancel</button>
+          <button @click="saveUser()" class="px-4 py-2 text-sm bg-gold-400 hover:bg-gold-500 text-white font-medium rounded-lg transition">
+            <span x-text="editingUser?.id ? 'Update' : 'Create'"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══ OAUTH TAB ═══ -->
     <div x-show="settingsTab==='oauth'" class="p-6 space-y-6">
       <div class="bg-white rounded-xl border border-cream-300 p-6">
@@ -1141,6 +1242,11 @@ function dashboard() {
 
     // Settings sub-tabs
     settingsTab: 'apps',
+    usersList: [],
+    usersLoading: false,
+    showUserModal: false,
+    editingUser: null,
+    userSaveError: '',
 
     // App Catalog state
     appCatalog: null,
@@ -1819,6 +1925,36 @@ function dashboard() {
         if (this.guests.length) this.selectedGuest = this.guests[0];
         else this.selectedGuest = null;
       } catch(e) { console.error(e); }
+    },
+
+    async loadUsers() {
+      this.usersLoading = true;
+      try {
+        const res = await fetch('/api/users');
+        if (res.ok) this.usersList = await res.json();
+      } catch(e) { console.error('Failed to load users', e); }
+      this.usersLoading = false;
+    },
+
+    async saveUser() {
+      this.userSaveError = '';
+      const u = this.editingUser;
+      if (!u.name || !u.email) { this.userSaveError = 'Name and email required'; return; }
+      try {
+        const url = u.id ? `/api/users/${u.id}` : '/api/users';
+        const method = u.id ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(u) });
+        if (!res.ok) { const e = await res.json(); this.userSaveError = e.detail || 'Error'; return; }
+        this.showUserModal = false;
+        await this.loadUsers();
+      } catch(e) { this.userSaveError = 'Network error'; }
+    },
+
+    async deleteUser(id) {
+      try {
+        await fetch(`/api/users/${id}`, { method: 'DELETE' });
+        await this.loadUsers();
+      } catch(e) { console.error('Failed to delete user', e); }
     },
 
     async loadSettings() {
