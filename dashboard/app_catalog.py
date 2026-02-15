@@ -33,7 +33,6 @@ APP_CATALOG = [
                 {"key": "client_secret", "label": "Client Secret", "type": "password", "required": True, "placeholder": "", "description": "OAuth2 client secret"},
                 {"key": "hotel_id", "label": "Hotel ID", "type": "text", "required": True, "placeholder": "EDENROCK", "description": "OPERA hotel/property code"},
                 {"key": "environment", "label": "Environment", "type": "select", "required": True, "options": [{"value": "staging", "label": "Staging"}, {"value": "production", "label": "Production"}], "description": "Target OPERA environment"},
-                {"key": "sync_interval", "label": "Sync Interval (minutes)", "type": "number", "required": False, "placeholder": "15", "description": "How often to pull data from OPERA (default: 15 min)"},
                 {"key": "sync_reservations", "label": "Sync Reservations", "type": "toggle", "required": False, "description": "Pull reservation data (arrivals, departures, in-house)"},
                 {"key": "sync_profiles", "label": "Sync Guest Profiles", "type": "toggle", "required": False, "description": "Pull guest profile data and preferences"},
                 {"key": "sync_cashiering", "label": "Sync Cashiering", "type": "toggle", "required": False, "description": "Pull folio and billing data"},
