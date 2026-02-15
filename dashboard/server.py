@@ -822,6 +822,50 @@ async def delete_user(user_id: int, request: Request):
     return {"ok": True}
 
 
+# ── App API Proxy ────────────────────────────
+
+@app.api_route("/api/properties/{property_id}/apps/{app_id}/proxy/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+async def proxy_app_api(property_id: int, app_id: str, path: str, request: Request):
+    """Proxy requests to external app APIs to avoid CORS/mixed-content issues."""
+    user = get_current_user(request)
+    require_property_access(user, property_id)
+    conn = get_db()
+    configs = get_app_configs(conn, property_id)
+    conn.close()
+    app_cfg = next((c for c in configs if c["app_id"] == app_id), None)
+    if not app_cfg:
+        raise HTTPException(404, "App not configured")
+    cfg = app_cfg.get("config", {})
+
+    # Determine endpoint and auth headers based on app type
+    if app_id == "opera-pms":
+        base = cfg.get("ohip_endpoint", "").rstrip("/")
+        headers = {"x-api-key": cfg.get("client_secret", "")}
+    elif app_id == "tac-spa":
+        base = cfg.get("api_endpoint", "").rstrip("/")
+        headers = {"x-api-key": cfg.get("api_key", "")}
+    elif app_id == "sevenrooms":
+        base = cfg.get("api_endpoint", "").rstrip("/")
+        headers = {"x-api-key": cfg.get("api_key", "")}
+    elif app_id == "unifocus":
+        base = cfg.get("api_endpoint", "").rstrip("/")
+        headers = {"x-api-key": cfg.get("api_key", "")}
+    elif app_id == "concierge-organizer":
+        base = cfg.get("api_endpoint", "").rstrip("/")
+        headers = {"x-api-key": cfg.get("api_key", "")}
+    else:
+        raise HTTPException(400, f"Proxy not supported for {app_id}")
+
+    url = f"{base}/{path}"
+    qs = str(request.url.query)
+    if qs:
+        url += f"?{qs}"
+
+    async with httpx.AsyncClient(timeout=15) as client:
+        body = await request.body()
+        resp = await client.request(request.method, url, headers=headers, content=body if body else None)
+    return Response(content=resp.content, status_code=resp.status_code, media_type=resp.headers.get("content-type", "application/json"))
+
 # ── Voice Assistant ───────────────────────────
 
 @app.post("/api/voice/session")

@@ -2116,18 +2116,16 @@ function dashboard() {
       try {
         if (app.id === 'opera-pms') {
           const cfg = app.config || {};
-          const endpoint = cfg.ohip_endpoint?.replace(/\/$/, '');
           const hotelId = cfg.hotel_id || 'EDENROCK';
-          const apiKey = cfg.client_secret || '';
-          const headers = apiKey && !apiKey.startsWith('••••') ? {'x-api-key': apiKey} : {};
+          const proxy = `/api/properties/${this.currentPropertyId}/apps/opera-pms/proxy`;
           // Fetch stats, rooms, reservations, guests in parallel
           const [statsR, roomsR, resvR, guestsR, hkR, tracesR] = await Promise.all([
-            fetch(`${endpoint}/hotels/${hotelId}/statistics`, {headers}),
-            fetch(`${endpoint}/hotels/${hotelId}/rooms?limit=100`, {headers}),
-            fetch(`${endpoint}/hotels/${hotelId}/reservations?limit=100`, {headers}),
-            fetch(`${endpoint}/hotels/${hotelId}/guests?limit=100`, {headers}),
-            fetch(`${endpoint}/hotels/${hotelId}/housekeeping?limit=100`, {headers}),
-            fetch(`${endpoint}/hotels/${hotelId}/traces?limit=100`, {headers}),
+            fetch(`${proxy}/hotels/${hotelId}/statistics`),
+            fetch(`${proxy}/hotels/${hotelId}/rooms?limit=100`),
+            fetch(`${proxy}/hotels/${hotelId}/reservations?limit=100`),
+            fetch(`${proxy}/hotels/${hotelId}/guests?limit=100`),
+            fetch(`${proxy}/hotels/${hotelId}/housekeeping?limit=100`),
+            fetch(`${proxy}/hotels/${hotelId}/traces?limit=100`),
           ]);
           const [stats, rooms, resv, guests, hk, traces] = await Promise.all([
             statsR.json(), roomsR.json(), resvR.json(), guestsR.json(), hkR.json(), tracesR.json()
