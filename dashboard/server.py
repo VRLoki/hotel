@@ -63,6 +63,7 @@ DOC_TITLES = {
     "security": "Security",
     "hotel-intel-full": "Full Specification",
     "voice-assistant": "Voice Assistant",
+    "demo-sandbox": "Demo Sandbox",
 }
 
 
