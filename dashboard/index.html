@@ -1315,10 +1315,229 @@ tailwind.config = {
 
       </div>
 
-      <!-- Placeholder for other apps -->
-      <div x-show="!viewingAppLoading && viewingApp && viewingApp.id !== 'opera-pms'" class="text-center py-12">
+      <!-- TAC Spa Detail -->
+      <div x-show="!viewingAppLoading && viewingAppData && viewingApp?.id === 'tac-spa'" class="space-y-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-navy-900" x-text="viewingAppData?.stats?.totalBookings ?? '—'"></p>
+            <p class="text-xs text-navy-400 mt-1">Weekly Bookings</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-emerald-600" x-text="(viewingAppData?.stats?.averageOccupancyRate ?? 0) + '%'"></p>
+            <p class="text-xs text-navy-400 mt-1">Occupancy Rate</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-gold-500" x-text="'€' + (viewingAppData?.stats?.totalRevenue ?? 0).toLocaleString()"></p>
+            <p class="text-xs text-navy-400 mt-1">Weekly Revenue</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-purple-600" x-text="viewingAppData?.therapists?.length ?? 0"></p>
+            <p class="text-xs text-navy-400 mt-1">Therapists</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4">Recent Bookings</h3>
+          <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b-2 border-cream-200">
+            <th class="text-left py-2 px-3 font-semibold text-navy-700">Guest</th>
+            <th class="text-left py-2 px-3 font-semibold text-navy-700">Room</th>
+            <th class="text-left py-2 px-3 font-semibold text-navy-700">Date</th>
+            <th class="text-left py-2 px-3 font-semibold text-navy-700">Time</th>
+            <th class="text-left py-2 px-3 font-semibold text-navy-700">Status</th>
+          </tr></thead><tbody class="divide-y divide-cream-200">
+            <template x-for="b in (viewingAppData?.bookings || [])" :key="b.id">
+              <tr class="hover:bg-cream-50">
+                <td class="py-2 px-3" x-text="b.guestName || b.guest_name"></td>
+                <td class="py-2 px-3 font-mono" x-text="b.roomNumber || b.room_number"></td>
+                <td class="py-2 px-3 text-navy-500" x-text="b.bookingDate || b.booking_date"></td>
+                <td class="py-2 px-3 text-navy-500" x-text="b.bookingTime || b.booking_time"></td>
+                <td class="py-2 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-medium"
+                  :class="b.status==='completed'?'bg-emerald-100 text-emerald-700':b.status==='confirmed'?'bg-blue-100 text-blue-700':'bg-gray-100 text-gray-700'"
+                  x-text="b.status"></span></td>
+              </tr>
+            </template>
+          </tbody></table></div>
+        </div>
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4">Treatments Offered</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <template x-for="t in (viewingAppData?.treatments || []).slice(0,10)" :key="t.id">
+              <div class="flex justify-between items-center p-2 bg-cream-50 rounded-lg">
+                <div><span class="text-sm font-medium text-navy-800" x-text="t.name"></span>
+                <span class="text-xs text-navy-400 ml-2" x-text="(t.durationMinutes || t.duration_minutes) + 'min'"></span></div>
+                <span class="text-sm font-semibold text-gold-600" x-text="'€' + (t.priceEur || t.price_eur)"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- SevenRooms Detail -->
+      <div x-show="!viewingAppLoading && viewingAppData && viewingApp?.id === 'sevenrooms'" class="space-y-6">
+        <template x-for="v in (viewingAppData?.venues || [])" :key="v.venue_id || v.venueId">
+          <div class="space-y-4">
+            <h3 class="font-display text-lg font-semibold text-navy-900" x-text="v.name"></h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div class="bg-white rounded-xl border border-cream-300 p-3 text-center">
+                <p class="text-xl font-bold text-navy-900" x-text="viewingAppData?.venueStats?.[v.venueId||v.venue_id]?.totalCovers ?? '—'"></p>
+                <p class="text-xs text-navy-400 mt-1">Weekly Covers</p>
+              </div>
+              <div class="bg-white rounded-xl border border-cream-300 p-3 text-center">
+                <p class="text-xl font-bold text-emerald-600" x-text="'€' + Math.round(viewingAppData?.venueStats?.[v.venueId||v.venue_id]?.averageCheck ?? 0)"></p>
+                <p class="text-xs text-navy-400 mt-1">Avg Check</p>
+              </div>
+              <div class="bg-white rounded-xl border border-cream-300 p-3 text-center">
+                <p class="text-xl font-bold text-gold-500" x-text="'€' + Math.round(viewingAppData?.venueStats?.[v.venueId||v.venue_id]?.totalRevenue ?? 0).toLocaleString()"></p>
+                <p class="text-xs text-navy-400 mt-1">Weekly Revenue</p>
+              </div>
+              <div class="bg-white rounded-xl border border-cream-300 p-3 text-center">
+                <p class="text-xl font-bold text-blue-600" x-text="v.capacity || '—'"></p>
+                <p class="text-xs text-navy-400 mt-1">Capacity</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-xl border border-cream-300 p-4">
+              <h4 class="font-semibold text-navy-800 mb-3 text-sm">Recent Reservations</h4>
+              <div class="space-y-2">
+                <template x-for="r in (viewingAppData?.venueResvs?.[v.venue_id||v.venueId] || [])" :key="r.id">
+                  <div class="flex items-center justify-between p-2 bg-cream-50 rounded-lg text-sm">
+                    <div>
+                      <span class="font-medium text-navy-800" x-text="r.guestName || r.guest_name"></span>
+                      <span x-show="r.isVip || r.is_vip" class="ml-1 px-1 py-0.5 rounded text-[10px] font-bold bg-gold-100 text-gold-700">VIP</span>
+                      <span class="text-navy-400 ml-2" x-text="r.covers + ' covers · ' + (r.reservationTime || r.reservation_time)"></span>
+                    </div>
+                    <span class="px-2 py-0.5 rounded-full text-xs font-medium"
+                      :class="r.status==='completed'?'bg-emerald-100 text-emerald-700':r.status==='confirmed'?'bg-blue-100 text-blue-700':'bg-gray-100 text-gray-700'"
+                      x-text="r.status"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Unifocus Detail -->
+      <div x-show="!viewingAppLoading && viewingAppData && viewingApp?.id === 'unifocus'" class="space-y-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-navy-900" x-text="viewingAppData?.stats?.workOrders?.open ?? '—'"></p>
+            <p class="text-xs text-navy-400 mt-1">Open Work Orders</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-red-500" x-text="viewingAppData?.stats?.complaints?.open ?? '—'"></p>
+            <p class="text-xs text-navy-400 mt-1">Open Complaints</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-emerald-600" x-text="viewingAppData?.stats?.housekeeping?.completed ?? '—'"></p>
+            <p class="text-xs text-navy-400 mt-1">HK Completed</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-amber-500" x-text="viewingAppData?.stats?.preventiveMaintenance?.overdue ?? '—'"></p>
+            <p class="text-xs text-navy-400 mt-1">Overdue PM</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4">Work Orders</h3>
+          <div class="space-y-2">
+            <template x-for="wo in (viewingAppData?.workOrders || [])" :key="wo.id">
+              <div class="flex items-start gap-3 p-3 bg-cream-50 rounded-lg">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase mt-0.5"
+                  :class="wo.priority==='HIGH'?'bg-red-100 text-red-700':wo.priority==='MEDIUM'?'bg-amber-100 text-amber-700':'bg-gray-100 text-gray-600'"
+                  x-text="wo.priority"></span>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-navy-800" x-text="wo.title"></p>
+                  <p class="text-xs text-navy-400" x-text="(wo.room_number ? 'Room ' + wo.room_number + ' · ' : '') + wo.department + ' · ' + wo.status"></p>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-xs font-medium"
+                  :class="wo.status==='COMPLETED'?'bg-emerald-100 text-emerald-700':wo.status==='OPEN'?'bg-red-100 text-red-700':'bg-amber-100 text-amber-700'"
+                  x-text="wo.status"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4">Guest Complaints</h3>
+          <div class="space-y-2">
+            <template x-for="c in (viewingAppData?.complaints || [])" :key="c.id">
+              <div class="flex items-start gap-3 p-3 bg-cream-50 rounded-lg">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase mt-0.5"
+                  :class="c.severity==='HIGH'?'bg-red-100 text-red-700':'bg-amber-100 text-amber-700'"
+                  x-text="c.severity"></span>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-navy-800" x-text="c.description"></p>
+                  <p class="text-xs text-navy-400" x-text="c.guest_name + ' · Room ' + c.room_number + ' · ' + c.category"></p>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-xs font-medium"
+                  :class="c.status==='RESOLVED'||c.status==='CLOSED'?'bg-emerald-100 text-emerald-700':'bg-red-100 text-red-700'"
+                  x-text="c.status"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Concierge Detail -->
+      <div x-show="!viewingAppLoading && viewingAppData && viewingApp?.id === 'concierge-organizer'" class="space-y-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-navy-900" x-text="viewingAppData?.stats?.byStatus?.pending ?? '—'"></p>
+            <p class="text-xs text-navy-400 mt-1">Pending Requests</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-emerald-600" x-text="viewingAppData?.stats?.byStatus?.completed ?? '—'"></p>
+            <p class="text-xs text-navy-400 mt-1">Completed</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-blue-600" x-text="viewingAppData?.stats?.totalTransportations ?? '—'"></p>
+            <p class="text-xs text-navy-400 mt-1">Total Transports</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-gold-500" x-text="viewingAppData?.activities?.length ?? 0"></p>
+            <p class="text-xs text-navy-400 mt-1">Activities Available</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4">Guest Requests</h3>
+          <div class="space-y-2">
+            <template x-for="r in (viewingAppData?.requests || [])" :key="r.id">
+              <div class="flex items-start gap-3 p-3 bg-cream-50 rounded-lg">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase mt-0.5"
+                  :class="r.priority==='HIGH'?'bg-red-100 text-red-700':r.priority==='MEDIUM'?'bg-amber-100 text-amber-700':'bg-gray-100 text-gray-600'"
+                  x-text="r.priority"></span>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-navy-800" x-text="r.description"></p>
+                  <p class="text-xs text-navy-400" x-text="r.guest_name + ' · Room ' + r.room_number + ' · ' + r.type"></p>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-xs font-medium"
+                  :class="r.status==='COMPLETED'?'bg-emerald-100 text-emerald-700':r.status==='CONFIRMED'?'bg-blue-100 text-blue-700':r.status==='PENDING'?'bg-amber-100 text-amber-700':'bg-gray-100 text-gray-600'"
+                  x-text="r.status"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4">Transportation</h3>
+          <div class="space-y-2">
+            <template x-for="t in (viewingAppData?.transportation || [])" :key="t.id">
+              <div class="flex items-center justify-between p-3 bg-cream-50 rounded-lg text-sm">
+                <div>
+                  <span class="font-medium text-navy-800" x-text="t.guest_name"></span>
+                  <span class="text-navy-400 ml-2" x-text="t.type + ' · ' + t.vehicle"></span>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs text-navy-500" x-text="(t.scheduled_at||'').substring(0,16)"></p>
+                  <span class="px-2 py-0.5 rounded-full text-xs font-medium"
+                    :class="t.status==='COMPLETED'?'bg-emerald-100 text-emerald-700':'bg-blue-100 text-blue-700'"
+                    x-text="t.status"></span>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fallback for unknown apps -->
+      <div x-show="!viewingAppLoading && viewingApp && !viewingAppData && !['opera-pms','tac-spa','sevenrooms','unifocus','concierge-organizer'].includes(viewingApp?.id)" class="text-center py-12">
         <p class="text-navy-400 text-lg">App detail view coming soon</p>
-        <p class="text-navy-300 text-sm mt-1">Swagger docs available at <a :href="(viewingApp?.config?.api_endpoint || viewingApp?.config?.ohip_endpoint || '') + '/../docs'" target="_blank" class="text-gold-500 underline">API Docs</a></p>
       </div>
     </div>
   </div>
@@ -2157,6 +2376,75 @@ function dashboard() {
               traces: tracesList.length,
               occupancy: stats.occupancyPercentage || stats.occupancy_percentage || 0,
             }
+          };
+        } else if (app.id === 'tac-spa') {
+          const proxy = `/api/properties/${this.currentPropertyId}/apps/tac-spa/proxy`;
+          const locId = app.config?.location_id || 'EDENROCK-SPA';
+          const [statsR, bookingsR, treatmentsR, therapistsR] = await Promise.all([
+            fetch(`${proxy}/locations/${locId}/statistics`),
+            fetch(`${proxy}/locations/${locId}/bookings?limit=10`),
+            fetch(`${proxy}/locations/${locId}/treatments`),
+            fetch(`${proxy}/locations/${locId}/therapists`),
+          ]);
+          const [stats, bookingsData, treatmentsData, therapistsData] = await Promise.all([
+            statsR.json(), bookingsR.json(), treatmentsR.json(), therapistsR.json()
+          ]);
+          const unpack = d => d.data || d.items || d.results || d;
+          this.viewingAppData = { stats, bookings: unpack(bookingsData).slice(0,10), treatments: unpack(treatmentsData), therapists: unpack(therapistsData) };
+
+        } else if (app.id === 'sevenrooms') {
+          const proxy = `/api/properties/${this.currentPropertyId}/apps/sevenrooms/proxy`;
+          const venuesData = await (await fetch(`${proxy}/venues`)).json();
+          const venues = venuesData.data || venuesData.items || venuesData;
+          const venueStats = {};
+          const venueResvs = {};
+          for (const v of (Array.isArray(venues) ? venues.slice(0,3) : [])) {
+            const vid = v.venueId || v.venue_id;
+            const [sR, rR] = await Promise.all([
+              fetch(`${proxy}/venues/${vid}/statistics`),
+              fetch(`${proxy}/venues/${vid}/reservations?limit=5`),
+            ]);
+            venueStats[vid] = await sR.json();
+            const rd = await rR.json();
+            venueResvs[vid] = (rd.data || rd.items || rd.results || rd).slice(0,5);
+          }
+          this.viewingAppData = { venues, venueStats, venueResvs };
+
+        } else if (app.id === 'unifocus') {
+          const proxy = `/api/properties/${this.currentPropertyId}/apps/unifocus/proxy`;
+          const propId = app.config?.property_id || 'EDENROCK';
+          const [statsR, woR, compR, hkR, pmR] = await Promise.all([
+            fetch(`${proxy}/properties/${propId}/statistics`),
+            fetch(`${proxy}/properties/${propId}/work-orders?limit=10`),
+            fetch(`${proxy}/properties/${propId}/complaints?limit=10`),
+            fetch(`${proxy}/properties/${propId}/housekeeping?limit=10`),
+            fetch(`${proxy}/properties/${propId}/preventive-maintenance?limit=10`),
+          ]);
+          const [stats, woData, compData, hkData, pmData] = await Promise.all([
+            statsR.json(), woR.json(), compR.json(), hkR.json(), pmR.json()
+          ]);
+          const unpack = d => d.items || d.results || d;
+          this.viewingAppData = {
+            stats, workOrders: unpack(woData).slice(0,10), complaints: unpack(compData).slice(0,10),
+            housekeeping: unpack(hkData).slice(0,10), maintenance: unpack(pmData).slice(0,10)
+          };
+
+        } else if (app.id === 'concierge-organizer') {
+          const proxy = `/api/properties/${this.currentPropertyId}/apps/concierge-organizer/proxy`;
+          const propId = app.config?.property_id || 'EDENROCK';
+          const [statsR, reqR, transR, actR] = await Promise.all([
+            fetch(`${proxy}/properties/${propId}/statistics`),
+            fetch(`${proxy}/properties/${propId}/requests?limit=10`),
+            fetch(`${proxy}/properties/${propId}/transportation?limit=10`),
+            fetch(`${proxy}/properties/${propId}/activities?limit=10`),
+          ]);
+          const [stats, reqData, transData, actData] = await Promise.all([
+            statsR.json(), reqR.json(), transR.json(), actR.json()
+          ]);
+          const unpack = d => d.items || d.results || d;
+          this.viewingAppData = {
+            stats, requests: unpack(reqData).slice(0,10), transportation: unpack(transData).slice(0,10),
+            activities: unpack(actData).slice(0,10)
           };
         }
       } catch(e) { console.error('Failed to load app data', e); }
