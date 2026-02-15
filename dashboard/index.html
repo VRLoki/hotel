@@ -2106,13 +2106,17 @@ function dashboard() {
       this.appConfigTesting = true;
       this.appConfigMsg = '';
       try {
-        const res = await fetch(`/api/properties/${this.currentPropertyId}/apps/${this.editingApp.id}/test`, { method: 'POST' });
+        const res = await fetch(`/api/properties/${this.currentPropertyId}/apps/${this.editingApp.id}/test`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({config: this.appConfig})
+        });
         const data = await res.json();
-        if (res.ok) {
+        if (res.ok && data.ok !== false) {
           this.appConfigMsg = '✓ ' + (data.message || 'Connection successful');
           await this.loadPropertyApps();
         } else {
-          this.appConfigMsg = '✗ ' + (data.detail || 'Connection test failed');
+          this.appConfigMsg = '✗ ' + (data.message || data.detail || 'Connection test failed');
         }
       } catch(e) { this.appConfigMsg = '✗ Connection error'; }
       this.appConfigTesting = false;

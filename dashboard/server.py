@@ -594,16 +594,19 @@ async def test_property_app(property_id: int, app_id: str, request: Request):
     if not catalog_app:
         raise HTTPException(404, f"App '{app_id}' not found in catalog")
 
-    # Get saved config for this app
-    conn = get_db()
-    row = conn.execute(
-        "SELECT config FROM app_configs WHERE property_id=? AND app_id=?",
-        (property_id, app_id)
-    ).fetchone()
-    conn.close()
-    if not row or not row[0]:
-        raise HTTPException(400, "No configuration saved for this app. Save settings first.")
-    config = json.loads(row[0]) if isinstance(row[0], str) else row[0]
+    # Use config from POST body (current form) or fall back to saved config
+    body = await request.json() if request.headers.get("content-type", "").startswith("application/json") else {}
+    config = body.get("config")
+    if not config:
+        conn = get_db()
+        row = conn.execute(
+            "SELECT config FROM app_configs WHERE property_id=? AND app_id=?",
+            (property_id, app_id)
+        ).fetchone()
+        conn.close()
+        if not row or not row[0]:
+            raise HTTPException(400, "No configuration saved. Save settings first.")
+        config = json.loads(row[0]) if isinstance(row[0], str) else row[0]
 
     # Actually test the connection based on app type
     try:
