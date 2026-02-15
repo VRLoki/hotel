@@ -636,8 +636,7 @@ async def test_property_app(property_id: int, app_id: str, request: Request):
                 if resp.status_code >= 400:
                     raise Exception(f"API returned HTTP {resp.status_code}")
                 data = resp.json()
-                occ = data.get('occupancyPercentage') or data.get('occupancyRate')
-                detail = f"Occupancy: {occ}%" if occ is not None else "API responding"
+                detail = ""
 
             else:
                 # Generic test: try to reach the base URL / endpoint
@@ -677,7 +676,7 @@ async def test_property_app(property_id: int, app_id: str, request: Request):
     update_app_config_status(conn, property_id, app_id, "connected",
                              last_sync=datetime.now().isoformat())
     conn.close()
-    return {"ok": True, "status": "connected", "message": f"Successfully connected to {catalog_app['name']}. {detail}"}
+    return {"ok": True, "status": "connected", "message": f"Successfully connected to {catalog_app['name']}"}
 
 
 # ── Legacy endpoints (redirect to property-scoped) ──
