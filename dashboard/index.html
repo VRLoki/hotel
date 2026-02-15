@@ -2109,7 +2109,7 @@ function dashboard() {
         const res = await fetch(`/api/properties/${this.currentPropertyId}/apps/${this.editingApp.id}/test`, {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({config: this.appConfig})
+          body: JSON.stringify({config: this.editingAppConfig.config})
         });
         const data = await res.json();
         if (res.ok && data.ok !== false) {
