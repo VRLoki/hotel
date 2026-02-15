@@ -172,7 +172,7 @@ tailwind.config = {
     </button>
     <!-- My Apps -->
     <div>
-      <button @click="myAppsOpen = !myAppsOpen; if(!myAppsExpanded) loadMyApps()"
+      <button @click="myAppsOpen = !myAppsOpen; if(!myAppsOpen) loadMyApps()"
               :class="page.startsWith('app-') ? 'bg-navy-700 text-gold-400' : 'text-navy-200 hover:bg-navy-800 hover:text-white'"
               class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
@@ -2130,11 +2130,11 @@ function dashboard() {
           const [stats, rooms, resv, guests, hk, traces] = await Promise.all([
             statsR.json(), roomsR.json(), resvR.json(), guestsR.json(), hkR.json(), tracesR.json()
           ]);
-          const roomsList = rooms.items || rooms;
-          const resvList = resv.items || resv;
-          const guestsList = guests.items || guests;
-          const hkList = hk.items || hk;
-          const tracesList = traces.items || traces;
+          const roomsList = rooms.results || rooms.items || rooms;
+          const resvList = resv.results || resv.items || resv;
+          const guestsList = guests.results || guests.items || guests;
+          const hkList = hk.results || hk.items || hk;
+          const tracesList = traces.results || traces.items || traces;
           const checkedIn = resvList.filter(r => r.resvStatus === 'CHECKED_IN' || r.resv_status === 'CHECKED_IN');
           const arriving = resvList.filter(r => r.resvStatus === 'RESERVED' || r.resv_status === 'RESERVED');
           const vips = guestsList.filter(g => g.vipStatus || g.vip_status);
