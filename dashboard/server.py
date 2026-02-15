@@ -615,6 +615,17 @@ async def test_property_app(property_id: int, app_id: str, request: Request):
                 endpoint = config.get("ohip_endpoint", "").rstrip("/")
                 hotel_id = config.get("hotel_id", "")
                 api_key = config.get("client_secret", "")
+                # If masked password, fetch real one from DB
+                if api_key.startswith("••••"):
+                    conn = get_db()
+                    row = conn.execute(
+                        "SELECT config FROM app_configs WHERE property_id=? AND app_id=?",
+                        (property_id, app_id)
+                    ).fetchone()
+                    conn.close()
+                    if row and row[0]:
+                        saved = json.loads(row[0]) if isinstance(row[0], str) else row[0]
+                        api_key = saved.get("client_secret", "")
                 if not endpoint:
                     raise HTTPException(400, "OHIP endpoint URL is required")
                 # Try hitting the statistics or rooms endpoint
