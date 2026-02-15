@@ -170,6 +170,29 @@ tailwind.config = {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       Guest Intelligence
     </button>
+    <!-- My Apps -->
+    <div>
+      <button @click="myAppsOpen = !myAppsOpen; if(!myAppsExpanded) loadMyApps()"
+              :class="page.startsWith('app-') ? 'bg-navy-700 text-gold-400' : 'text-navy-200 hover:bg-navy-800 hover:text-white'"
+              class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        My Apps
+        <svg class="w-4 h-4 ml-auto transition-transform" :class="myAppsOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div x-show="myAppsOpen" x-cloak class="ml-6 mt-1 space-y-0.5">
+        <template x-for="app in myAppsList" :key="app.id">
+          <button @click="page='app-'+app.id; viewApp(app); sidebarOpen=false"
+                  :class="page==='app-'+app.id ? 'bg-navy-700 text-gold-400' : 'text-navy-300 hover:bg-navy-800 hover:text-white'"
+                  class="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition">
+            <span x-text="app.icon || '📦'"></span>
+            <span x-text="app.name" class="truncate"></span>
+            <span class="ml-auto w-2 h-2 rounded-full flex-shrink-0" :class="app.status==='connected' ? 'bg-emerald-400' : 'bg-red-400'"></span>
+          </button>
+        </template>
+        <p x-show="myAppsList.length === 0" class="text-xs text-navy-500 px-3 py-1">No apps configured</p>
+      </div>
+    </div>
+
     <button @click="page='settings'; sidebarOpen=false" x-show="user?.role !== 'staff'"
             :class="page==='settings' ? 'bg-navy-700 text-gold-400' : 'text-navy-200 hover:bg-navy-800 hover:text-white'"
             class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition">
@@ -1164,6 +1187,142 @@ tailwind.config = {
   </div>
 
   <!-- ─── Documentation ─── -->
+  <!-- ═══════ APP DETAIL PAGE ═══════ -->
+  <div x-show="page.startsWith('app-')" x-cloak class="fade-in">
+    <header class="bg-white border-b border-cream-300 px-6 py-4">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl" x-text="viewingApp?.icon || '📦'"></span>
+        <div>
+          <h2 class="font-display text-2xl font-bold text-navy-900" x-text="viewingApp?.name || 'App'"></h2>
+          <p class="text-sm text-navy-500" x-text="viewingApp?.description?.substring(0, 80) + '...' || ''"></p>
+        </div>
+        <span class="ml-auto px-3 py-1 rounded-full text-xs font-medium"
+              :class="viewingApp?.status==='connected' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'"
+              x-text="viewingApp?.status || 'unknown'"></span>
+      </div>
+    </header>
+
+    <div class="p-6">
+      <div x-show="viewingAppLoading" class="text-center py-12 text-navy-400">
+        <div class="w-8 h-8 border-2 border-gold-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        Loading data...
+      </div>
+
+      <!-- Opera PMS Detail -->
+      <div x-show="!viewingAppLoading && viewingAppData && viewingApp?.id === 'opera-pms'" class="space-y-6">
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-navy-900" x-text="viewingAppData?.summary?.totalRooms || 0"></p>
+            <p class="text-xs text-navy-400 mt-1">Total Rooms</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-emerald-600" x-text="viewingAppData?.summary?.occupied || 0"></p>
+            <p class="text-xs text-navy-400 mt-1">Occupied</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-blue-600" x-text="viewingAppData?.summary?.vacant || 0"></p>
+            <p class="text-xs text-navy-400 mt-1">Vacant</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-gold-500" x-text="(viewingAppData?.summary?.occupancy || 0).toFixed(1) + '%'"></p>
+            <p class="text-xs text-navy-400 mt-1">Occupancy</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-navy-900" x-text="viewingAppData?.summary?.checkedIn || 0"></p>
+            <p class="text-xs text-navy-400 mt-1">Checked In</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-amber-500" x-text="viewingAppData?.summary?.arriving || 0"></p>
+            <p class="text-xs text-navy-400 mt-1">Arriving</p>
+          </div>
+        </div>
+
+        <!-- Second row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-navy-900" x-text="viewingAppData?.summary?.totalGuests || 0"></p>
+            <p class="text-xs text-navy-400 mt-1">Guest Profiles</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-purple-600" x-text="viewingAppData?.summary?.vips || 0"></p>
+            <p class="text-xs text-navy-400 mt-1">VIP Guests</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-orange-500" x-text="viewingAppData?.summary?.dirty || 0"></p>
+            <p class="text-xs text-navy-400 mt-1">Dirty Rooms</p>
+          </div>
+          <div class="bg-white rounded-xl border border-cream-300 p-4 text-center">
+            <p class="text-2xl font-bold text-red-500" x-text="viewingAppData?.summary?.outOfService || 0"></p>
+            <p class="text-xs text-navy-400 mt-1">Out of Service</p>
+          </div>
+        </div>
+
+        <!-- Checked-in Guests Table -->
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4">In-House Guests</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b-2 border-cream-200">
+                  <th class="text-left py-2 px-3 font-semibold text-navy-700">Room</th>
+                  <th class="text-left py-2 px-3 font-semibold text-navy-700">Guest</th>
+                  <th class="text-left py-2 px-3 font-semibold text-navy-700">Type</th>
+                  <th class="text-left py-2 px-3 font-semibold text-navy-700">Arrival</th>
+                  <th class="text-left py-2 px-3 font-semibold text-navy-700">Departure</th>
+                  <th class="text-left py-2 px-3 font-semibold text-navy-700">Rate</th>
+                  <th class="text-left py-2 px-3 font-semibold text-navy-700">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-cream-200">
+                <template x-for="r in (viewingAppData?.resvList || []).filter(r => (r.resvStatus||r.resv_status)==='CHECKED_IN')" :key="r.confirmationNo || r.confirmation_no">
+                  <tr class="hover:bg-cream-50">
+                    <td class="py-2 px-3 font-mono font-medium" x-text="r.roomNumber || r.room_number"></td>
+                    <td class="py-2 px-3">
+                      <span x-text="r.guestName || (r.guest ? (r.guest.firstName||r.guest.first_name)+' '+(r.guest.lastName||r.guest.last_name) : '')"></span>
+                      <span x-show="r.guest?.vipStatus || r.guest?.vip_status" class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-gold-100 text-gold-700" x-text="r.guest?.vipStatus || r.guest?.vip_status"></span>
+                    </td>
+                    <td class="py-2 px-3 text-navy-500" x-text="r.roomType || r.room_type"></td>
+                    <td class="py-2 px-3 text-navy-500" x-text="(r.arrivalDate || r.arrival_date || '').substring(0,10)"></td>
+                    <td class="py-2 px-3 text-navy-500" x-text="(r.departureDate || r.departure_date || '').substring(0,10)"></td>
+                    <td class="py-2 px-3 text-navy-600 font-medium" x-text="'€' + (r.rateAmount || r.rate_amount || 0).toLocaleString()"></td>
+                    <td class="py-2 px-3"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Checked In</span></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Traces / Alerts -->
+        <div class="bg-white rounded-xl border border-cream-300 p-6">
+          <h3 class="font-display text-lg font-semibold text-navy-900 mb-4">Active Traces & Alerts</h3>
+          <div class="space-y-3">
+            <template x-for="t in (viewingAppData?.tracesList || [])" :key="t.traceId || t.trace_id">
+              <div class="flex items-start gap-3 p-3 bg-cream-50 rounded-lg">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase mt-0.5"
+                      :class="(t.department||'').includes('MANAGEMENT') ? 'bg-red-100 text-red-700' : (t.department||'').includes('FB') ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'"
+                      x-text="t.department"></span>
+                <div class="flex-1">
+                  <p class="text-sm text-navy-800" x-text="t.traceText || t.trace_text"></p>
+                  <p class="text-xs text-navy-400 mt-1" x-text="'Date: ' + (t.traceDate || t.trace_date || '').substring(0,10) + ' · By: ' + (t.createdBy || t.created_by || '')"></p>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Placeholder for other apps -->
+      <div x-show="!viewingAppLoading && viewingApp && viewingApp.id !== 'opera-pms'" class="text-center py-12">
+        <p class="text-navy-400 text-lg">App detail view coming soon</p>
+        <p class="text-navy-300 text-sm mt-1">Swagger docs available at <a :href="(viewingApp?.config?.api_endpoint || viewingApp?.config?.ohip_endpoint || '') + '/../docs'" target="_blank" class="text-gold-500 underline">API Docs</a></p>
+      </div>
+    </div>
+  </div>
+
   <div x-show="page==='docs'" x-cloak class="fade-in">
     <header class="bg-white border-b border-cream-300 px-6 py-4">
       <h2 class="font-display text-2xl font-bold text-navy-900">Documentation</h2>
@@ -1242,6 +1401,11 @@ function dashboard() {
 
     // Settings sub-tabs
     settingsTab: 'apps',
+    myAppsOpen: false,
+    myAppsList: [],
+    viewingApp: null,
+    viewingAppData: null,
+    viewingAppLoading: false,
     usersList: [],
     usersLoading: false,
     showUserModal: false,
@@ -1902,6 +2066,7 @@ function dashboard() {
       await this.loadRecap();
       await this.loadGuests();
       await this.loadSettings();
+      await this.loadMyApps();
       await this.loadAppCatalog();
       await this.loadPropertyApps();
     },
@@ -1925,6 +2090,78 @@ function dashboard() {
         if (this.guests.length) this.selectedGuest = this.guests[0];
         else this.selectedGuest = null;
       } catch(e) { console.error(e); }
+    },
+
+    async loadMyApps() {
+      try {
+        const res = await fetch(`/api/properties/${this.currentPropertyId}/apps`);
+        if (!res.ok) return;
+        const apps = await res.json();
+        // Merge with catalog info
+        const catRes = await fetch('/api/app-catalog');
+        const catalog = await catRes.json();
+        const catMap = {};
+        (catalog.apps || catalog).forEach(c => catMap[c.id] = c);
+        this.myAppsList = apps.filter(a => a.enabled || a.status === 'connected').map(a => ({
+          ...a, ...catMap[a.app_id], id: a.app_id, status: a.status
+        }));
+      } catch(e) { console.error('Failed to load my apps', e); }
+    },
+
+    async viewApp(app) {
+      this.viewingApp = app;
+      this.viewingAppData = null;
+      this.viewingAppLoading = true;
+      try {
+        if (app.id === 'opera-pms') {
+          const cfg = app.config || {};
+          const endpoint = cfg.ohip_endpoint?.replace(/\/$/, '');
+          const hotelId = cfg.hotel_id || 'EDENROCK';
+          const apiKey = cfg.client_secret || '';
+          const headers = apiKey && !apiKey.startsWith('••••') ? {'x-api-key': apiKey} : {};
+          // Fetch stats, rooms, reservations, guests in parallel
+          const [statsR, roomsR, resvR, guestsR, hkR, tracesR] = await Promise.all([
+            fetch(`${endpoint}/hotels/${hotelId}/statistics`, {headers}),
+            fetch(`${endpoint}/hotels/${hotelId}/rooms?limit=100`, {headers}),
+            fetch(`${endpoint}/hotels/${hotelId}/reservations?limit=100`, {headers}),
+            fetch(`${endpoint}/hotels/${hotelId}/guests?limit=100`, {headers}),
+            fetch(`${endpoint}/hotels/${hotelId}/housekeeping?limit=100`, {headers}),
+            fetch(`${endpoint}/hotels/${hotelId}/traces?limit=100`, {headers}),
+          ]);
+          const [stats, rooms, resv, guests, hk, traces] = await Promise.all([
+            statsR.json(), roomsR.json(), resvR.json(), guestsR.json(), hkR.json(), tracesR.json()
+          ]);
+          const roomsList = rooms.items || rooms;
+          const resvList = resv.items || resv;
+          const guestsList = guests.items || guests;
+          const hkList = hk.items || hk;
+          const tracesList = traces.items || traces;
+          const checkedIn = resvList.filter(r => r.resvStatus === 'CHECKED_IN' || r.resv_status === 'CHECKED_IN');
+          const arriving = resvList.filter(r => r.resvStatus === 'RESERVED' || r.resv_status === 'RESERVED');
+          const vips = guestsList.filter(g => g.vipStatus || g.vip_status);
+          const occupied = roomsList.filter(r => (r.foStatus || r.fo_status) === 'OCCUPIED');
+          const dirty = roomsList.filter(r => (r.housekeepingStatus || r.housekeeping_status || r.roomStatus || r.room_status) === 'DIRTY');
+          const oos = roomsList.filter(r => (r.roomStatus || r.room_status) === 'OUT_OF_SERVICE');
+          this.viewingAppData = {
+            stats, roomsList, resvList, guestsList, hkList, tracesList,
+            summary: {
+              totalRooms: roomsList.length,
+              occupied: occupied.length,
+              vacant: roomsList.length - occupied.length,
+              dirty: dirty.length,
+              outOfService: oos.length,
+              checkedIn: checkedIn.length,
+              arriving: arriving.length,
+              totalGuests: guestsList.length,
+              vips: vips.length,
+              hkTasks: hkList.length,
+              traces: tracesList.length,
+              occupancy: stats.occupancyPercentage || stats.occupancy_percentage || 0,
+            }
+          };
+        }
+      } catch(e) { console.error('Failed to load app data', e); }
+      this.viewingAppLoading = false;
     },
 
     async loadUsers() {
