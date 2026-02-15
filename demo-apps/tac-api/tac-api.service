@@ -1,0 +1,13 @@
+[Unit]
+Description=TAC Spa API
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/tac-api
+ExecStart=/opt/tac-api/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8081
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
