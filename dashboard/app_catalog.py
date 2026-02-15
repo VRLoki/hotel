@@ -134,6 +134,7 @@ APP_CATALOG = [
         "website": "https://sevenrooms.com/",
         "config_schema": {
             "fields": [
+                {"key": "api_endpoint", "label": "API Endpoint", "type": "url", "required": True, "placeholder": "https://api.sevenrooms.com/v1", "description": "SevenRooms API base URL"},
                 {"key": "api_key", "label": "API Key", "type": "password", "required": True, "placeholder": "", "description": "SevenRooms API key"},
                 {"key": "api_secret", "label": "API Secret", "type": "password", "required": True, "placeholder": "", "description": "SevenRooms API secret"},
                 {"key": "venue_group_id", "label": "Venue Group ID", "type": "text", "required": True, "placeholder": "vg_xxxxxxxx", "description": "SevenRooms venue group identifier"},
