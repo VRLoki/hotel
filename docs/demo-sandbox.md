@@ -76,6 +76,84 @@ All services share a consistent dataset centered around **Eden Rock - St Barths*
 - Transportation schedule
 - St Barths activity catalog and recommendations
 
+## API Endpoints Reference
+
+All endpoints support `limit` and `offset` query params for pagination. Auth via `x-api-key` header.
+
+### Opera PMS (port 8080)
+
+Base: `http://51.158.66.245:8080/api/v1/hotels/EDENROCK`
+
+| Method | Endpoint | Query Params | Description |
+|--------|----------|-------------|-------------|
+| GET | `/reservations` | `arrivalDate`, `departureDate`, `status`, `room`, `guestName` | List reservations |
+| GET | `/reservations/{confirmationNo}` | — | Reservation detail with guest profile |
+| GET | `/guests` | `name`, `vipStatus`, `nameType` | List guest profiles |
+| GET | `/guests/{nameId}` | — | Guest detail with preferences |
+| GET | `/rooms` | `roomType`, `status`, `foStatus`, `floor` | Room status/availability |
+| GET | `/rooms/{roomNumber}` | — | Room detail with current guest |
+| GET | `/housekeeping` | `taskDate`, `status`, `room` | Housekeeping tasks |
+| GET | `/cashiers/transactions` | `fromDate`, `toDate`, `room`, `guestNameId`, `folioNumber` | Folio/billing |
+| GET | `/traces` | `traceDate`, `department`, `resolved` | Alerts and traces |
+| GET | `/groups` | `status` | Group blocks |
+| GET | `/statistics` | `businessDate` | Daily summary (occupancy, ADR, RevPAR) |
+
+### TAC Spa (port 8081)
+
+Base: `http://51.158.66.245:8081/api/v2/locations/EDENROCK-SPA`
+
+| Method | Endpoint | Query Params | Description |
+|--------|----------|-------------|-------------|
+| GET | `/treatments` | `category` | Treatment catalog |
+| GET | `/therapists` | `specialty` | Therapist list with schedules |
+| GET | `/bookings` | `date`, `status`, `guestName` | Spa bookings |
+| GET | `/revenue` | `startDate`, `endDate` | Daily revenue summary |
+| GET | `/statistics` | — | Utilization, popular treatments |
+
+### SevenRooms (port 8082)
+
+Base: `http://51.158.66.245:8082/api/v1`
+
+| Method | Endpoint | Query Params | Description |
+|--------|----------|-------------|-------------|
+| GET | `/venues` | — | List all venues (Jean-Georges, Sand Bar, Rock Bar) |
+| GET | `/venues/{venueId}/reservations` | `date`, `status`, `guestName` | Restaurant reservations |
+| GET | `/venues/{venueId}/guests` | `guestName` | Guest dining profiles |
+| GET | `/venues/{venueId}/waitlist` | — | Current waitlist |
+| GET | `/venues/{venueId}/revenue` | `startDate`, `endDate` | Daily revenue/covers |
+| GET | `/venues/{venueId}/statistics` | — | Covers, avg check, popular times |
+
+### Unifocus (port 8083)
+
+Base: `http://51.158.66.245:8083/api/v1/properties/EDENROCK`
+
+| Method | Endpoint | Query Params | Description |
+|--------|----------|-------------|-------------|
+| GET | `/work-orders` | `status`, `priority`, `department`, `room`, `dateFrom`, `dateTo` | Maintenance work orders |
+| GET | `/work-orders/{orderId}` | — | Work order detail |
+| GET | `/complaints` | `status`, `severity`, `dateFrom`, `dateTo` | Guest complaints |
+| GET | `/housekeeping` | `status`, `floor`, `date`, `taskType` | Housekeeping tasks |
+| GET | `/staff` | `department` | Staff list |
+| GET | `/preventive-maintenance` | `status` | PM schedule |
+| GET | `/statistics` | — | Open tickets, avg resolution, SLA |
+
+### Concierge Organizer (port 8084)
+
+Base: `http://51.158.66.245:8084/api/v1/properties/EDENROCK`
+
+| Method | Endpoint | Query Params | Description |
+|--------|----------|-------------|-------------|
+| GET | `/requests` | `status`, `type`, `guest`, `dateFrom`, `dateTo` | All guest requests |
+| GET | `/requests/{requestId}` | — | Request detail |
+| GET | `/transportation` | `date`, `status`, `guest` | Transfers and car service |
+| GET | `/activities` | `category` | Available activities catalog |
+| GET | `/recommendations` | `category` | Curated St Barths recommendations |
+| GET | `/statistics` | — | Request volume, avg fulfillment time |
+
+All services also expose `GET /health` and Swagger docs at `GET /docs`.
+
+---
+
 ## Architecture
 
 ```
