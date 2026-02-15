@@ -625,7 +625,8 @@ async def test_property_app(property_id: int, app_id: str, request: Request):
                 if resp.status_code >= 400:
                     raise Exception(f"API returned HTTP {resp.status_code}")
                 data = resp.json()
-                detail = f"Connected. Occupancy: {data.get('occupancyRate', 'N/A')}%"
+                occ = data.get('occupancyPercentage') or data.get('occupancyRate')
+                detail = f"Occupancy: {occ}%" if occ is not None else "API responding"
 
             else:
                 # Generic test: try to reach the base URL / endpoint
