@@ -593,13 +593,76 @@ async def test_property_app(property_id: int, app_id: str, request: Request):
     catalog_app = get_app_by_id(app_id)
     if not catalog_app:
         raise HTTPException(404, f"App '{app_id}' not found in catalog")
-    # Mock test: wait 1s then return success
-    await asyncio.sleep(1)
+
+    # Get saved config for this app
+    conn = get_db()
+    row = conn.execute(
+        "SELECT config FROM app_configs WHERE property_id=? AND app_id=?",
+        (property_id, app_id)
+    ).fetchone()
+    conn.close()
+    if not row or not row[0]:
+        raise HTTPException(400, "No configuration saved for this app. Save settings first.")
+    config = json.loads(row[0]) if isinstance(row[0], str) else row[0]
+
+    # Actually test the connection based on app type
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            if app_id == "opera-pms":
+                endpoint = config.get("ohip_endpoint", "").rstrip("/")
+                hotel_id = config.get("hotel_id", "")
+                api_key = config.get("client_secret", "")
+                if not endpoint:
+                    raise HTTPException(400, "OHIP endpoint URL is required")
+                # Try hitting the statistics or rooms endpoint
+                headers = {"x-api-key": api_key} if api_key else {}
+                resp = await client.get(f"{endpoint}/hotels/{hotel_id}/statistics", headers=headers)
+                if resp.status_code == 401 or resp.status_code == 403:
+                    raise Exception("Authentication failed — check Client ID / Secret")
+                if resp.status_code >= 400:
+                    raise Exception(f"API returned HTTP {resp.status_code}")
+                data = resp.json()
+                detail = f"Connected. Occupancy: {data.get('occupancyRate', 'N/A')}%"
+
+            else:
+                # Generic test: try to reach the base URL / endpoint
+                test_url = config.get("api_endpoint") or config.get("ohip_endpoint") or config.get("base_url") or config.get("url", "")
+                if not test_url:
+                    # No URL field found — check if any URL-like value exists
+                    for v in config.values():
+                        if isinstance(v, str) and v.startswith("http"):
+                            test_url = v
+                            break
+                if not test_url:
+                    raise HTTPException(400, "No API endpoint URL found in configuration")
+                resp = await client.get(test_url, timeout=10)
+                if resp.status_code >= 500:
+                    raise Exception(f"Server error: HTTP {resp.status_code}")
+                detail = f"Reachable (HTTP {resp.status_code})"
+
+    except httpx.ConnectError:
+        conn = get_db()
+        update_app_config_status(conn, property_id, app_id, "error")
+        conn.close()
+        return {"ok": False, "status": "error", "message": "Connection refused — server unreachable"}
+    except httpx.TimeoutException:
+        conn = get_db()
+        update_app_config_status(conn, property_id, app_id, "error")
+        conn.close()
+        return {"ok": False, "status": "error", "message": "Connection timed out (10s)"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        conn = get_db()
+        update_app_config_status(conn, property_id, app_id, "error")
+        conn.close()
+        return {"ok": False, "status": "error", "message": str(e)}
+
     conn = get_db()
     update_app_config_status(conn, property_id, app_id, "connected",
                              last_sync=datetime.now().isoformat())
     conn.close()
-    return {"ok": True, "status": "connected", "message": f"Successfully connected to {catalog_app['name']}"}
+    return {"ok": True, "status": "connected", "message": f"Successfully connected to {catalog_app['name']}. {detail}"}
 
 
 # ── Legacy endpoints (redirect to property-scoped) ──
