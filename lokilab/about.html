@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Who We Are — LokiLab</title>
+<meta name="description" content="Meet the team behind LokiLab — GAFA alumni, educators, and tech entrepreneurs building AI-powered solutions.">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Who We Are — LokiLab">
+<meta property="og:description" content="GAFA alumni, educators, and tech entrepreneurs building AI-powered solutions.">
+<meta property="og:url" content="https://lokilab.dev/about.html">
+<meta property="og:image" content="https://lokilab.dev/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://lokilab.dev/about.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐺</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#09090b;--surface:#111113;--surface2:#1a1a1f;--border:#27272a;--text:#fafafa;--text2:#a1a1aa;--accent:#818cf8;--accent2:#6366f1}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+
+.bg-mesh{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden}
+.bg-mesh::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 20% 50%,rgba(99,102,241,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(139,92,246,0.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(59,130,246,0.05) 0%,transparent 50%);animation:meshMove 20s ease-in-out infinite}
+@keyframes meshMove{0%,100%{transform:translate(0,0)}25%{transform:translate(2%,-2%)}50%{transform:translate(-1%,3%)}75%{transform:translate(3%,1%)}}
+.grid-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:64px 64px;pointer-events:none}
+
+.content{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column}
+
+nav{padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;width:100%}
+.logo{display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:var(--text)}
+.logo-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent2),#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 20px rgba(99,102,241,0.3)}
+.logo-text{font-weight:800;font-size:1.25rem;letter-spacing:-0.03em}
+.logo-text span{color:var(--accent)}
+.nav-links{display:flex;gap:1.5rem;align-items:center}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color 0.2s}
+.nav-links a:hover{color:var(--text)}
+
+.hero{text-align:center;padding:4rem 2rem 1rem;max-width:800px;margin:0 auto}
+h1{font-size:clamp(2.5rem,6vw,4rem);font-weight:900;letter-spacing:-0.04em;line-height:1.1;margin-bottom:1rem;background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,0.6) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+h1 .accent{background:linear-gradient(135deg,var(--accent),#a78bfa);-webkit-background-clip:text;background-clip:text}
+.subtitle{font-size:1.1rem;color:var(--text2);line-height:1.6;max-width:600px;margin:0 auto;font-weight:300}
+
+/* Timeline / story */
+.story{padding:3rem 2rem;max-width:800px;margin:0 auto;width:100%}
+.chapter{margin-bottom:3rem;position:relative;padding-left:3rem}
+.chapter::before{content:'';position:absolute;left:8px;top:32px;bottom:-24px;width:2px;background:var(--border)}
+.chapter:last-child::before{display:none}
+.chapter-icon{position:absolute;left:0;top:4px;width:18px;height:18px;border-radius:50%;background:var(--accent2);box-shadow:0 0 12px rgba(99,102,241,0.4);z-index:1}
+.chapter h2{font-size:1.25rem;font-weight:800;margin-bottom:0.75rem;letter-spacing:-0.02em}
+.chapter p{color:var(--text2);line-height:1.7;font-size:0.95rem;margin-bottom:0.5rem}
+.chapter .highlight{color:var(--text);font-weight:600}
+.chapter .emoji{font-size:1.1rem}
+
+/* Fun facts */
+.facts{padding:2rem;max-width:1000px;margin:0 auto;width:100%}
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.fact{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center;transition:all 0.3s}
+.fact:hover{border-color:rgba(99,102,241,0.3);transform:translateY(-3px)}
+.fact-emoji{font-size:2rem;margin-bottom:0.5rem}
+.fact-number{font-size:1.5rem;font-weight:900;letter-spacing:-0.02em}
+.fact-label{font-size:0.75rem;color:var(--text2);margin-top:0.25rem}
+
+/* Values */
+.values{padding:3rem 2rem;max-width:1000px;margin:0 auto;width:100%}
+.values h2{font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:2rem;letter-spacing:-0.02em}
+.values-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem}
+.value-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.75rem;transition:all 0.3s}
+.value-card:hover{border-color:rgba(99,102,241,0.3)}
+.value-card h3{font-size:1rem;font-weight:700;margin-bottom:0.5rem}
+.value-card p{color:var(--text2);font-size:0.85rem;line-height:1.6}
+
+.cta{text-align:center;padding:3rem 2rem 4rem}
+.cta p{color:var(--text2);font-size:1rem;margin-bottom:1.5rem}
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.8rem 1.75rem;border-radius:10px;font-size:0.9rem;font-weight:600;text-decoration:none;transition:all 0.3s;border:none}
+.btn-primary{background:linear-gradient(135deg,var(--accent2),#7c3aed);color:#fff;box-shadow:0 0 20px rgba(99,102,241,0.2)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(99,102,241,0.3)}
+
+footer{padding:2rem;text-align:center;color:var(--text2);font-size:0.8rem;border-top:1px solid var(--border)}
+footer a{color:var(--accent);text-decoration:none}
+
+@media(max-width:640px){
+  nav{padding:1rem}
+  .story{padding:2rem 1rem}
+  .chapter{padding-left:2.5rem}
+  .facts-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="grid-overlay"></div>
+
+<div class="content">
+
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-mark">🐺</div>
+    <div class="logo-text">Loki<span>Lab</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="/services.html">Services</a>
+    <a href="/about.html">About</a>
+    <a href="https://fr.linkedin.com/in/vincent-roessle-9aaa3963" target="_blank">LinkedIn →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Who's behind <span class="accent">the wolf?</span></h1>
+  <p class="subtitle">Not your typical dev shop. We've been around the block — from corporate giants to classrooms, always chasing what's next.</p>
+</div>
+
+<section class="facts">
+  <div class="facts-grid">
+    <div class="fact">
+      <div class="fact-emoji">⚡</div>
+      <div class="fact-number">15+</div>
+      <div class="fact-label">Years in tech</div>
+    </div>
+    <div class="fact">
+      <div class="fact-emoji">🏢</div>
+      <div class="fact-number">GAFA</div>
+      <div class="fact-label">Alumni</div>
+    </div>
+    <div class="fact">
+      <div class="fact-emoji">🎓</div>
+      <div class="fact-number">1000+</div>
+      <div class="fact-label">Students taught</div>
+    </div>
+    <div class="fact">
+      <div class="fact-emoji">☕</div>
+      <div class="fact-number">∞</div>
+      <div class="fact-label">Coffees consumed</div>
+    </div>
+  </div>
+</section>
+
+<section class="story">
+
+  <div class="chapter">
+    <div class="chapter-icon"></div>
+    <h2>🏢 Forged in Big Tech</h2>
+    <p>We cut our teeth at <span class="highlight">GAFA-level companies</span> — the kind of places where you learn to build systems that scale to millions, ship under pressure, and solve problems that actually matter.</p>
+    <p>That's where we learned that <span class="highlight">good enough is never good enough</span>.</p>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-icon"></div>
+    <h2>🎓 Then We Taught It</h2>
+    <p>Because what's the point of knowing things if you can't pass them on? We became <span class="highlight">IT teachers and school directors</span>, training the next generation of developers.</p>
+    <p>Teaching forces you to <span class="highlight">truly understand</span> what you do. No hand-waving. No "it just works." You learn to explain complex systems in simple terms — and that makes you a better builder.</p>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-icon"></div>
+    <h2>🤖 Now We Build the Future</h2>
+    <p>AI changed everything. Not in the "robots taking over" way — in the <span class="highlight">"holy shit, we can actually build this now"</span> way.</p>
+    <p>We saw the wave coming. We jumped in. Now we help businesses ride it — building <span class="highlight">AI-powered tools, smart assistants, and apps</span> that were impossible just two years ago.</p>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-icon"></div>
+    <h2>❤️ We Love This Stuff</h2>
+    <p>This isn't just a job. We're the people who <span class="highlight">build side projects at 2am</span> because we had an idea we couldn't let go. Who read AI papers for fun. Who get genuinely excited about a well-designed API.</p>
+    <p>That obsession? <span class="highlight">It shows in the work.</span></p>
+  </div>
+
+</section>
+
+<section class="values">
+  <h2>How we work</h2>
+  <div class="values-grid">
+    <div class="value-card">
+      <h3>🚀 Speed over perfection</h3>
+      <p>Ship fast, iterate faster. A working prototype in days beats a perfect plan in months. We move quick because your time matters.</p>
+    </div>
+    <div class="value-card">
+      <h3>🧠 Substance over hype</h3>
+      <p>We don't slap "AI" on everything for marketing points. If AI solves your problem, great. If a simple script does it better, we'll tell you.</p>
+    </div>
+    <div class="value-card">
+      <h3>🤝 Partners, not vendors</h3>
+      <p>We don't just build and disappear. We're invested in your success. Your win is our win — that's the only model that makes sense.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <p>Convinced? Curious? Just want to talk tech?</p>
+  <a href="mailto:contact@lokilab.dev?subject=Let's chat" class="btn btn-primary">Say hello 👋</a>
+</section>
+
+<footer>
+  <p>© 2026 LokiLab · <a href="/services.html">Services</a> · <a href="mailto:contact@lokilab.dev">Contact</a></p>
+</footer>
+
+</div>
+</body>
+</html>

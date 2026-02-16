@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services & Pricing — LokiLab</title>
+<meta name="description" content="LokiLab services & pricing — AI assistants, web apps, mobile apps, and student developer pool. Transparent pricing, no BS.">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Services & Pricing — LokiLab">
+<meta property="og:description" content="AI assistants, web apps, mobile apps, and student developer pool. Transparent pricing, no BS.">
+<meta property="og:url" content="https://lokilab.dev/services.html">
+<meta property="og:image" content="https://lokilab.dev/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://lokilab.dev/services.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐺</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#09090b;--surface:#111113;--surface2:#1a1a1f;--border:#27272a;--text:#fafafa;--text2:#a1a1aa;--accent:#818cf8;--accent2:#6366f1;--glow:rgba(99,102,241,0.15)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+
+.bg-mesh{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden}
+.bg-mesh::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 20% 50%,rgba(99,102,241,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(139,92,246,0.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(59,130,246,0.05) 0%,transparent 50%);animation:meshMove 20s ease-in-out infinite}
+@keyframes meshMove{0%,100%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(2%,-2%) rotate(1deg)}50%{transform:translate(-1%,3%) rotate(-1deg)}75%{transform:translate(3%,1%) rotate(0.5deg)}}
+.grid-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:64px 64px;pointer-events:none}
+.noise{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;opacity:0.03;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.content{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column}
+
+nav{padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;width:100%}
+.logo{display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:var(--text)}
+.logo-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent2),#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 20px rgba(99,102,241,0.3)}
+.logo-text{font-weight:800;font-size:1.25rem;letter-spacing:-0.03em}
+.logo-text span{color:var(--accent)}
+.nav-links{display:flex;gap:1.5rem;align-items:center}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color 0.2s}
+.nav-links a:hover{color:var(--text)}
+
+.hero{text-align:center;padding:4rem 2rem 2rem;max-width:800px;margin:0 auto}
+.badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.4rem 1rem;border:1px solid var(--border);border-radius:100px;font-size:0.75rem;color:var(--text2);margin-bottom:2rem;background:var(--surface)}
+h1{font-size:clamp(2.5rem,6vw,4rem);font-weight:900;letter-spacing:-0.04em;line-height:1.1;margin-bottom:1rem;background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,0.6) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{font-size:1.1rem;color:var(--text2);line-height:1.6;max-width:550px;margin:0 auto;font-weight:300}
+
+/* Pricing cards */
+.pricing{padding:3rem 2rem 4rem;max-width:1200px;margin:0 auto;width:100%}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2.5rem 2rem;transition:all 0.3s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,0.4),transparent);opacity:0;transition:opacity 0.3s}
+.card:hover{border-color:rgba(99,102,241,0.3);transform:translateY(-6px);box-shadow:0 25px 50px rgba(0,0,0,0.4)}
+.card:hover::before{opacity:1}
+.card.featured{border-color:rgba(99,102,241,0.3);background:linear-gradient(180deg,rgba(99,102,241,0.05) 0%,var(--surface) 100%)}
+.card.featured::before{opacity:1}
+.card-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:1.5rem;background:var(--surface2);border:1px solid var(--border)}
+.card h3{font-size:1.25rem;font-weight:800;margin-bottom:0.5rem;letter-spacing:-0.02em}
+.card .desc{color:var(--text2);font-size:0.875rem;line-height:1.6;margin-bottom:1.5rem;flex:1}
+.price{font-size:2.25rem;font-weight:900;letter-spacing:-0.03em;margin-bottom:0.25rem}
+.price .from{font-size:0.8rem;font-weight:400;color:var(--text2);letter-spacing:0}
+.price .currency{font-size:1.25rem;vertical-align:super;margin-right:2px}
+.price-note{font-size:0.75rem;color:var(--text2);margin-bottom:1.5rem}
+
+.features{list-style:none;margin-bottom:2rem}
+.features li{padding:0.4rem 0;font-size:0.85rem;color:var(--text2);display:flex;align-items:center;gap:0.5rem}
+.features li::before{content:'✓';color:var(--accent);font-weight:700;font-size:0.75rem}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1.5rem;border-radius:10px;font-size:0.875rem;font-weight:600;text-decoration:none;transition:all 0.3s;cursor:pointer;border:none;width:100%;text-align:center}
+.btn-primary{background:linear-gradient(135deg,var(--accent2),#7c3aed);color:#fff;box-shadow:0 0 20px rgba(99,102,241,0.2),inset 0 1px 0 rgba(255,255,255,0.1)}
+.btn-primary:hover{box-shadow:0 0 40px rgba(99,102,241,0.3);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-outline:hover{border-color:var(--accent);background:rgba(99,102,241,0.05)}
+
+/* CTA */
+.cta-section{text-align:center;padding:4rem 2rem 5rem;max-width:700px;margin:0 auto}
+.cta-section h2{font-size:1.75rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:1rem}
+.cta-section p{color:var(--text2);margin-bottom:2rem;font-size:0.95rem}
+
+footer{padding:2rem;text-align:center;color:var(--text2);font-size:0.8rem;border-top:1px solid var(--border)}
+footer a{color:var(--accent);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+@media(max-width:640px){
+  nav{padding:1rem}
+  .pricing{padding:2rem 1rem}
+  .pricing-grid{grid-template-columns:1fr}
+  .hero{padding:2rem 1rem 1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="grid-overlay"></div>
+<div class="noise"></div>
+
+<div class="content">
+
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-mark">🐺</div>
+    <div class="logo-text">Loki<span>Lab</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="/services.html">Services</a>
+    <a href="/about.html">About</a>
+    <a href="https://fr.linkedin.com/in/vincent-roessle-9aaa3963" target="_blank">LinkedIn →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="badge">💰 Transparent pricing</div>
+  <h1>Services & Pricing</h1>
+  <p class="subtitle">From AI assistants to full-stack apps — we build what you need, fast and right.</p>
+</div>
+
+<section class="pricing">
+  <div class="pricing-grid">
+
+    <div class="card">
+      <div class="card-icon">🌐</div>
+      <h3>Simple Website</h3>
+      <p class="desc">Beautiful, fast, responsive website with 1 year of hosting and domain included. Perfect for landing pages, portfolios, and business presentations.</p>
+      <div class="price"><span class="currency">€</span>990</div>
+      <p class="price-note">One-time · Hosting & domain included for 1 year</p>
+      <ul class="features">
+        <li>Custom design, fully responsive</li>
+        <li>Domain name + SSL certificate</li>
+        <li>1 year hosting included</li>
+        <li>SEO optimized</li>
+        <li>Analytics setup</li>
+        <li>Delivery in 24h</li>
+      </ul>
+      <a href="mailto:contact@lokilab.dev?subject=Simple Website" class="btn btn-outline">Get started</a>
+    </div>
+
+    <div class="card featured">
+      <div class="card-icon">🤖</div>
+      <h3>AI Assistant Deployment</h3>
+      <p class="desc">Your own AI assistant deployed on OpenClaw, connected to your favorite channels. Telegram, WhatsApp, or both — up and running in days.</p>
+      <div class="price"><span class="currency">€</span>1,490</div>
+      <p class="price-note">One-time setup · Connectors included</p>
+      <ul class="features">
+        <li>OpenClaw deployment & configuration</li>
+        <li>Telegram and/or WhatsApp connector</li>
+        <li>Custom persona & instructions</li>
+        <li>Tool integrations (web, calendar, etc.)</li>
+        <li>1 month support included</li>
+        <li>Your data stays yours</li>
+      </ul>
+      <a href="mailto:contact@lokilab.dev?subject=AI Assistant Deployment" class="btn btn-primary">Get started</a>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>Advanced Web App</h3>
+      <p class="desc">Full-stack web application with database, authentication, API integrations. Built with modern tech — Python, JavaScript, whatever fits best.</p>
+      <div class="price"><span class="from">Starting from </span><span class="currency">€</span>2,990</div>
+      <p class="price-note">Scoped per project</p>
+      <ul class="features">
+        <li>Custom frontend + backend</li>
+        <li>Database design & implementation</li>
+        <li>API integrations</li>
+        <li>Authentication & security</li>
+        <li>Deployment & CI/CD</li>
+        <li>AI features available</li>
+      </ul>
+      <a href="mailto:contact@lokilab.dev?subject=Advanced Web App" class="btn btn-outline">Get a quote</a>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <h3>Native Mobile App</h3>
+      <p class="desc">iOS and/or Android native application. From design to App Store — polished, performant, production-ready.</p>
+      <div class="price"><span class="from">Starting from </span><span class="currency">€</span>2,990</div>
+      <p class="price-note">Scoped per project</p>
+      <ul class="features">
+        <li>iOS and/or Android</li>
+        <li>Native performance</li>
+        <li>Backend & API included</li>
+        <li>Push notifications</li>
+        <li>App Store submission</li>
+        <li>AI-powered features available</li>
+      </ul>
+      <a href="mailto:contact@lokilab.dev?subject=Native Mobile App" class="btn btn-outline">Get a quote</a>
+    </div>
+
+  </div>
+</section>
+
+<section class="cta-section" style="border-bottom:1px solid var(--border)">
+  <div style="max-width:700px;margin:0 auto;text-align:center">
+    <div style="font-size:2.5rem;margin-bottom:1rem">🎓</div>
+    <h2>Less budget, more flexibility?</h2>
+    <p style="color:var(--text2);font-size:1rem;line-height:1.7;margin-bottom:1rem">We have a pool of talented IT students ready to take on your project. Same quality standards — we manage the connection, scope the work, and follow up until delivery.</p>
+    <p style="color:var(--text2);font-size:0.95rem;line-height:1.7;margin-bottom:1.5rem">You save on cost, they gain real-world experience, and we make sure it gets done right. Win-win-win.</p>
+    <a href="mailto:contact@lokilab.dev?subject=Student pool project" class="btn btn-outline" style="width:auto;display:inline-flex">Tell us about your project →</a>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>Not sure what you need?</h2>
+  <p>Tell us about your project. We'll figure out the right solution together — no commitment, no BS.</p>
+  <a href="mailto:contact@lokilab.dev?subject=Let's talk" class="btn btn-primary" style="width:auto;display:inline-flex">Let's talk →</a>
+</section>
+
+<footer>
+  <p>© 2026 LokiLab · <a href="mailto:contact@lokilab.dev">Contact</a></p>
+</footer>
+
+</div>
+</body>
+</html>

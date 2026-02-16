@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LokiLab — Building apps for tomorrow</title>
+<meta name="description" content="LokiLab — AI-powered apps, automation & consulting. From luxury hospitality to consumer tools, we build fast and ship smart.">
+<meta name="keywords" content="AI, automation, SaaS, hotel technology, web development, mobile apps, consulting, LokiLab">
+<meta name="author" content="Vincent Roessle">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="LokiLab — Building apps for tomorrow">
+<meta property="og:description" content="AI-powered apps, automation & consulting. From luxury hospitality to consumer tools, we build fast and ship smart.">
+<meta property="og:url" content="https://lokilab.dev">
+<meta property="og:site_name" content="LokiLab">
+<meta property="og:image" content="https://lokilab.dev/og-image.png">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LokiLab — Building apps for tomorrow">
+<meta name="twitter:description" content="AI-powered apps, automation & consulting. We build fast and ship smart.">
+<meta name="twitter:image" content="https://lokilab.dev/og-image.png">
+
+<!-- Canonical -->
+<link rel="canonical" href="https://lokilab.dev">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐺</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#09090b;--surface:#111113;--surface2:#1a1a1f;--border:#27272a;--text:#fafafa;--text2:#a1a1aa;--accent:#818cf8;--accent2:#6366f1;--glow:rgba(99,102,241,0.15)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+
+/* Animated gradient mesh background */
+.bg-mesh{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden}
+.bg-mesh::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 20% 50%,rgba(99,102,241,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(139,92,246,0.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(59,130,246,0.05) 0%,transparent 50%);animation:meshMove 20s ease-in-out infinite}
+@keyframes meshMove{0%,100%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(2%,-2%) rotate(1deg)}50%{transform:translate(-1%,3%) rotate(-1deg)}75%{transform:translate(3%,1%) rotate(0.5deg)}}
+
+/* Grid overlay */
+.grid-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:64px 64px;pointer-events:none}
+
+/* Noise texture */
+.noise{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;opacity:0.03;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.content{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column}
+
+/* Nav */
+nav{padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;width:100%}
+.logo{display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:var(--text)}
+.logo-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent2),#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 20px rgba(99,102,241,0.3)}
+.logo-text{font-weight:800;font-size:1.25rem;letter-spacing:-0.03em}
+.logo-text span{color:var(--accent)}
+nav a.nav-link{color:var(--text2);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color 0.2s}
+nav a.nav-link:hover{color:var(--text)}
+
+/* Hero */
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;max-width:900px;margin:0 auto}
+.badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.4rem 1rem;border:1px solid var(--border);border-radius:100px;font-size:0.75rem;color:var(--text2);margin-bottom:2rem;background:var(--surface);backdrop-filter:blur(10px)}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+h1{font-size:clamp(3rem,8vw,5.5rem);font-weight:900;letter-spacing:-0.04em;line-height:1;margin-bottom:1.5rem;background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,0.6) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+h1 .accent{background:linear-gradient(135deg,var(--accent),#a78bfa);-webkit-background-clip:text;background-clip:text}
+
+.subtitle{font-size:clamp(1.1rem,2.5vw,1.35rem);color:var(--text2);line-height:1.6;max-width:600px;margin:0 auto 3rem;font-weight:300}
+
+/* CTA buttons */
+.ctas{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.8rem 1.75rem;border-radius:10px;font-size:0.9rem;font-weight:600;text-decoration:none;transition:all 0.3s;cursor:pointer;border:none}
+.btn-primary{background:linear-gradient(135deg,var(--accent2),#7c3aed);color:#fff;box-shadow:0 0 30px rgba(99,102,241,0.3),inset 0 1px 0 rgba(255,255,255,0.1)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(99,102,241,0.4),inset 0 1px 0 rgba(255,255,255,0.1)}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--accent);background:var(--surface2)}
+.btn svg{width:18px;height:18px}
+
+/* Projects section */
+.projects{padding:4rem 2rem 6rem;max-width:1200px;margin:0 auto;width:100%}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:1rem}
+.projects h2{font-size:1.75rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:2.5rem}
+
+.project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem}
+.project-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:all 0.3s;position:relative;overflow:hidden}
+.project-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,0.3),transparent);opacity:0;transition:opacity 0.3s}
+.project-card:hover{border-color:rgba(99,102,241,0.3);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.3)}
+.project-card:hover::before{opacity:1}
+.project-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:1.25rem;background:var(--surface2);border:1px solid var(--border)}
+.project-card h3{font-size:1.1rem;font-weight:700;margin-bottom:0.5rem;letter-spacing:-0.02em}
+.project-card p{color:var(--text2);font-size:0.875rem;line-height:1.6}
+.project-tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:6px;font-size:0.7rem;font-weight:600;background:var(--surface2);color:var(--accent);border:1px solid rgba(99,102,241,0.15);margin-top:1rem}
+
+/* Tech stack */
+.tech-strip{padding:2rem;text-align:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:0 2rem}
+.tech-strip .icons{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;align-items:center;opacity:0.4;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text2);letter-spacing:0.05em}
+
+/* Footer */
+footer{padding:2rem;text-align:center;color:var(--text2);font-size:0.8rem;border-top:1px solid var(--border)}
+footer a{color:var(--accent);text-decoration:none}
+footer a:hover{text-decoration:underline}
+.socials{display:flex;justify-content:center;gap:1.5rem;margin-bottom:1rem}
+.socials a{color:var(--text2);transition:color 0.2s}
+.socials a:hover{color:var(--accent)}
+.socials svg{width:22px;height:22px}
+
+/* Floating particles */
+.particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.particle{position:absolute;width:2px;height:2px;background:var(--accent);border-radius:50%;opacity:0;animation:float linear infinite}
+@keyframes float{0%{opacity:0;transform:translateY(100vh)}10%{opacity:0.6}90%{opacity:0.6}100%{opacity:0;transform:translateY(-10vh)}}
+
+/* Terminal animation */
+.terminal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--text2);max-width:500px;margin:2.5rem auto 0;text-align:left}
+.terminal-header{display:flex;gap:6px;margin-bottom:1rem}
+.terminal-dot{width:10px;height:10px;border-radius:50%}
+.terminal-line{margin:0.3rem 0;overflow:hidden;white-space:nowrap}
+.terminal-line .prompt{color:var(--accent)}
+.terminal-line .cmd{color:var(--text)}
+.terminal-line .output{color:#22c55e}
+.typewriter{display:inline-block;animation:typing 2s steps(30) 1s forwards;width:0;overflow:hidden;white-space:nowrap}
+@keyframes typing{from{width:0}to{width:100%}}
+.cursor{display:inline-block;width:8px;height:15px;background:var(--accent);animation:blink 1s step-end infinite;vertical-align:middle;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+
+@media(max-width:640px){
+  nav{padding:1rem}
+  .hero{padding:1rem}
+  .ctas{flex-direction:column;align-items:center}
+  .projects{padding:2rem 1rem 4rem}
+  .project-grid{grid-template-columns:1fr}
+  .tech-strip{margin:0 1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="grid-overlay"></div>
+<div class="noise"></div>
+
+<div class="particles" id="particles"></div>
+
+<div class="content">
+
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-mark">🐺</div>
+    <div class="logo-text">Loki<span>Lab</span></div>
+  </a>
+  <a href="/services.html" class="nav-link">Services</a>
+  <a href="/about.html" class="nav-link">About</a>
+  <a href="https://fr.linkedin.com/in/vincent-roessle-9aaa3963" target="_blank" class="nav-link">LinkedIn →</a>
+</nav>
+
+<main class="hero">
+  <div class="badge">
+    <span class="dot"></span>
+    Building in public
+  </div>
+  
+  <h1>Building apps<br>for <span class="accent">tomorrow</span></h1>
+  
+  <p class="subtitle">
+    High-tech AI solutions crafted at the intersection of intelligence and design. 
+    From concept to production — fast, sharp, relentless.
+  </p>
+  
+  <div class="ctas">
+    <a href="https://fr.linkedin.com/in/vincent-roessle-9aaa3963" target="_blank" class="btn btn-primary">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      Connect on LinkedIn
+    </a>
+  </div>
+
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="terminal-dot" style="background:#ff5f57"></div>
+      <div class="terminal-dot" style="background:#febc2e"></div>
+      <div class="terminal-dot" style="background:#28c840"></div>
+    </div>
+    <div class="terminal-line"><span class="prompt">~/lokilab $</span> <span class="cmd typewriter">deploying the future...</span><span class="cursor"></span></div>
+    <div class="terminal-line" style="animation:fadeIn 0.5s 3.5s forwards;opacity:0"><span class="output">✓ AI models loaded</span></div>
+    <div class="terminal-line" style="animation:fadeIn 0.5s 4s forwards;opacity:0"><span class="output">✓ Systems operational</span></div>
+    <div class="terminal-line" style="animation:fadeIn 0.5s 4.5s forwards;opacity:0"><span class="output">✓ Ready to build</span></div>
+  </div>
+</main>
+
+<div class="tech-strip">
+  <div class="icons">
+    <span>Python</span>
+    <span>FastAPI</span>
+    <span>OpenAI</span>
+    <span>React</span>
+    <span>Node.js</span>
+    <span>PostgreSQL</span>
+    <span>Docker</span>
+    <span>Cloudflare</span>
+  </div>
+</div>
+
+<section class="projects">
+  <div class="section-label">// Projects</div>
+  <h2>What we're building</h2>
+  <div class="project-grid">
+    <div class="project-card">
+      <div class="project-icon">🏨</div>
+      <h3>Hotel Intel</h3>
+      <p>AI-powered daily intelligence briefings for luxury hotels. Voice assistant, Opera PMS integration, real-time operational dashboards.</p>
+      <span class="project-tag">AI · Hospitality · SaaS</span>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">🤖</div>
+      <h3>AI Agents</h3>
+      <p>Autonomous agents that handle complex workflows — from data analysis to real-time decision making. Always learning, always improving.</p>
+      <span class="project-tag">LLMs · Automation · Agents</span>
+    </div>
+    <a href="https://k-rot.com/" target="_blank" class="project-card" style="text-decoration:none;color:inherit">
+      <div class="project-icon">🥕</div>
+      <h3>K-ROT</h3>
+      <p>Check any invoice or quote and get a "carotte score" — instantly know if you're getting ripped off. Because "se faire carotter" shouldn't be the default.</p>
+      <span class="project-tag">Consumer Tool · Price Intelligence</span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="socials">
+    <a href="https://fr.linkedin.com/in/vincent-roessle-9aaa3963" target="_blank" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+    <a href="mailto:contact@lokilab.dev" aria-label="Email">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+    </a>
+  </div>
+  <p style="color:var(--text);font-size:0.95rem;margin-bottom:0.75rem">Need AI solutions for your business? <a href="mailto:contact@lokilab.dev" style="color:var(--accent);font-weight:600">Let's talk →</a></p>
+  <p>© 2026 LokiLab · Built with obsession</p>
+</footer>
+
+</div>
+
+<style>@keyframes fadeIn{to{opacity:1}}</style>
+<script>
+// Floating particles
+const container = document.getElementById('particles');
+for(let i = 0; i < 30; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.left = Math.random() * 100 + '%';
+  p.style.animationDuration = (8 + Math.random() * 12) + 's';
+  p.style.animationDelay = Math.random() * 10 + 's';
+  p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+  container.appendChild(p);
+}
+</script>
+</body>
+</html>
